@@ -6,10 +6,11 @@ import {
 import USER_SERVICE from "../services/user";
 
 export default function Auth() {
-  const [authform, setAuthform] = useState<{ email: string, password: string }>({ email: "", password: "" });
+  const [authform, setAuthform] = useState<{ email: string | null, password: string | null }>({ email: null, password: null });
 
   const loginClickHandler = async () => {
-    const response = await USER_SERVICE.login(authform.email, authform.password);
+    const response = await USER_SERVICE.login(authform.email!, authform.password!);
+    console.log("response", response);
   };
 
   return (
