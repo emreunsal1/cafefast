@@ -3,12 +3,8 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  extends: [
-    "airbnb-base",
-  ],
-  plugins: [
-    "@typescript-eslint",
-  ],
+  extends: ["airbnb-base"],
+  plugins: ["@typescript-eslint"],
   settings: {
     "import/resolver": {
       node: {
@@ -32,5 +28,14 @@ module.exports = {
         ts: "never",
       },
     ],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        devDependencies: false,
+        optionalDependencies: false,
+        peerDependencies: false,
+      },
+    ],
+    camelcase: "off", // camel case harici kullanamıyorduk
   },
 };

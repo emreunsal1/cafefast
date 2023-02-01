@@ -1,10 +1,15 @@
 export const login = (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(email, password);
-    res.send("succsess");
-  } catch (error) {
-    res.send("not success");
+    if (!email || !password) {
+      throw new Error("email and password required");
+    }
+    return res.send(true);
+  } catch (error:any) {
+    res.status(401).send({
+      success: false,
+      errorMessage: error.message,
+    });
   }
 };
 
