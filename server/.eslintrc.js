@@ -37,5 +37,6 @@ module.exports = {
       },
     ],
     camelcase: "off", // camel case harici kullanamıyorduk
+    "max-len": ["error", { code: 150 }], // default 80miş de formatlamıyor 150 yaptım
   },
 };
