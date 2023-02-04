@@ -1,12 +1,16 @@
+import getCompany from "../services/company/get";
 import createCompany from "../services/company/create";
+import express  from 'express';
 
-export const login = (req, res) => {
+
+export const login = async (req:express.Request, res:express.Response) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
       throw new Error("email and password required");
     }
-    res.send(true);
+    const response = await getCompany({email,password});
+    res.send(response);
   } catch (error:any) {
     res.status(401).send({
       success: false,
@@ -15,15 +19,21 @@ export const login = (req, res) => {
   }
 };
 
-export const register = (req, res) => {
+export const register = async (req:express.Request, res:express.Response) => {
+try {
   const {
     name, surname, email, password, companyName,
   } = req.body;
 
-  const response = createCompany({
+  const response = await createCompany({
     name, surname, email, password, companyName,
   });
-  console.log(response);
+  res.send(response); 
+} catch (error:any) {
+  res.status(401).send({
+    success: false,
+    errorMessage: error.message,
+  });
+}
 
-  res.send("succes");
 };
