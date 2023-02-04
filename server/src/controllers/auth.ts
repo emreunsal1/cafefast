@@ -1,6 +1,8 @@
 import getCompany from "../services/company/get";
 import createCompany from "../services/company/create";
-import express  from 'express';
+import { generateJwt } from '../middleware/jwt'
+import express from 'express';
+
 
 
 export const login = async (req:express.Request, res:express.Response) => {
@@ -10,7 +12,9 @@ export const login = async (req:express.Request, res:express.Response) => {
       throw new Error("email and password required");
     }
     const response = await getCompany({email,password});
-    res.send(response);
+    const createdJWT =  await generateJwt(email);
+    res.cookie("userToken", createdJWT,{ httpOnly: true, signed: false })
+    res.send(createdJWT);
   } catch (error:any) {
     res.status(401).send({
       success: false,
