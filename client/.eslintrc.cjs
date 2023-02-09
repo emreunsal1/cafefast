@@ -28,6 +28,7 @@ module.exports = {
     "react/jsx-filename-extension": [2, { extensions: [".ts", ".tsx"] }],
     "import/prefer-default-export": "off",
     "@typescript-eslint/quotes": ["error", "double"],
-    "max-len": ["error", { code: 150 }], // default 80miş de formatlamıyor 150 yaptım
+    "max-len": ["error", { code: 150 }], // default 80miş de formatlamıyor 150 yaptım,
+    "@typescript-eslint/naming-convention": "off",
   },
 };
