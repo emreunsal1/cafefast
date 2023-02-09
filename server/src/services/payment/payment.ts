@@ -75,11 +75,12 @@ export const iyzipayService = ({
 
   return new Promise((resolve) => {
     iyzipay.threedsInitialize.create(paymentInfo, (err, result) => {
-      if (err) {
-        console.log("Error when iyzicoPayment => ", err);
-        return resolve(false);
+      if (err || result.errorCode) {
+        console.log("Error when iyzicoPayment => ", err, result);
+        resolve(false);
+        return;
       }
-      resolve(Buffer.from(result.threeDSHtmlContent, "base64").toString("ascii"));
+      resolve(Buffer.from(result?.threeDSHtmlContent, "base64").toString("ascii"));
     });
   });
 };
