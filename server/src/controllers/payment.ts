@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { iyzipayService } from "../services/payment/payment";
 
-const paymentMethod = async (req: Request, res: Response) => {
+export const start3dPaymentController = async (req: Request, res: Response) => {
   const basketId = req.params;
   const ipAddress = req.header("x-forwarded-for") || req.socket.remoteAddress;
   const {
@@ -21,4 +21,24 @@ const paymentMethod = async (req: Request, res: Response) => {
   res.json({ html: result.html });
 };
 
-export default paymentMethod;
+export const render3dPageCountroller = (req: Request, res: Response) => {
+  const {
+    html,
+  } = req.body;
+  const rawHtml = Buffer.from(html, "base64").toString("ascii");
+
+  res.type("html");
+  res.send(rawHtml);
+};
+
+export const continue3dPaymentController = (req: Request, res: Response) => {
+  const {
+    status, paymentId, conversationData, conversationId, mdStatus,
+  } = req.body;
+
+  console.log("body :>> ", {
+    status, paymentId, conversationData, conversationId, mdStatus,
+  });
+
+  res.send(req.body);
+};

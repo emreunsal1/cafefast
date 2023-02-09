@@ -26,7 +26,7 @@ export const iyzipayService = ({
     basketId: "B67832",
     paymentChannel: Iyzipay.PAYMENT_CHANNEL.WEB,
     paymentGroup: Iyzipay.PAYMENT_GROUP.PRODUCT,
-    callbackUrl: "http://localhost:3000/otp-success-verify",
+    callbackUrl: `http://localhost:${process.env.PORT}/payment/3d-continue`,
     paymentCard: {
       cardHolderName,
       cardNumber,
