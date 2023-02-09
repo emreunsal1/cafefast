@@ -1,9 +1,8 @@
 import { Router } from "express";
-import { verifyJWT } from "../middleware/jwt";
 
 const route = Router();
 
-route.post("/update", verifyJWT, (req, res) => {
+route.post("/update", (req, res) => {
   res.send("success");
 });
 

@@ -10,8 +10,8 @@ export const login = async (req:express.Request, res:express.Response) => {
       throw new Error("email and password required");
     }
     const response = await getCompany({ email, password });
-    const createdJWT = await generateJwt(email);
-    res.cookie("userToken", createdJWT, { httpOnly: true, signed: false });
+    const createdJWT = await generateJwt({ email });
+    res.cookie("userToken", createdJWT, { httpOnly: !!process.env.ENVIRONMENT });
     res.send(createdJWT);
   } catch (error:any) {
     res.status(401).send({
