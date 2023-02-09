@@ -1,9 +1,7 @@
+import express from "express";
 import getCompany from "../services/company/get";
 import createCompany from "../services/company/create";
-import { generateJwt } from '../middleware/jwt'
-import express from 'express';
-
-
+import { generateJwt } from "../middleware/jwt";
 
 export const login = async (req:express.Request, res:express.Response) => {
   try {
@@ -11,9 +9,9 @@ export const login = async (req:express.Request, res:express.Response) => {
     if (!email || !password) {
       throw new Error("email and password required");
     }
-    const response = await getCompany({email,password});
-    const createdJWT =  await generateJwt(email);
-    res.cookie("userToken", createdJWT,{ httpOnly: true, signed: false })
+    const response = await getCompany({ email, password });
+    const createdJWT = await generateJwt(email);
+    res.cookie("userToken", createdJWT, { httpOnly: true, signed: false });
     res.send(createdJWT);
   } catch (error:any) {
     res.status(401).send({
@@ -24,20 +22,19 @@ export const login = async (req:express.Request, res:express.Response) => {
 };
 
 export const register = async (req:express.Request, res:express.Response) => {
-try {
-  const {
-    name, surname, email, password, companyName,
-  } = req.body;
+  try {
+    const {
+      name, surname, email, password, companyName,
+    } = req.body;
 
-  const response = await createCompany({
-    name, surname, email, password, companyName,
-  });
-  res.send(response); 
-} catch (error:any) {
-  res.status(401).send({
-    success: false,
-    errorMessage: error.message,
-  });
-}
-
+    const response = await createCompany({
+      name, surname, email, password, companyName,
+    });
+    res.send(response);
+  } catch (error:any) {
+    res.status(401).send({
+      success: false,
+      errorMessage: error.message,
+    });
+  }
 };

@@ -7,8 +7,8 @@ const companySchema = new mongoose.Schema({
   email: "string",
   password: "string",
   isDeleted: {
-    type:Boolean,
-    default:false
+    type: Boolean,
+    default: false,
   },
 });
 

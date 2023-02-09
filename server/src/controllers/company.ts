@@ -1,5 +1,3 @@
+export const update = async () => {
 
-
-export const update = async ()=>{
-
-}
+};

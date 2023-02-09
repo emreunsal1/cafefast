@@ -36,8 +36,9 @@ module.exports = {
         peerDependencies: false,
       },
     ],
-    camelcase: "off", // camel case harici kullanamıyorduk
-    "max-len": ["error", { code: 150 }], // default 80miş de formatlamıyor 150 yaptım
-    treatUndefinedAsUnspecified: false, //fonksiyon dönüş tipi olmayınca ağlamama kodu
+    camelcase: "off",
+    "max-len": ["error", { code: 150 }],
+    "import/prefer-default-export": "off",
+    "consistent-return": "off",
   },
 };
