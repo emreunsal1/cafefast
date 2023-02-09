@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { iyzipayService } from "../services/payment/payment";
+import { init3d, payment3d } from "../services/payment/payment";
 
 export const start3dPaymentController = async (req: Request, res: Response) => {
   const basketId = req.params;
@@ -7,7 +7,7 @@ export const start3dPaymentController = async (req: Request, res: Response) => {
   const {
     cardNumber, cardHolderName, expireMonth, expireYear, cvc, products,
   } = req.body;
-  const result = await iyzipayService({
+  const result = await init3d({
     cardNumber, cardHolderName, expireMonth, expireYear, cvc, products,
   });
 
@@ -31,14 +31,14 @@ export const render3dPageCountroller = (req: Request, res: Response) => {
   res.send(rawHtml);
 };
 
-export const continue3dPaymentController = (req: Request, res: Response) => {
-  const {
-    status, paymentId, conversationData, conversationId, mdStatus,
-  } = req.body;
+export const continue3dPaymentController = async (req: Request, res: Response) => {
+  const { paymentId, conversationData, conversationId } = req.body;
 
-  console.log("body :>> ", {
-    status, paymentId, conversationData, conversationId, mdStatus,
-  });
+  const response = await payment3d({ conversationData, conversationId, paymentId });
 
-  res.send(req.body);
+  if (response.error?.stack || response.error?.errorMessage) {
+    res.redirect("http://localhost:5173/sepetim");
+    return;
+  }
+  res.redirect("http://localhost:5173/siparislerim");
 };

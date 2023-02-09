@@ -3,7 +3,36 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export const iyzipayService = ({
+const iyzipay = new Iyzipay({
+  apiKey: process.env.IYZIPAY_API,
+  secretKey: process.env.IYZIPAY_SECRET,
+  uri: "https://sandbox-api.iyzipay.com",
+});
+
+export const payment3d = ({
+  conversationId,
+  paymentId,
+  conversationData,
+}): Promise<{ error?: {stack: any, errorMessage: any, errorCode: any}, result?: any }> => new Promise((resolve) => {
+  iyzipay.threedsPayment.create({
+    conversationId, locale: Iyzipay.LOCALE.TR, paymentId, conversationData,
+  }, (error, result) => {
+    if (error || result.status === "failure") {
+      resolve({
+        error: {
+          stack: error,
+          ...result,
+        },
+      });
+      return;
+    }
+    resolve({
+      result,
+    });
+  });
+});
+
+export const init3d = ({
   cardNumber, cardHolderName, expireMonth, expireYear, cvc, products,
 }): Promise<{html?: object, error?:{stack: any, errorCode: string}}> => {
   let totalPrice = 0;
@@ -66,12 +95,6 @@ export const iyzipayService = ({
     },
     basketItems: mappedProducts,
   };
-
-  const iyzipay = new Iyzipay({
-    apiKey: process.env.IYZIPAY_API,
-    secretKey: process.env.IYZIPAY_SECRET,
-    uri: "https://sandbox-api.iyzipay.com",
-  });
 
   return new Promise((resolve) => {
     iyzipay.threedsInitialize.create(paymentInfo, (error, result) => {
