@@ -11,13 +11,14 @@ const paymentMethod = async (req: Request, res: Response) => {
     cardNumber, cardHolderName, expireMonth, expireYear, cvc, products,
   });
 
-  if (!result) {
-    res.send("Ödeme işleminiz gerçekleştirilemedi geri yönlendiriliyorsunuz!");
+  if (result.error?.errorCode || result.error?.stack) {
+    res.status(400).json({
+      error: result.error,
+    });
     return;
   }
 
-  res.type("html");
-  res.send(result);
+  res.json({ html: result.html });
 };
 
 export default paymentMethod;

@@ -5,7 +5,7 @@ dotenv.config();
 
 export const iyzipayService = ({
   cardNumber, cardHolderName, expireMonth, expireYear, cvc, products,
-}): Promise<string | false> => {
+}): Promise<{html?: object, error?:{stack: any, errorCode: string}}> => {
   let totalPrice = 0;
   const splitUser = cardHolderName.split(" ");
 
@@ -74,13 +74,18 @@ export const iyzipayService = ({
   });
 
   return new Promise((resolve) => {
-    iyzipay.threedsInitialize.create(paymentInfo, (err, result) => {
-      if (err || result.errorCode) {
-        console.log("Error when iyzicoPayment => ", err, result);
-        resolve(false);
+    iyzipay.threedsInitialize.create(paymentInfo, (error, result) => {
+      if (error || result.errorCode) {
+        console.log("Error when iyzicoPayment => ", error, result);
+        resolve({
+          error: {
+            stack: error,
+            ...result,
+          },
+        });
         return;
       }
-      resolve(Buffer.from(result?.threeDSHtmlContent, "base64").toString("ascii"));
+      resolve({ html: result.threeDSHtmlContent });
     });
   });
 };
