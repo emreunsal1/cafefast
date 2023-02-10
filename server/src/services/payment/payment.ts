@@ -34,9 +34,8 @@ export const payment3d = ({
 
 export const init3d = ({
   cardNumber, cardHolderName, expireMonth, expireYear, cvc, products,
-}): Promise<{html?: object, error?:{stack: any, errorCode: string}}> => {
+}): Promise<{ html?: object, error?: { stack: any, errorCode: string } }> => {
   let totalPrice = 0;
-  const splitUser = cardHolderName.split(" ");
 
   const mappedProducts = products.map((product) => {
     const newProduct = product;
@@ -66,8 +65,8 @@ export const init3d = ({
     },
     buyer: {
       id: "BY789",
-      name: splitUser[0],
-      surname: splitUser[1],
+      name: "Emre",
+      surname: "Ünsal",
       gsmNumber: "+905350000000",
       email: "email@email.com",
       identityNumber: "11111111111",
