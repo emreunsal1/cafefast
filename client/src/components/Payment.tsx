@@ -1,22 +1,10 @@
+import { AxiosError } from "axios";
 import React, { useState } from "react";
 import instance from "../utils/axios";
-import { API_URl } from "../constants";
+import { redirectToPayment } from "../utils/payment";
 
 export default function Payment() {
   const [card, setCard] = useState({});
-  const [responseHtml, setresponseHtml] = useState();
-
-  const redirectPayment = (response) => {
-    const newForm = document.createElement("form");
-    newForm.method = "POST";
-    newForm.action = `${API_URl}/payment/3d-start`;
-    const newInput = document.createElement("input");
-    newInput.name = "html";
-    newInput.value = response.html;
-    newForm.appendChild(newInput);
-    document.body.appendChild(newForm);
-    newForm.submit();
-  };
 
   const submitHandler = async () => {
     try {
@@ -33,10 +21,11 @@ export default function Payment() {
           price: "5",
         }],
       });
-      console.log(response.data);
-      redirectPayment(response.data)4;
-    } catch (error) {
-      console.log("errrere", error);
+      redirectToPayment(response.data);
+    } catch (err: AxiosError | unknown) {
+      if (err instanceof AxiosError) {
+        console.log(err.response?.data);
+      }
     }
   };
 

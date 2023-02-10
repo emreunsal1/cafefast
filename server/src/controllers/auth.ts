@@ -1,14 +1,16 @@
-import express from "express";
-import getCompany from "../services/company/get";
-import createCompany from "../services/company/create";
+import { Request, Response } from "express";
+import { createCompany, getCompany } from "../services/company";
 import { generateJwt } from "../middleware/jwt";
 
-export const login = async (req:express.Request, res:express.Response) => {
+export const login = async (req:Request, res:Response) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      throw new Error("email and password required");
+      res.status(400).send({
+        error: "email and password required",
+      });
     }
+
     const response = await getCompany({ email, password });
     const createdJWT = await generateJwt({ email });
     res.cookie("userToken", createdJWT, { httpOnly: !!process.env.ENVIRONMENT });
@@ -21,7 +23,7 @@ export const login = async (req:express.Request, res:express.Response) => {
   }
 };
 
-export const register = async (req:express.Request, res:express.Response) => {
+export const register = async (req:Request, res:Response) => {
   try {
     const {
       name, surname, email, password, companyName,

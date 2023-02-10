@@ -6,7 +6,7 @@ dotenv.config();
 const iyzipay = new Iyzipay({
   apiKey: process.env.IYZIPAY_API,
   secretKey: process.env.IYZIPAY_SECRET,
-  uri: "https://sandbox-api.iyzipay.com",
+  uri: process.env.IYZIPAY_API_URI,
 });
 
 export const payment3d = ({

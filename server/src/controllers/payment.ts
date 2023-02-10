@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { init3d, payment3d } from "../services/payment/payment";
+import { init3d, payment3d } from "../services/payment";
 
 export const start3dPaymentController = async (req: Request, res: Response) => {
   const basketId = req.params;
