@@ -1,10 +1,25 @@
-import mongoose from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
 
-const userSchema = new mongoose.Schema({
+export type IUser = {
+  company: ObjectId
+  name: string;
+  surname: string;
+  email: string;
+  password: string;
+  variant: number;
+};
+
+export type IUserWithoutPassword = Omit<IUser, "password">
+
+const userSchema = new mongoose.Schema<IUser>({
   name: "string",
   surname: "string",
   email: "string",
   password: "string",
+  company: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "company",
+  },
   variant: Number,
 }, { timestamps: true });
 

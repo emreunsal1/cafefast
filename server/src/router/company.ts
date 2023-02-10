@@ -1,9 +1,8 @@
 import { Router } from "express";
+import { updateCompany } from "../controllers/company";
 
 const route = Router();
 
-route.post("/update", (req, res) => {
-  res.send("success");
-});
+route.post("/update", updateCompany);
 
 export default route;

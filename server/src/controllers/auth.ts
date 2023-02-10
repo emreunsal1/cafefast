@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { createCompany, getCompany } from "../services/company";
-import { generateJwt } from "../middleware/jwt";
+import { generateJwt } from "../utils/jwt";
+import { AUTH_TOKEN_COOKIE_NAME } from "../constants";
+import { companyMapperWithoutPassword } from "../utils/mappers";
 
 export const login = async (req:Request, res:Response) => {
   try {
@@ -11,9 +13,15 @@ export const login = async (req:Request, res:Response) => {
       });
     }
 
-    const response = await getCompany({ email, password });
-    const createdJWT = await generateJwt({ email });
-    res.cookie("userToken", createdJWT, { httpOnly: !!process.env.ENVIRONMENT });
+    const findedCompany = await getCompany({ email, password });
+    if (!findedCompany) {
+      res.status(404).send({ message: "company not found" });
+      return;
+    }
+
+    const createdJWT = await generateJwt(companyMapperWithoutPassword(findedCompany));
+
+    res.cookie(AUTH_TOKEN_COOKIE_NAME, createdJWT, { httpOnly: !!process.env.ENVIRONMENT });
     res.send(createdJWT);
   } catch (error:any) {
     res.status(401).send({

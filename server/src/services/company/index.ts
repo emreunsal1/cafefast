@@ -28,10 +28,10 @@ export const getCompany = async (data: IGetCompany):Promise<any> => {
   try {
     const { email, password } = data;
     const response = await companyModel.findOne({ email, password, isDeleted: false }).exec();
-    return { respone: response, success: true };
+    return response;
   } catch (error: Error | unknown) {
     if (error instanceof mongoose.Error.ValidationError) {
-      return { response: error.message, success: false };
+      return false;
     }
   }
 };

@@ -1,32 +1,19 @@
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+import { NextFunction, Request, Response } from "express";
+import { AUTH_TOKEN_COOKIE_NAME } from "../constants";
+import { IUserWithoutPassword } from "../models/user";
+import { verifyJwt } from "../utils/jwt";
 
-dotenv.config();
-const secretKey = process.env.JWT_SECRET_KEY as string;
-
-export const verifyJWT = async (req, res, next) => {
-  try {
-    const bearerHeader = req.headers.authorization;
-    const bearer = bearerHeader.split(" ");
-    const token = bearer[1];
-    const data = jwt.verify(token, secretKey);
-    req.user = data;
-    next();
-  } catch (error) {
-    return false;
+export const AUTH_REQUIRED_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
+  const authToken = req.cookies[AUTH_TOKEN_COOKIE_NAME];
+  if (!authToken) {
+    res.status(401).send("Unauthorized");
+    return;
   }
-};
-
-export const generateJwt = async (user) => {
-  try {
-    const generatedJWT = await jwt.sign(user, secretKey, {
-      expiresIn: 3600,
-    });
-    return generatedJWT;
-  } catch (error: Error | unknown) {
-    if (error instanceof Error) {
-      console.log(error);
-    }
-    return false;
+  const data = verifyJwt(authToken);
+  if (!data) {
+    res.status(401).send("Unauthorized");
+    return;
   }
+  req.user = data as IUserWithoutPassword;
+  next();
 };
