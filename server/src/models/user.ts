@@ -1,26 +1,30 @@
 import mongoose, { ObjectId } from "mongoose";
 
 export type IUser = {
-  company: ObjectId
-  name: string;
-  surname: string;
   email: string;
   password: string;
-  variant: number;
+  name: string;
+  surname: string;
+  role: number;
+  company: mongoose.Types.ObjectId
+  phoneNumber: ObjectId
 };
 
 export type IUserWithoutPassword = Omit<IUser, "password">
 
 const userSchema = new mongoose.Schema<IUser>({
-  name: "string",
-  surname: "string",
   email: "string",
   password: "string",
+  name: "string",
+  surname: "string",
+  role: {
+    type: "number",
+    default: 0,
+  },
   company: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "company",
   },
-  variant: Number,
 }, { timestamps: true });
 
 const userModel = mongoose.model("user", userSchema);

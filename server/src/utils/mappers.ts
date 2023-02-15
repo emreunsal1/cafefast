@@ -1,9 +1,9 @@
 import { IUser } from "../models/user";
 
-export const companyMapperWithoutPassword = (userData: IUser) => ({
+export const userMapperWithoutPassword = (userData: IUser) => ({
   email: userData.email,
-  password: userData.password,
   name: userData.name,
   surname: userData.surname,
-  variant: userData.variant,
+  company: userData.company,
+  role: userData.role,
 });

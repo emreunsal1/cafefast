@@ -40,5 +40,6 @@ module.exports = {
     "max-len": ["error", { code: 150 }],
     "import/prefer-default-export": "off",
     "consistent-return": "off",
+    "no-underscore-dangle": "off",
   },
 };

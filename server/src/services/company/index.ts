@@ -1,48 +1,26 @@
-import mongoose, { Types } from "mongoose";
-import companyModel from "../../models/company";
-import { ICreateCompany } from "../../utils/interfaces/company";
+import mongoose from "mongoose";
+import companyModel, { ICreateCompany } from "../../models/company";
 
-interface IGetCompany {
-  email:string,
-  password:string,
-}
-
-export const createCompany = async (data:ICreateCompany):Promise<any> => {
+export const createCompany = async (data: ICreateCompany) => {
   try {
     const {
-      name, surname, companyName, email, password,
+      companyName,
     } = data;
 
-    const newCompany = await companyModel.create({
-      name, surname, email, password, companyName,
-    });
-    return { respone: newCompany, success: true };
+    const newCompany = await companyModel.create({ companyName });
+    return { data: newCompany };
   } catch (error: Error | unknown) {
-    if (error instanceof mongoose.Error.ValidationError) {
-      return { response: error.message, success: false };
-    }
+    return { error };
   }
 };
 
-export const getCompany = async (data: IGetCompany):Promise<any> => {
+export const getCompany = async (id: string):Promise<any> => {
   try {
-    const { email, password } = data;
-    const response = await companyModel.findOne({ email, password, isDeleted: false }).exec();
+    const response = await companyModel.findOne({ _id: id, isDeleted: false }).exec();
     return response;
   } catch (error: Error | unknown) {
     if (error instanceof mongoose.Error.ValidationError) {
       return false;
-    }
-  }
-};
-
-export const updateCompany = async (id:Types.ObjectId, data:any) => {
-  try {
-    const response = await companyModel.findOneAndUpdate({ _id: id }, { data }, { new: true });
-    return response;
-  } catch (error: Error | unknown) {
-    if (error instanceof mongoose.Error.ValidationError) {
-      return error.message;
     }
   }
 };
