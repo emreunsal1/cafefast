@@ -6,14 +6,14 @@ dotenv.config();
 const iyzipay = new Iyzipay({
   apiKey: process.env.IYZIPAY_API,
   secretKey: process.env.IYZIPAY_SECRET,
-  uri: process.env.IYZIPAY_API_URI,
+  uri: process.env.IYZIPAY_API,
 });
 
 export const payment3d = ({
   conversationId,
   paymentId,
   conversationData,
-}): Promise<{ error?: {stack: any, errorMessage: any, errorCode: any}, result?: any }> => new Promise((resolve) => {
+}): Promise<{ error?: { stack: any, errorMessage: any, errorCode: any }, result?: any }> => new Promise((resolve) => {
   iyzipay.threedsPayment.create({
     conversationId, locale: Iyzipay.LOCALE.TR, paymentId, conversationData,
   }, (error, result) => {
