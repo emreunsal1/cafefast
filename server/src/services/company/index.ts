@@ -1,13 +1,9 @@
 import mongoose from "mongoose";
 import companyModel, { ICreateCompany } from "../../models/company";
 
-export const createCompany = async (data: ICreateCompany) => {
+export const createCompany = async ({ name }: ICreateCompany) => {
   try {
-    const {
-      companyName,
-    } = data;
-
-    const newCompany = await companyModel.create({ companyName });
+    const newCompany = await companyModel.create({ name });
     return { data: newCompany };
   } catch (error: Error | unknown) {
     return { error };

@@ -15,14 +15,14 @@ export const login = async (req:Request, res:Response) => {
       });
     }
 
-    const findedCompany = await getUser({ email, password });
-    if (findedCompany.error || !findedCompany.data) {
-      res.status(400).send({ error: findedCompany.error });
+    const findedUser = await getUser({ email, password });
+    if (findedUser.error || !findedUser.data) {
+      res.status(400).send({ error: findedUser.error });
       return;
     }
 
-    const createdJWT = await generateJwt(userMapperWithoutPassword(findedCompany.data));
-    res.cookie(AUTH_TOKEN_COOKIE_NAME, createdJWT, { httpOnly: !!process.env.ENVIRONMENT }).send(createdJWT);
+    const createdJWT = await generateJwt(userMapperWithoutPassword(findedUser.data));
+    res.cookie(AUTH_TOKEN_COOKIE_NAME, createdJWT, { httpOnly: !!process.env.ENVIRONMENT }).send({ token: createdJWT });
   } catch (error:any) {
     res.status(400).send({
       error,
@@ -30,11 +30,7 @@ export const login = async (req:Request, res:Response) => {
   }
 };
 
-interface IRegisterUser extends Omit<IUser, "role" | "company"> {
-  companyName: string
-}
-
-export const register = async (req:Request<any, any, IRegisterUser>, res:Response) => {
+export const register = async (req:Request, res:Response) => {
   try {
     const {
       companyName,
@@ -45,25 +41,28 @@ export const register = async (req:Request<any, any, IRegisterUser>, res:Respons
       phoneNumber,
     } = req.body;
 
-    const createdCompany = await createCompany({ companyName });
-    if (!createdCompany.error && createdCompany.data) {
-      const response = await createUser({
-        company: createdCompany.data._id,
-        role: 0,
-        email,
-        password,
-        name,
-        surname,
-        phoneNumber,
-      });
-      res.send(response);
+    const createdCompany = await createCompany({ name: companyName });
+    if (createdCompany.error || !createdCompany.data) {
+      res.status(400).json(createdCompany.error);
       return;
     }
-    res.status(400).send({ error: createdCompany.error });
+    const createdUser = await createUser({
+      company: createdCompany.data._id,
+      role: 0,
+      email,
+      password,
+      name,
+      surname,
+      phoneNumber,
+    });
+    if (createdUser.error) {
+      res.status(400).json(createdUser.error);
+      return;
+    }
+    res.status(201).json(createdUser.data);
   } catch (error:any) {
-    res.status(401).send({
-      success: false,
-      errorMessage: error.message,
+    res.status(401).json({
+      error,
     });
   }
 };

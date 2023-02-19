@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 
 export type ICompany = {
-  companyName: string;
+  name: string;
   isDeleted: boolean;
 }
 
 export type ICreateCompany = Omit<ICompany, "isDeleted">
 
 const companySchema = new mongoose.Schema<ICompany>({
-  companyName: "string",
+  name: "string",
   isDeleted: {
     type: Boolean,
     default: false,
