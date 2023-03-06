@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  server:
+    build: server
+    volumes:
+      - ./server:/src
+      - /src/node_modules/
+  client:
+    build: client
+    volumes:
+      - ./client:/src
+      - /src/node_modules/
+  nginx:
+    build: nginx
+    ports:
+      - 80:80

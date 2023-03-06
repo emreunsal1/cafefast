@@ -3,7 +3,6 @@ import { generateJwt } from "../utils/jwt";
 import { AUTH_TOKEN_COOKIE_NAME } from "../constants";
 import { userMapperWithoutPassword } from "../utils/mappers";
 import { createUser, getUser } from "../services/user";
-import { IUser } from "../models/user";
 import { createCompany } from "../services/company";
 
 export const login = async (req:Request, res:Response) => {
