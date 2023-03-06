@@ -33,9 +33,18 @@ const categoriesSchema = [{
 
 const menuSchema = new Schema({
   companyId: Schema.Types.ObjectId,
-  campaigns: campaignsSchema,
-  categories: categoriesSchema,
-  products: productSchema,
+  campaigns: {
+    type: campaignsSchema,
+    default: [],
+  },
+  categories: {
+    type: categoriesSchema,
+    default: [],
+  },
+  products: {
+    type: productSchema,
+    default: [],
+  },
 });
 
 const menuModel = mongoose.model("menu", menuSchema);
