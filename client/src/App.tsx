@@ -1,10 +1,10 @@
 import React from "react";
-import Payment from "./components/Payment";
+import Auth from "./pages/Auth";
 
 export default function App() {
   return (
     <div>
-      <Payment />
+      <Auth />
     </div>
   );
 }
