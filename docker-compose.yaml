@@ -10,6 +10,7 @@ services:
     volumes:
       - ./client:/src
       - /src/node_modules/
+      - /src/.next
   nginx:
     build: nginx
     ports:

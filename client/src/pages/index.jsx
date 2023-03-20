@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import {
-  Button, Form, Input,
-} from "antd";
+import { Button, Form, Input } from "antd";
 import USER_SERVICE from "../services/user";
 
 export default function Auth() {
-  const [authform, setAuthform] = useState<{ email: string | null, password: string | null }>({ email: null, password: null });
+  const [authform, setAuthform] = useState({ email: null, password: null });
 
   const loginClickHandler = async () => {
-    const response = await USER_SERVICE.login(authform.email!, authform.password!);
+    const response = await USER_SERVICE.login(
+      authform.email,
+      authform.password
+    );
     console.log("response", response);
   };
 
@@ -27,7 +28,9 @@ export default function Auth() {
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
             placeholder="Username"
-            onChange={(event) => setAuthform({ ...authform, email: event.target.value })}
+            onChange={(event) =>
+              setAuthform({ ...authform, email: event.target.value })
+            }
           />
         </Form.Item>
         <Form.Item
@@ -38,20 +41,25 @@ export default function Auth() {
             prefix={<LockOutlined className="site-form-item-icon" />}
             type="password"
             placeholder="Password"
-            onChange={(event) => setAuthform({ ...authform, password: event.target.value })}
-
+            onChange={(event) =>
+              setAuthform({ ...authform, password: event.target.value })
+            }
           />
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" className="login-form-button" onClick={loginClickHandler}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="login-form-button"
+            onClick={loginClickHandler}
+          >
             Log in
           </Button>
           Or
           <a href="/">register now!</a>
         </Form.Item>
       </Form>
-
     </div>
   );
 }
