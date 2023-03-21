@@ -1,5 +1,5 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from "react";
+import { Form, Input, Button } from "antd";
 
 const initialFormValues = {
   name: "",
@@ -26,62 +26,54 @@ function Onboarding() {
   };
 
   const renderStep1 = () => (
-    <form onSubmit={() => setStep("step2")}>
-      <label>
-        Name:
-        <input
-          type="text"
+    <Form onFinish={() => setStep("step2")}>
+      <Form.Item label="Name" name="name">
+        <Input
           name="name"
           value={formValues.name}
           onChange={handleInputChange}
         />
-      </label>
-      <label>
-        Surname:
-        <input
-          type="text"
+      </Form.Item>
+      <Form.Item label="Surname" name="surname">
+        <Input
           name="surname"
           value={formValues.surname}
           onChange={handleInputChange}
         />
-      </label>
-      <button type="submit">Next</button>
-    </form>
+      </Form.Item>
+      <Button type="primary" htmlType="submit">
+        Next
+      </Button>
+    </Form>
   );
 
   const renderStep2 = () => (
-    <form onSubmit={() => setStep("step3")}>
-      <label>
-        City:
-        <input
-          type="text"
+    <Form onFinish={handleSubmit}>
+      <Form.Item label="City" name="city">
+        <Input
           name="city"
           value={formValues.city}
           onChange={handleInputChange}
         />
-      </label>
-      <label>
-        Address:
-        <input
-          type="text"
+      </Form.Item>
+      <Form.Item label="Address" name="address">
+        <Input
           name="address"
           value={formValues.address}
           onChange={handleInputChange}
         />
-      </label>
-      <label>
-        Postal Code:
-        <input
-          type="text"
+      </Form.Item>
+      <Form.Item label="Postal Code" name="postalCode">
+        <Input
           name="postalCode"
           value={formValues.postalCode}
           onChange={handleInputChange}
         />
-      </label>
-      <button onClick={handleSubmit} type="submit">
+      </Form.Item>
+      <Button type="primary" htmlType="submit">
         Submit
-      </button>
-    </form>
+      </Button>
+    </Form>
   );
 
   return (

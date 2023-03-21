@@ -57,7 +57,7 @@ export default function Auth() {
             Log in
           </Button>
           Or
-          <a href="/">register now!</a>
+          <a href="/register">register now!</a>
         </Form.Item>
       </Form>
     </div>

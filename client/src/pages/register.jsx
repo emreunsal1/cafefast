@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useFormik } from "formik";
+import React, { useState, useEffect } from "react";
+import { useFormik, Formik } from "formik";
 import { Button, Input, Form } from "antd";
 import { registerValidationSchema } from "../utils/validations";
 
@@ -17,12 +17,14 @@ export default function Register() {
       name: "",
       surname: "",
     },
-    validationSchema: registerValidationSchema,
+    validationSchema: { registerValidationSchema },
     onSubmit: (values) => {
-      console.log("formik value", values);
+      console.log("abc submit values ", values);
       setIsSubmit(() => true);
     },
   });
+
+  useEffect(() => {}, []);
 
   return (
     <div>
