@@ -1,6 +1,6 @@
 import { THREED_START_PAGE } from "../constants";
 
-export const redirectToPayment = (response: { html: string }) => {
+export const redirectToPayment = (response) => {
   const newForm = document.createElement("form");
   newForm.style.display = "none";
   newForm.style.visibility = "hidden";

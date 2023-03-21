@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useFormik, Formik } from "formik";
 import { Button, Input, Form } from "antd";
-import { registerValidationSchema } from "../utils/validations";
+import { registerValidationSchema } from "../../utils/validations";
 
 export default function Register() {
   const [register, setRegister] = useState();
@@ -17,15 +17,12 @@ export default function Register() {
       name: "",
       surname: "",
     },
-    validationSchema: { registerValidationSchema },
+    validationSchema: registerValidationSchema,
     onSubmit: (values) => {
       console.log("abc submit values ", values);
-      setIsSubmit(() => true);
     },
   });
-
-  useEffect(() => {}, []);
-
+  const submitBtnClickHandler = () => setIsSubmit(true);
   return (
     <div>
       <div className="container">
@@ -63,7 +60,9 @@ export default function Register() {
               <div className="error">{formik.errors.passwordConfirmation}</div>
             )}
 
-            <Button htmlType="submit">! Register</Button>
+            <Button htmlType="submit" onClick={submitBtnClickHandler}>
+              ! Register
+            </Button>
           </form>
         </div>
       </div>

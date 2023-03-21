@@ -1,38 +1,20 @@
-import { LOGIN_PAGE_URl } from "../constants";
 import instance from "../utils/axios";
+import { PROFILE_PAGE_URL } from "../constants";
 
-const login = async (email, password) => {
+const update = async (data) => {
   try {
-    const response = await instance.post(LOGIN_PAGE_URl, {
-      email,
-      password,
+    const response = await instance.put(PROFILE_PAGE_URL + "/update", {
+      data,
     });
     const result = response.data;
     return result;
   } catch (error) {
-    console.log("login error", { error });
-  }
-};
-
-const register = async (data) => {
-  try {
-    const { name, surname, company, phone, address } = data;
-    const response = await instance.post(LOGIN_PAGE_URl, {
-      name,
-      surname,
-      company,
-      phone,
-      address,
-    });
-    const result = response.data;
-    return result;
-  } catch (error) {
-    console.log("register error", { error });
+    console.log("user update error", { error });
   }
 };
 
 const USER_SERVICE = {
-  login,
+  update,
 };
 
 export default USER_SERVICE;
