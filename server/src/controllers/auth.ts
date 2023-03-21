@@ -2,8 +2,7 @@ import { Request, Response } from "express";
 import { generateJwt } from "../utils/jwt";
 import { AUTH_TOKEN_COOKIE_NAME } from "../constants";
 import { userMapperWithoutPassword } from "../utils/mappers";
-import { createUser, getUser } from "../services/user";
-import { createCompany } from "../services/company";
+import { checkPhoneOrEmailIsExists, createUser, getUser } from "../services/user";
 
 export const login = async (req:Request, res:Response) => {
   try {
@@ -36,27 +35,26 @@ export const login = async (req:Request, res:Response) => {
 export const register = async (req:Request, res:Response) => {
   try {
     const {
-      companyName,
       email,
       password,
-      name,
-      surname,
       phoneNumber,
     } = req.body;
 
-    const createdCompany = await createCompany({ name: companyName });
-    if (createdCompany.error || !createdCompany.data) {
-      res.status(400).json(createdCompany.error);
+    const isExists = await checkPhoneOrEmailIsExists({ email, phoneNumber });
+
+    if (Array.isArray(isExists)) {
+      res.status(400).json({
+        error: {
+          message: "exists",
+          fields: isExists,
+        },
+      });
       return;
     }
     const createdUser = await createUser({
-      company: createdCompany.data._id,
-      role: 0,
       email,
-      password,
-      name,
-      surname,
       phoneNumber,
+      password,
     });
     if (createdUser.error) {
       res.status(400).json(createdUser.error);
