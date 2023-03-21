@@ -1,3 +1,4 @@
+import z from "zod";
 import mongoose, { ObjectId } from "mongoose";
 
 export type IUser = {
@@ -26,6 +27,11 @@ const userSchema = new mongoose.Schema<IUser>({
     ref: "company",
   },
 }, { timestamps: true });
+
+export const updateUserVerifier = z.object({
+  name: z.string().min(3).max(255).optional(),
+  surname: z.string().min(3).max(255).optional(),
+});
 
 const userModel = mongoose.model("user", userSchema);
 
