@@ -14,7 +14,11 @@ export const login = async (req:Request, res:Response) => {
       });
     }
 
-    const findedUser = await getUser({ email, password });
+    const findedUser = await getUser({
+      query: { email, password },
+      populate: false,
+    });
+
     if (findedUser.error || !findedUser.data) {
       res.status(400).send({ error: findedUser.error });
       return;

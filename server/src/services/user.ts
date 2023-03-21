@@ -14,9 +14,14 @@ export const createUser = async (data: IUser) => {
   }
 };
 
-export const getUser = async (query: Partial<IUser>) => {
+export const getUser = async ({ query, populate = false }: {query: Partial<IUser>, populate?: boolean}) => {
   try {
-    const data = await userModel.findOne(query).populate("company").exec();
+    const mongoQuery = userModel.findOne(query);
+    if (populate) {
+      mongoQuery.populate("company");
+    }
+    const data = await mongoQuery.exec();
+
     return { data };
   } catch (error: Error | unknown) {
     return { error };
