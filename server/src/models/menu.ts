@@ -7,6 +7,7 @@ const productSchema = [
     description: String,
     images: [String],
     attributes: [{ name: String, price: Number }],
+    requiredAttributeCount: { type: Number, default: 0 },
     inStock: { type: Boolean, default: true },
   }];
 

@@ -33,7 +33,7 @@ export const payment3d = ({
 });
 
 export const init3d = ({
-  cardNumber, cardHolderName, expireMonth, expireYear, cvc, products,
+  cardNumber, cardHolderName, expireMonth, expireYear, cvc, products, basketId,
 }): Promise<{ html?: object, error?: { stack: any, errorCode: string } }> => {
   let totalPrice = 0;
 
@@ -51,7 +51,7 @@ export const init3d = ({
     paidPrice: totalPrice,
     currency: Iyzipay.CURRENCY.TRY,
     installment: "1",
-    basketId: "B67832",
+    basketId,
     paymentChannel: Iyzipay.PAYMENT_CHANNEL.WEB,
     paymentGroup: Iyzipay.PAYMENT_GROUP.PRODUCT,
     callbackUrl: `http://localhost:${process.env.PORT}/payment/3d-continue`,

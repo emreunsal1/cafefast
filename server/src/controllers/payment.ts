@@ -3,12 +3,17 @@ import { init3d, payment3d } from "../services/payment";
 
 export const start3dPaymentController = async (req: Request, res: Response) => {
   const basketId = req.params;
-  const ipAddress = req.header("x-forwarded-for") || req.socket.remoteAddress;
   const {
     cardNumber, cardHolderName, expireMonth, expireYear, cvc, products,
   } = req.body;
   const result = await init3d({
-    cardNumber, cardHolderName, expireMonth, expireYear, cvc, products,
+    cardNumber,
+    cardHolderName,
+    expireMonth,
+    expireYear,
+    cvc,
+    products,
+    basketId,
   });
 
   if (result.error?.errorCode || result.error?.stack) {
