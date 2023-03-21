@@ -1,28 +1,34 @@
-import React, { useState, useEffect } from "react";
-import { useFormik, Formik } from "formik";
-import { Button, Input, Form } from "antd";
+import React, { useState } from "react";
+import { useFormik } from "formik";
+import { Button, Input } from "antd";
+import { useRouter } from "next/router";
 import { registerValidationSchema } from "../../utils/validations";
+import USER_SERVICE from "../../services/user";
 
-export default function Register() {
-  const [register, setRegister] = useState();
+function Register() {
   const [isSubmit, setIsSubmit] = useState(false);
+
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
       passwordConfirmation: "",
-      company: "",
       phone: "",
-      name: "",
-      surname: "",
     },
     validationSchema: registerValidationSchema,
-    onSubmit: (values) => {
-      console.log("abc submit values ", values);
+    onSubmit: async (values) => {
+      const response = await USER_SERVICE.create(values);
+      if (response) {
+        router.push("/auth/onboarding");
+      }
     },
   });
-  const submitBtnClickHandler = () => setIsSubmit(true);
+  const submitBtnClickHandler = () => {
+    setIsSubmit(true);
+  };
+
   return (
     <div>
       <div className="container">
@@ -69,3 +75,5 @@ export default function Register() {
     </div>
   );
 }
+
+export default Register;

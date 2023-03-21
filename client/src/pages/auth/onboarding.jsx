@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Form, Input, Button } from "antd";
+import { useRouter } from "next/router";
+import USER_SERVICE from "../../services/user";
 
 const initialFormValues = {
   name: "",
@@ -10,12 +12,15 @@ const initialFormValues = {
 };
 
 function Onboarding() {
+  const router = useRouter();
   const [step, setStep] = useState("step1");
   const [formValues, setFormValues] = useState(initialFormValues);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(formValues);
+  const handleSubmit = async () => {
+    const response = await USER_SERVICE.update(formValues);
+    if (response) {
+      router.push("/mainpage");
+    }
   };
 
   const handleInputChange = (event) => {

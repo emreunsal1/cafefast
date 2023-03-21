@@ -14,26 +14,9 @@ const login = async (email, password) => {
   }
 };
 
-const register = async (data) => {
-  try {
-    const { name, surname, company, phone, address } = data;
-    const response = await instance.post(AUTH_PAGE_URL + "/register", {
-      name,
-      surname,
-      company,
-      phone,
-      address,
-    });
-    const result = response.data;
-    return result;
-  } catch (error) {
-    console.log("register error", { error });
-  }
-};
 
 const AUTH_SERVİCE = {
   login,
-  register,
 };
 
 export default AUTH_SERVİCE;

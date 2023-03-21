@@ -1,12 +1,14 @@
-class Storage {
-  getLocal(name) {
-    const result = localStorage.getItem(name);
-    return result;
-  }
-  setLocal(name, value) {
-    localStorage.setItem(name, value);
-  }
+// export class Storage {
+//   getLocal(name) {
+//     const result = localStorage.getItem(name);
+//     return result;
+//   }
 
-  getCookie(name) {}
-  setCookie(name, value) {}
-}
+//   setLocal(name, value) {
+//     localStorage.setItem(name, value);
+//   }
+
+//   getCookie(name) {}
+
+//   setCookie(name, value) {}
+// }
