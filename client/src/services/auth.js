@@ -3,20 +3,19 @@ import instance from "../utils/axios";
 
 const login = async (email, password) => {
   try {
-    const response = await instance.post(AUTH_PAGE_URL + "/login", {
+    const response = await instance.post(`${AUTH_PAGE_URL}/login`, {
       email,
       password,
     });
-    const result = response.data;
-    return result;
+    return response;
   } catch (error) {
     console.log("login error", { error });
+    return false;
   }
 };
 
-
-const AUTH_SERVİCE = {
+const AUTH_SERVICE = {
   login,
 };
 
-export default AUTH_SERVİCE;
+export default AUTH_SERVICE;

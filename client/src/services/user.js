@@ -30,9 +30,21 @@ const update = async (data) => {
   }
 };
 
+// eslint-disable-next-line consistent-return
+const me = async () => {
+  try {
+    const response = await instance.get("/me");
+    return { data: response };
+  } catch (error) {
+    console.log("get me error", error);
+    return { error: error.response };
+  }
+};
+
 const USER_SERVICE = {
   update,
   create,
+  me,
 };
 
 export default USER_SERVICE;

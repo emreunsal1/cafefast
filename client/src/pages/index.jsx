@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
+import USER_SERVICE from "../services/user";
 
-export default function Auth() {
-  useEffect(() => {}, []);
+export default function Index() {
+  useEffect(() => {
+    USER_SERVICE.me();
+  }, []);
 
-  return <div>burası Main Page</div>;
+  return (
+    <div>burası main page register veya login olduk yupiii!!</div>
+  );
 }

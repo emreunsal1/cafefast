@@ -6,6 +6,7 @@ import { updateMeMapper, userMapperWithoutPassword } from "../utils/mappers";
 export const getMeController = async (req: Request, res: Response) => {
   const { email } = req.user;
   const { data, error } = await getUser({ query: { email }, populate: true });
+  console.log("error", error);
 
   if (error) {
     res.status(400).send({ error });

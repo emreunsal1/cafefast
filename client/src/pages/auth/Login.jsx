@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
-import USER_SERVICE from "../../services/user";
+import { useRouter } from "next/router";
+import AUTH_SERVICE from "../../services/auth";
 
 export default function Login() {
   const [authform, setAuthform] = useState({ email: null, password: null });
-
+  const router = useRouter();
   const loginClickHandler = async () => {
-    const response = await USER_SERVICE.login(
+    const response = await AUTH_SERVICE.login(
       authform.email,
       authform.password,
     );
-    console.log("response", response);
+    if (response.status === 200) {
+      router.push("/");
+    }
   };
 
   return (
