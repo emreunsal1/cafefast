@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { generateJwt } from "../utils/jwt";
 import { AUTH_TOKEN_COOKIE_NAME } from "../constants";
-import { userMapperWithoutPassword } from "../utils/mappers";
 import { checkUserFieldIsExists, createUser, getUser } from "../services/user";
+import { registerUserVerifier } from "../models/user";
+import { mapUserForJWT } from "../utils/mappers";
 
 export const login = async (req:Request, res:Response) => {
   try {
@@ -15,7 +16,6 @@ export const login = async (req:Request, res:Response) => {
 
     const findedUser = await getUser({
       query: { email, password },
-      populate: false,
     });
 
     if (findedUser.error || !findedUser.data) {
@@ -23,7 +23,7 @@ export const login = async (req:Request, res:Response) => {
       return;
     }
 
-    const createdJWT = await generateJwt(userMapperWithoutPassword(findedUser.data));
+    const createdJWT = await generateJwt(mapUserForJWT(findedUser.data));
     res.cookie(AUTH_TOKEN_COOKIE_NAME, createdJWT, { httpOnly: !!process.env.ENVIRONMENT }).send({ token: createdJWT });
   } catch (error:any) {
     res.status(400).send({
@@ -37,10 +37,10 @@ export const register = async (req:Request, res:Response) => {
     const {
       email,
       password,
-      phoneNumber,
     } = req.body;
 
-    const isExists = await checkUserFieldIsExists({ email });
+    const parsedUser = await registerUserVerifier.parseAsync({ email, password });
+    const isExists = await checkUserFieldIsExists({ email: parsedUser.email });
 
     if (Array.isArray(isExists)) {
       res.status(400).json({
@@ -51,15 +51,13 @@ export const register = async (req:Request, res:Response) => {
       });
       return;
     }
-    const createdUser = await createUser({
-      email,
-      phoneNumber,
-      password,
-    });
+    const createdUser = await createUser(parsedUser);
     if (createdUser.error) {
       res.status(400).json(createdUser.error);
       return;
     }
+    const createdJWT = await generateJwt(mapUserForJWT(createdUser.data));
+    res.cookie(AUTH_TOKEN_COOKIE_NAME, createdJWT, { httpOnly: !!process.env.ENVIRONMENT }).send({ token: createdJWT });
     res.status(201).json(createdUser.data);
   } catch (error:any) {
     res.status(401).json({

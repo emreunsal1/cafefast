@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import z from "zod";
 
 export type ICompany = {
   name: string;
@@ -6,7 +7,7 @@ export type ICompany = {
     city: string;
     district: string;
     mailingAddress: string;
-    postalCode: string;
+    postalCode: number;
   }
   isDeleted?: boolean;
 }
@@ -26,5 +27,15 @@ const companySchema = new mongoose.Schema<ICompany>({
 }, { timestamps: true });
 
 const companyModel = mongoose.model("company", companySchema);
+
+export const createCompanyValidator = z.object({
+  name: z.string().min(3).max(255),
+  address: z.object({
+    city: z.string().min(3).max(255),
+    district: z.string().min(3).max(255),
+    mailingAddress: z.string().min(3).max(255),
+    postalCode: z.number().min(5).max(5),
+  }),
+});
 
 export default companyModel;
