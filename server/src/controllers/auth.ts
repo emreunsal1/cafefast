@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { generateJwt } from "../utils/jwt";
 import { AUTH_TOKEN_COOKIE_NAME } from "../constants";
 import { userMapperWithoutPassword } from "../utils/mappers";
-import { checkPhoneOrEmailIsExists, createUser, getUser } from "../services/user";
+import { checkUserFieldIsExists, createUser, getUser } from "../services/user";
 
 export const login = async (req:Request, res:Response) => {
   try {
@@ -40,7 +40,7 @@ export const register = async (req:Request, res:Response) => {
       phoneNumber,
     } = req.body;
 
-    const isExists = await checkPhoneOrEmailIsExists({ email, phoneNumber });
+    const isExists = await checkUserFieldIsExists({ email });
 
     if (Array.isArray(isExists)) {
       res.status(400).json({

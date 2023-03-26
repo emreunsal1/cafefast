@@ -14,20 +14,21 @@ export const createUser = async (data: Pick<IUser, "email" | "password" | "phone
   }
 };
 
-export const checkPhoneOrEmailIsExists = async ({ email, phoneNumber }): Promise<string[] | false> => {
-  const result = await userModel.findOne({ $or: [{ email }, { phoneNumber }] });
-
+export const checkUserFieldIsExists = async (data: Partial<IUser>): Promise<string[] | false> => {
+  const query = Object.keys(data).map((key) => ({
+    key: data[key],
+  }));
+  const result = await userModel.findOne({ $or: query });
   if (!result) {
     return false;
   }
 
   const errors: string[] = [];
-  if (result.email === email) {
-    errors.push("email");
-  }
-  if (result.phoneNumber === phoneNumber) {
-    errors.push("phoneNumber");
-  }
+  Object.keys(data).forEach((field) => {
+    if (result[field] === data[field]) {
+      errors.push(field);
+    }
+  });
   return errors;
 };
 

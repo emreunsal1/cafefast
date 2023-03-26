@@ -2,13 +2,23 @@ import mongoose from "mongoose";
 
 export type ICompany = {
   name: string;
-  isDeleted: boolean;
+  address: {
+    city: string;
+    district: string;
+    mailingAddress: string;
+    postalCode: string;
+  }
+  isDeleted?: boolean;
 }
 
-export type ICreateCompany = Omit<ICompany, "isDeleted">
-
 const companySchema = new mongoose.Schema<ICompany>({
-  name: "string",
+  name: String,
+  address: {
+    city: String,
+    district: String,
+    mailingAddress: String,
+    postalCode: String,
+  },
   isDeleted: {
     type: Boolean,
     default: false,
