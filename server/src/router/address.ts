@@ -4,7 +4,6 @@ import AddressData from "../data/AddressData.json";
 const cityData = AddressData.map((city) => ({
   id: city.id,
   name: city.name,
-  districts: city.districts,
 }));
 
 const route = Router();
@@ -15,9 +14,14 @@ route.get("/", (req, res) => {
 
 route.get("/:id/districts", (req, res) => {
   const { id } = req.params;
-  const districts = cityData.find((city) => city.id === Number(id));
+  const findedCity = AddressData.find((city) => city.id === Number(id));
 
-  res.send(districts);
+  if (!findedCity) {
+    return res.status(404).send({
+      message: "city not found",
+    });
+  }
+  res.send(findedCity.districts);
 });
 
 export default route;

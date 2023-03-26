@@ -34,7 +34,7 @@ export const createCompanyValidator = z.object({
     city: z.string().min(3).max(255),
     district: z.string().min(3).max(255),
     mailingAddress: z.string().min(3).max(255),
-    postalCode: z.number().min(5).max(5),
+    postalCode: z.number().min(10000).max(99999),
   }),
 });
 
