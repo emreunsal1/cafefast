@@ -9,6 +9,7 @@ export type ICompany = {
     mailingAddress: string;
     postalCode: number;
   }
+  menus: number[];
   isDeleted?: boolean;
 }
 
@@ -20,6 +21,11 @@ const companySchema = new mongoose.Schema<ICompany>({
     mailingAddress: String,
     postalCode: String,
   },
+  menus: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "menu",
+    default: [],
+  }],
   isDeleted: {
     type: Boolean,
     default: false,
