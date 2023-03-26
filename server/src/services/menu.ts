@@ -10,6 +10,20 @@ export const createMenu = async (menuData: IMenu) => {
   }
 };
 
+export const addCategoryToMenu = async (query: Partial<IMenu & {_id: any}>, categoryId: any):Promise<{data?: any, error?: any}> => {
+  try {
+    const response = await menuModel.findOneAndUpdate(
+      query,
+      { $push: { categories: categoryId } },
+      { new: true },
+    ).exec();
+
+    return { data: response };
+  } catch (error) {
+    return { error };
+  }
+};
+
 export const deleteMenu = async (menuId, companyId) => {
   try {
     const { data, error } = await removeMenuFromCompany(menuId, companyId);

@@ -50,13 +50,17 @@ export const addMenuToCompany = async (query: Partial<ICompany & {_id: any}>, me
   }
 };
 
+export const checkCompanyHasMenu = (menuId, companyId) => companyModel.findOne({ menus: menuId, _id: companyId });
+
 export const removeMenuFromCompany = async (menuId: any, companyId: any):Promise<{data?: any, error?: any}> => {
   try {
-    const newMenu = await companyModel.findOneAndUpdate({ menus: menuId, companyId }, { $pull: { menus: menuId } }, { new: true });
+    const isExists = await checkCompanyHasMenu(menuId, companyId);
 
-    if (!newMenu) {
+    if (!isExists) {
       return { error: "menu not found" };
     }
+    const newMenu = await companyModel.findOneAndUpdate({ menus: menuId, _id: companyId }, { $pull: { menus: menuId } }, { new: true });
+
     return { data: newMenu };
   } catch (error) {
     return { error };
