@@ -36,10 +36,10 @@ export const completeOnboardingController = async (req: Request, res: Response) 
   try {
     const parsedCompany = await createCompanyValidator.parseAsync(company);
     const parsedUser = await updateUserVerifier.parseAsync(user);
-    const cityValidationResult = validateCityAndDistrict(parsedCompany.address.district, parsedCompany.address.district);
+    const cityValidationResult = validateCityAndDistrict(parsedCompany.address.city, parsedCompany.address.district);
 
     if (cityValidationResult !== "valid") {
-      res.status(400).send({
+      return res.status(400).send({
         message: "please send a valid city and district",
         field: cityValidationResult,
       });

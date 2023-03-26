@@ -10,7 +10,7 @@ export const getCompanyController = async (req: Request, res: Response) => {
   if (userError || !userData) {
     return res.status(400).send(userError);
   }
-  const { data: companyData, error: companyError } = await getCompany(userData.company);
+  const { data: companyData, error: companyError } = await getCompany({ query: { _id: userData.company } });
   if (companyError) {
     return res.status(400).send(companyError);
   }
