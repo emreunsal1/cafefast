@@ -44,4 +44,14 @@ export const createCompanyValidator = z.object({
   }),
 });
 
+export const updateCompanyValidator = z.object({
+  name: z.string().min(3).max(255).optional(),
+  address: z.object({
+    city: z.string().min(3).max(255),
+    district: z.string().min(3).max(255),
+    mailingAddress: z.string().min(3).max(255),
+    postalCode: z.number().min(10000).max(99999),
+  }).optional(),
+});
+
 export default companyModel;

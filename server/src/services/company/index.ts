@@ -18,9 +18,9 @@ export const getCompany = async (id): Promise<{data?: any, error?: any}> => {
   }
 };
 
-export const updateCompany = async (id, data: Partial<ICompany>):Promise<{data?: any, error?: any}> => {
+export const updateCompany = async (query: Partial<ICompany & {_id: any}>, data: Partial<ICompany>):Promise<{data?: any, error?: any}> => {
   try {
-    const response = await companyModel.findOneAndUpdate({ _id: id }, data).exec();
+    const response = await companyModel.findOneAndUpdate(query, data, { new: true }).exec();
     return { data: response };
   } catch (error) {
     return { error };
