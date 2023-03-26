@@ -3,6 +3,7 @@ import { createCompanyValidator } from "../models/company";
 import { updateUserVerifier } from "../models/user";
 import { createCompany } from "../services/company";
 import { getUser, updateUser } from "../services/user";
+import { validateCityAndDistrict } from "../utils/address";
 import { updateMeMapper } from "../utils/mappers";
 
 export const getMeController = async (req: Request, res: Response) => {
@@ -35,6 +36,14 @@ export const completeOnboardingController = async (req: Request, res: Response) 
   try {
     const parsedCompany = await createCompanyValidator.parseAsync(company);
     const parsedUser = await updateUserVerifier.parseAsync(user);
+    const cityValidationResult = validateCityAndDistrict(parsedCompany.address.district, parsedCompany.address.district);
+
+    if (cityValidationResult !== "valid") {
+      res.status(400).send({
+        message: "please send a valid city and district",
+        field: cityValidationResult,
+      });
+    }
 
     const { data: createdCompany } = await createCompany(parsedCompany);
     const { data: newUser } = await updateUser({
