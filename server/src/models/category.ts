@@ -5,6 +5,7 @@ const categorySchema = new Schema({
   products: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "product",
+    default: [],
   }],
   image: String,
   order: Number,

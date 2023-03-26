@@ -12,7 +12,10 @@ export const createMenu = async (menuData: IMenu) => {
 
 export const deleteMenu = async (menuId, companyId) => {
   try {
-    const data = await removeMenuFromCompany(menuId, companyId);
+    const { data, error } = await removeMenuFromCompany(menuId, companyId);
+    if (error) {
+      return { error };
+    }
     await menuModel.findOneAndDelete({ _id: menuId });
     return { data };
   } catch (error) {

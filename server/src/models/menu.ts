@@ -20,11 +20,6 @@ const menuSchema = new Schema({
     ref: "category",
     default: [],
   }],
-  products: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "product",
-    default: [],
-  }],
 });
 
 export const createMenuVerifier = z.object({

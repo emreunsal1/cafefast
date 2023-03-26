@@ -1,15 +1,28 @@
 import mongoose, { Schema } from "mongoose";
+import z from "zod";
 
-const productSchema = new Schema({
-  price: Number,
+export const createProductValidator = z.object({
+  name: z.string(),
+  description: z.string(),
+  price: z.number(),
+  images: z.array(z.string()).default([]),
+  attributes: z.array(z.object({ name: z.string(), price: z.number() })).default([]).optional(),
+  requiredAttributeCount: z.number().default(0).optional(),
+  inStock: z.boolean().default(true).optional(),
+});
+
+export type IProduct = z.infer<typeof createProductValidator>;
+
+const productSchema = new Schema<IProduct>({
   name: String,
   description: String,
-  images: [String],
-  attributes: [{ name: String, price: Number }],
+  price: Number,
+  images: [{ type: String, default: [] }],
+  attributes: [{ name: String, price: Number, default: [] }],
   requiredAttributeCount: { type: Number, default: 0 },
   inStock: { type: Boolean, default: true },
 });
 
-const menuModel = mongoose.model("product", productSchema);
+const productModel = mongoose.model("product", productSchema);
 
-export default menuModel;
+export default productModel;
