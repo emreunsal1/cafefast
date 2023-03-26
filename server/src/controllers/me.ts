@@ -45,7 +45,7 @@ export const completeOnboardingController = async (req: Request, res: Response) 
       },
     });
 
-    res.send({
+    return res.send({
       message: "user updated",
       data: newUser,
     });
