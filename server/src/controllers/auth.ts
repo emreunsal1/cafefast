@@ -57,11 +57,15 @@ export const register = async (req:Request, res:Response) => {
       return;
     }
     const createdJWT = await generateJwt(mapUserForJWT(createdUser.data));
-    res.cookie(AUTH_TOKEN_COOKIE_NAME, createdJWT, { httpOnly: !!process.env.ENVIRONMENT }).send({ token: createdJWT });
+    res.cookie(AUTH_TOKEN_COOKIE_NAME, createdJWT, { httpOnly: !!process.env.ENVIRONMENT });
     res.status(201).json(createdUser.data);
   } catch (error:any) {
     res.status(401).json({
       error,
     });
   }
+};
+
+export const logout = async (_req:Request, res:Response) => {
+  res.clearCookie(AUTH_TOKEN_COOKIE_NAME).status(201).send("Successfully logout");
 };

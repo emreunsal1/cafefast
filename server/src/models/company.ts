@@ -9,7 +9,7 @@ export type ICompany = {
     mailingAddress: string;
     postalCode: number;
   }
-  menus: number[];
+  menus?: number[];
   isDeleted?: boolean;
 }
 
