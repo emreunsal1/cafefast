@@ -1,5 +1,8 @@
 import { Router } from "express";
+import { getCompanyController } from "../controllers/company";
 
-const route = Router();
+const router = Router();
 
-export default route;
+router.get("/", getCompanyController);
+
+export default router;

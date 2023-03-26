@@ -4,7 +4,6 @@ import { updateUserVerifier } from "../models/user";
 import { createCompany } from "../services/company";
 import { getUser, updateUser } from "../services/user";
 import { validateCityAndDistrict } from "../utils/address";
-import { updateMeMapper } from "../utils/mappers";
 
 export const getMeController = async (req: Request, res: Response) => {
   const { email } = req.user;
@@ -19,15 +18,16 @@ export const getMeController = async (req: Request, res: Response) => {
 
 export const updateMeController = async (req: Request, res: Response) => {
   const { email } = req.user;
-  const result = updateMeMapper(req.body);
-  const { data, error } = await updateUser({ query: { email }, data: result.data });
-
-  if (error || result.error) {
-    const currentError = error || result.error;
-    res.status(400).send({ error: currentError });
-    return;
+  try {
+    const data = await updateUserVerifier.parseAsync(req.body);
+    const { data: newUser, error } = await updateUser({ query: { email }, data });
+    if (error) {
+      return res.send(400).send({ error });
+    }
+    return res.send(newUser);
+  } catch (err) {
+    res.status(400).send({ error: err });
   }
-  res.send(data);
 };
 
 export const completeOnboardingController = async (req: Request, res: Response) => {
