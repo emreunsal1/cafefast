@@ -13,7 +13,7 @@ export const generateJwt = async (user) => {
     return generatedJWT;
   } catch (error: Error | unknown) {
     if (error instanceof Error) {
-      console.log(error);
+      console.log("[generateJwt] => ", error);
     }
     return false;
   }
@@ -23,12 +23,12 @@ export const verifyJwt = (token: string): IUserWithoutPassword | false => {
   try {
     const payload = jwt.verify(token, secretKey);
     if (!payload) {
-      console.log("error when verifying token", payload);
+      console.log("[verifyJwt] verify error", payload);
       return false;
     }
     return payload as IUserWithoutPassword;
   } catch (err) {
-    console.log("error when verifying token", err);
+    console.log("[verifyJwt]", err);
     return false;
   }
 };

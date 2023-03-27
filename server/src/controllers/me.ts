@@ -3,7 +3,7 @@ import { createCompanyValidator } from "../models/company";
 import { updateUserVerifier } from "../models/user";
 import { createCompany } from "../services/company";
 import { getUser, updateUser } from "../services/user";
-import { updateMeMapper } from "../utils/mappers";
+import { validateCityAndDistrict } from "../utils/address";
 
 export const getMeController = async (req: Request, res: Response) => {
   const { email } = req.user;
@@ -18,15 +18,16 @@ export const getMeController = async (req: Request, res: Response) => {
 
 export const updateMeController = async (req: Request, res: Response) => {
   const { email } = req.user;
-  const result = updateMeMapper(req.body);
-  const { data, error } = await updateUser({ query: { email }, data: result.data });
-
-  if (error || result.error) {
-    const currentError = error || result.error;
-    res.status(400).send({ error: currentError });
-    return;
+  try {
+    const data = await updateUserVerifier.parseAsync(req.body);
+    const { data: newUser, error } = await updateUser({ query: { email }, data });
+    if (error) {
+      return res.send(400).send({ error });
+    }
+    return res.send(newUser);
+  } catch (err) {
+    res.status(400).send({ error: err });
   }
-  res.send(data);
 };
 
 export const completeOnboardingController = async (req: Request, res: Response) => {
@@ -35,6 +36,14 @@ export const completeOnboardingController = async (req: Request, res: Response) 
   try {
     const parsedCompany = await createCompanyValidator.parseAsync(company);
     const parsedUser = await updateUserVerifier.parseAsync(user);
+    const cityValidationResult = validateCityAndDistrict(parsedCompany.address.city, parsedCompany.address.district);
+
+    if (cityValidationResult !== "valid") {
+      return res.status(400).send({
+        message: "please send a valid city and district",
+        field: cityValidationResult,
+      });
+    }
 
     const { data: createdCompany } = await createCompany(parsedCompany);
     const { data: newUser } = await updateUser({

@@ -37,7 +37,7 @@ export const updateUserVerifier = z.object({
       throw new Error("Type4 must have 5 digits");
     }
     return val;
-  }),
+  }).optional(),
 });
 
 export const registerUserVerifier = z.object({

@@ -1,51 +1,29 @@
 import mongoose, { Schema } from "mongoose";
+import z from "zod";
 
-const productSchema = [
-  {
-    price: Number,
-    name: String,
-    description: String,
-    images: [String],
-    attributes: [{ name: String, price: Number }],
-    requiredAttributeCount: { type: Number, default: 0 },
-    inStock: { type: Boolean, default: true },
-  }];
-
-const campaignsSchema = [{
-  price: Number,
+export type IMenu = {
   name: String,
-  image: String,
-  description: String,
-  order: Number,
-  productIds: [Schema.Types.ObjectId],
-  applicable: {
-    end: String,
-    time: { start: String, end: String },
-    days: [Number],
-  },
-}];
-
-const categoriesSchema = [{
-  name: String,
-  products: [{ id: Schema.Types.ObjectId, order: Number }],
-  image: String,
-  order: Number,
-}];
+  campaigns?: mongoose.Schema.Types.ObjectId[],
+  categories?: mongoose.Schema.Types.ObjectId[],
+  products?: mongoose.Schema.Types.ObjectId[],
+}
 
 const menuSchema = new Schema({
-  companyId: Schema.Types.ObjectId,
-  campaigns: {
-    type: campaignsSchema,
+  name: String,
+  campaigns: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "campaign",
     default: [],
-  },
-  categories: {
-    type: categoriesSchema,
+  }],
+  categories: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "category",
     default: [],
-  },
-  products: {
-    type: productSchema,
-    default: [],
-  },
+  }],
+});
+
+export const createMenuVerifier = z.object({
+  name: z.string().min(3).max(255),
 });
 
 const menuModel = mongoose.model("menu", menuSchema);

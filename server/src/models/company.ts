@@ -9,6 +9,7 @@ export type ICompany = {
     mailingAddress: string;
     postalCode: number;
   }
+  menus?: number[];
   isDeleted?: boolean;
 }
 
@@ -20,6 +21,11 @@ const companySchema = new mongoose.Schema<ICompany>({
     mailingAddress: String,
     postalCode: String,
   },
+  menus: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "menu",
+    default: [],
+  }],
   isDeleted: {
     type: Boolean,
     default: false,
@@ -36,6 +42,16 @@ export const createCompanyValidator = z.object({
     mailingAddress: z.string().min(3).max(255),
     postalCode: z.number().min(10000).max(99999),
   }),
+});
+
+export const updateCompanyValidator = z.object({
+  name: z.string().min(3).max(255).optional(),
+  address: z.object({
+    city: z.string().min(3).max(255),
+    district: z.string().min(3).max(255),
+    mailingAddress: z.string().min(3).max(255),
+    postalCode: z.number().min(10000).max(99999),
+  }).optional(),
 });
 
 export default companyModel;

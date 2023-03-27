@@ -5,7 +5,6 @@ import cookieParser from "cookie-parser";
 
 import router from "./router";
 import connectDB from "./database/connect";
-import "./models/company";
 
 dotenv.config();
 
