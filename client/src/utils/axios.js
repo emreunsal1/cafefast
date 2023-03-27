@@ -7,6 +7,7 @@ const instance = axios.create({
 });
 
 instance.interceptors.response.use((res) => res, (err) => {
+  console.log("intrerceptor err", err);
   if (err.response.status === 401 && !window.location.href.includes("login")) {
     window?.location?.assign("/auth/login");
     return;

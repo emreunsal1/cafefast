@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import { useRouter } from "next/router";
 import AUTH_SERVICE from "../../services/auth";
+import USER_SERVICE from "../../services/user";
 
 export default function Login() {
   const [authform, setAuthform] = useState({ email: null, password: null });
@@ -16,6 +17,10 @@ export default function Login() {
       router.push("/");
     }
   };
+
+  useEffect(() => {
+    USER_SERVICE.me();
+  }, []);
 
   return (
     <div>
@@ -56,7 +61,7 @@ export default function Login() {
             Log in
           </Button>
           Or
-          <a href="/register">register now!</a>
+          <a href="/auth/register">register now!</a>
         </Form.Item>
       </Form>
     </div>

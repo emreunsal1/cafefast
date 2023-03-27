@@ -15,11 +15,11 @@ function Register() {
       email: "",
       password: "",
       passwordConfirmation: "",
-      phone: "",
     },
     validationSchema: registerValidationSchema,
     onSubmit: async (values) => {
       const response = await USER_SERVICE.create(values);
+      console.log("response", response);
       if (response) {
         router.push("/auth/onboarding");
       }
@@ -41,14 +41,6 @@ function Register() {
               name="email"
             />
             {isSubmit && <div className="error">{formik.errors.email}</div>}
-            <Input
-              placeholder="phone"
-              onChange={formik.handleChange}
-              value={formik.values.phone}
-              name="phone"
-            />
-            {isSubmit && <div className="error">{formik.errors.phone}</div>}
-
             <Input
               placeholder="Password"
               onChange={formik.handleChange}
