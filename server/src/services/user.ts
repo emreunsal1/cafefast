@@ -42,6 +42,9 @@ export const getUser = async ({
     }
     const data = await mongoQuery.exec();
 
+    if (!data) {
+      return { error: "User not found" };
+    }
     return { data };
   } catch (error: Error | unknown) {
     return { error };
