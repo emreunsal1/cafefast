@@ -10,7 +10,6 @@ router.get("/", AUTH_REQUIRED_MIDDLEWARE, getMenusController);
 router.post("/", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, createMenuController);
 router.delete("/:id", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, deleteMenuController);
 
-// category
 router.post("/:id/category", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, createCategoryController);
 
 export default router;

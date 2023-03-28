@@ -25,6 +25,7 @@ export const updateCompanyController = async (req: Request, res: Response) => {
     const result = await updateCompany({ _id: company }, validatedCompany);
 
     res.send(result);
+    return;
   } catch (error) {
     res.send(400).send({ error });
   }
