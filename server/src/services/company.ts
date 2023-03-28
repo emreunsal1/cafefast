@@ -42,7 +42,7 @@ export const addMenuToCompany = async (query: Partial<ICompany & {_id: any}>, me
       query,
       { $push: { menus: menuId } },
       { new: true },
-    ).exec();
+    ).populate("menus").exec();
 
     return { data: response };
   } catch (error) {
@@ -50,7 +50,21 @@ export const addMenuToCompany = async (query: Partial<ICompany & {_id: any}>, me
   }
 };
 
-export const checkCompanyHasMenu = (menuId, companyId) => companyModel.findOne({ menus: menuId, _id: companyId });
+export const checkCompanyHasMenu = (menuId, companyId, categoryId = "") => {
+  const query: any = { menus: menuId, _id: companyId };
+
+  if (categoryId.length) {
+    query["menus.category._id"] = categoryId;
+  }
+
+  const mongooseQuery = companyModel.findOne();
+
+  if (categoryId) {
+    mongooseQuery.populate("menus");
+  }
+
+  return mongooseQuery.exec();
+};
 
 export const removeMenuFromCompany = async (menuId: any):Promise<{data?: any, error?: any}> => {
   try {
