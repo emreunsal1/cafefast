@@ -5,6 +5,6 @@ export const createProduct = async (menuData: IProduct) => {
     const newMenu = await productModel.create(menuData);
     return { data: newMenu };
   } catch (error) {
-    return { error };
+    return { error: (error as any).message || error };
   }
 };

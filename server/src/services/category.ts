@@ -5,7 +5,7 @@ export const createCategory = async (categoryData: ICategory) => {
     const newMenu = await categoryModel.create(categoryData);
     return { data: newMenu };
   } catch (error) {
-    return { error };
+    return { error: (error as any).message || error };
   }
 };
 
@@ -14,6 +14,6 @@ export const deleteCategory = async (categoryId) => {
     await categoryModel.deleteOne({ _id: categoryId });
     return { data: true };
   } catch (error) {
-    return { error };
+    return { error: (error as any).message || error };
   }
 };

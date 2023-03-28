@@ -5,7 +5,7 @@ export const createCompany = async (companyData: ICompany) => {
     const newCompany = await companyModel.create(companyData);
     return { data: newCompany };
   } catch (error) {
-    return { error };
+    return { error: (error as any).message || error };
   }
 };
 
@@ -23,7 +23,7 @@ export const getCompany = async ({
     const response = await mongooseQuery.exec();
     return { data: response };
   } catch (error) {
-    return { error };
+    return { error: (error as any).message || error };
   }
 };
 
@@ -32,7 +32,7 @@ export const updateCompany = async (query: Partial<ICompany & {_id: any}>, data:
     const response = await companyModel.findOneAndUpdate(query, data, { new: true }).exec();
     return { data: response };
   } catch (error) {
-    return { error };
+    return { error: (error as any).message || error };
   }
 };
 
@@ -46,7 +46,7 @@ export const addMenuToCompany = async (query: Partial<ICompany & {_id: any}>, me
 
     return { data: response };
   } catch (error) {
-    return { error };
+    return { error: (error as any).message || error };
   }
 };
 

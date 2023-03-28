@@ -6,7 +6,7 @@ export const createUser = async (data: Pick<IUser, "email" | "password">) => {
 
     return { data: newUser };
   } catch (error) {
-    return { error };
+    return { error: (error as any).message || error };
   }
 };
 
@@ -47,7 +47,7 @@ export const getUser = async ({
     }
     return { data };
   } catch (error: Error | unknown) {
-    return { error };
+    return { error: (error as any).message || error };
   }
 };
 
@@ -56,6 +56,6 @@ export const updateUser = async ({ query, data }: {query: Partial<IUser>, data?:
     const newUser = await userModel.findOneAndUpdate(query, data, { new: true }).select("-password").exec();
     return { data: newUser };
   } catch (error: Error | unknown) {
-    return { error };
+    return { error: (error as any).message || error };
   }
 };

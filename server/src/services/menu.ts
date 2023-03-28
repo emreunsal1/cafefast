@@ -5,7 +5,7 @@ export const createMenu = async (menuData: IMenu) => {
     const newMenu = await menuModel.create(menuData);
     return { data: newMenu };
   } catch (error) {
-    return { error };
+    return { error: (error as any).message || error };
   }
 };
 
@@ -22,9 +22,9 @@ export const getMenus = async (menuIds) => {
     return {
       data: result,
     };
-  } catch (err) {
+  } catch (error) {
     return {
-      error: err,
+      error: (error as any).message || error,
     };
   }
 };
@@ -39,7 +39,7 @@ export const addCategoryToMenu = async (query: Partial<IMenu & {_id: any}>, cate
 
     return { data: response };
   } catch (error) {
-    return { error };
+    return { error: (error as any).message || error };
   }
 };
 
@@ -48,7 +48,7 @@ export const deleteMenu = async (menuId) => {
     const data = await menuModel.findOneAndDelete({ _id: menuId });
     return { data };
   } catch (error) {
-    return { error };
+    return { error: (error as any).message || error };
   }
 };
 
@@ -64,7 +64,7 @@ export const updateMenu = async ({ query, data }: UpdateMenuParams) => {
     const result = await menuModel.findOneAndUpdate({ _id: query.menuId }, data, { new: true });
     return { data: result };
   } catch (error) {
-    return { error };
+    return { error: (error as any).message || error };
   }
 };
 
@@ -73,6 +73,6 @@ export const removeCategoryFromMenu = async (categoryId) => {
     await menuModel.findOneAndUpdate({ categories: categoryId }, { $pull: { menus: categoryId } });
     return { data: true };
   } catch (error) {
-    return { error };
+    return { error: (error as any).message || error };
   }
 };

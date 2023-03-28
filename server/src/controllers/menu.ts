@@ -21,7 +21,7 @@ export const getMenusController = async (req: Request, res: Response) => {
   const { data: menus, error } = await getMenus(companyData.data.menus);
 
   if (error || !menus) {
-    return res.status(400).send({ error: (error as any).message || error });
+    return res.status(400).send({ error });
   }
 
   res.send(menus);
@@ -61,7 +61,7 @@ export const deleteMenuController = async (req: Request, res: Response) => {
 
     if (deletedMenu.error || !deletedMenu.data) {
       res.send({
-        error: (deletedMenu.error as any).message || deletedMenu.error,
+        error: deletedMenu.error,
       });
       return;
     }
@@ -88,7 +88,7 @@ export const updateMenuController = async (req: Request, res: Response) => {
     const updatedMenu = await updateMenu({ query: { menuId }, data: verifiedMenuData });
     if (updatedMenu.error || !updatedMenu.data) {
       res.send({
-        error: (updatedMenu.error as any).message || updatedMenu.error,
+        error: updatedMenu.error,
       });
       return;
     }
