@@ -8,3 +8,12 @@ export const createCategory = async (categoryData: ICategory) => {
     return { error };
   }
 };
+
+export const deleteCategory = async (categoryId) => {
+  try {
+    await categoryModel.deleteOne({ _id: categoryId });
+    return { data: true };
+  } catch (error) {
+    return { error };
+  }
+};

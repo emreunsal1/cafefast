@@ -1,5 +1,4 @@
 import menuModel, { IMenu } from "../models/menu";
-import { getCompany, removeMenuFromCompany } from "./company";
 
 export const createMenu = async (menuData: IMenu) => {
   try {
@@ -10,24 +9,16 @@ export const createMenu = async (menuData: IMenu) => {
   }
 };
 
-export const getMenus = async (companyId) => {
-  const companyData = await getCompany({ query: { _id: companyId }, populate: false });
-
-  if (!companyData.data || companyData.error) {
-    return {
-      error: "Company not found",
-    };
-  }
+export const getMenus = async (menuIds) => {
   try {
-    const query = menuModel.find({ _id: { $in: companyData.data.menus } });
+    const query = menuModel.find({ _id: { $in: menuIds } });
 
     query.populate("categories");
-    query.populate("categories.products");
+    // query.populate("categories.products");
     // query.populate("campaigns");
     // query.populate("campaigns.products");
 
     const result = await query.exec();
-
     return {
       data: result,
     };
@@ -52,14 +43,35 @@ export const addCategoryToMenu = async (query: Partial<IMenu & {_id: any}>, cate
   }
 };
 
-export const deleteMenu = async (menuId, companyId) => {
+export const deleteMenu = async (menuId) => {
   try {
-    const { data, error } = await removeMenuFromCompany(menuId, companyId);
-    if (error) {
-      return { error };
-    }
-    await menuModel.findOneAndDelete({ _id: menuId });
+    const data = await menuModel.findOneAndDelete({ _id: menuId });
     return { data };
+  } catch (error) {
+    return { error };
+  }
+};
+
+type UpdateMenuParams = {
+  query: {
+    menuId: any;
+  };
+  data: any;
+};
+
+export const updateMenu = async ({ query, data }: UpdateMenuParams) => {
+  try {
+    const result = await menuModel.findOneAndUpdate({ _id: query.menuId }, data, { new: true });
+    return { data: result };
+  } catch (error) {
+    return { error };
+  }
+};
+
+export const removeCategoryFromMenu = async (categoryId) => {
+  try {
+    await menuModel.findOneAndUpdate({ categories: categoryId }, { $pull: { menus: categoryId } });
+    return { data: true };
   } catch (error) {
     return { error };
   }

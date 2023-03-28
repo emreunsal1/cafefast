@@ -1,18 +1,30 @@
 import { Request, Response } from "express";
-import { createMenuVerifier } from "../models/menu";
-import { addMenuToCompany } from "../services/company";
-import { createMenu, deleteMenu, getMenus } from "../services/menu";
+import { createMenuVerifier, updateMenuVerifier } from "../models/menu";
+import {
+  addMenuToCompany, checkCompanyHasMenu, getCompany, removeMenuFromCompany,
+} from "../services/company";
+import {
+  createMenu, deleteMenu, getMenus, updateMenu,
+} from "../services/menu";
 
 export const getMenusController = async (req: Request, res: Response) => {
   const { company: companyId } = req.user;
 
-  const { data: foundCompany, error } = await getMenus(companyId);
+  const companyData = await getCompany({ query: { _id: companyId }, populate: false });
 
-  if (!foundCompany || error) {
-    return res.status(400).send({ error });
+  if (!companyData.data || companyData.error) {
+    return res.status(404).send({
+      error: "Company not found",
+    });
   }
 
-  res.send(foundCompany);
+  const { data: menus, error } = await getMenus(companyData.data.menus);
+
+  if (error || !menus) {
+    return res.status(400).send({ error: (error as any).message || error });
+  }
+
+  res.send(menus);
 };
 
 export const createMenuController = async (req: Request, res: Response) => {
@@ -41,15 +53,46 @@ export const deleteMenuController = async (req: Request, res: Response) => {
   const { company: companyId } = req.user;
 
   try {
-    const deletedMenu = await deleteMenu(menuId, companyId);
+    const { data: removeMenuData, error: removeMenuError } = await removeMenuFromCompany(menuId, companyId);
+    if (!removeMenuData || removeMenuError) {
+      return res.send({ error: removeMenuError });
+    }
+    const deletedMenu = await deleteMenu(menuId);
 
-    if (!deletedMenu.data || deletedMenu.error) {
+    if (deletedMenu.error || !deletedMenu.data) {
       res.send({
-        error: deletedMenu.error,
+        error: (deletedMenu.error as any).message || deletedMenu.error,
       });
       return;
     }
     res.send(deletedMenu);
+    return;
+  } catch (err) {
+    res.status(400).send();
+  }
+};
+
+export const updateMenuController = async (req: Request, res: Response) => {
+  const { menuId } = req.params;
+  const { company: companyId } = req.user;
+
+  try {
+    const isExists = await checkCompanyHasMenu(menuId, companyId);
+    if (!isExists) {
+      return res.status(404).send({
+        message: "menu not found",
+      });
+    }
+
+    const verifiedMenuData = await updateMenuVerifier.parseAsync(req.body);
+    const updatedMenu = await updateMenu({ query: { menuId }, data: verifiedMenuData });
+    if (updatedMenu.error || !updatedMenu.data) {
+      res.send({
+        error: (updatedMenu.error as any).message || updatedMenu.error,
+      });
+      return;
+    }
+    res.send(updatedMenu.data);
     return;
   } catch (err) {
     res.status(400).send();
