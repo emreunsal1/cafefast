@@ -16,14 +16,16 @@ const create = async (data) => {
   }
 };
 
-const update = async (data) => {
+const update = async ({ name, surname, phoneNumber }) => {
   try {
-    console.log("data", data);
-    // const response = await instance.put(`${USER_PATH}/update`, {
-    //   data,
-    // });
+    console.log("data", { name, surname, phoneNumber });
 
-    // return response;
+    const response = await instance.put("/me", {
+      name,
+      surname,
+      phoneNumber,
+    });
+    return response;
   } catch (error) {
     console.log("user update error", { error });
     return false;

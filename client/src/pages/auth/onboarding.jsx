@@ -4,7 +4,7 @@ import {
 } from "antd";
 import { useRouter } from "next/router";
 import USER_SERVICE from "../../services/user";
-import ADRESS_SERVICE from "../../services/address";
+import LOCATION_SERVICE from "../../services/location";
 
 function Onboarding() {
   const router = useRouter();
@@ -27,13 +27,13 @@ function Onboarding() {
   const [district, setDistrict] = useState([]);
 
   const getCity = async () => {
-    const { data } = await ADRESS_SERVICE.getCities();
+    const { data } = await LOCATION_SERVICE.getCities();
     const mutateCity = data.map((item) => ({ label: item.name, value: item.id }));
     setCity(mutateCity);
   };
 
   const getDistrict = async (cityID) => {
-    const { data } = await ADRESS_SERVICE.getDistrict(cityID);
+    const { data } = await LOCATION_SERVICE.getDistrict(cityID);
     const mutateDistrict = data.map((item) => ({ label: item.name, value: item.name }));
     setDistrict(mutateDistrict);
   };

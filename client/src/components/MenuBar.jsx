@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React from "react";
 
 export default function MenuBar() {
-  const [menuItem, setMenuItem] = useState([{ key: "Profile", route: "/profile" }]);
+  const menuItem = [{ key: "Profile", route: "/profile" }, { key: "Menu", route: "/menu" }];
   const router = useRouter();
   return (
     <div id="Menu">

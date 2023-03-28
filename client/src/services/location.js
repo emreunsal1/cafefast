@@ -21,9 +21,9 @@ const getDistrict = async (cityID) => {
   }
 };
 
-const ADRESS_SERVICE = {
+const LOCATION_SERVICE = {
   getCities,
   getDistrict,
 };
 
-export default ADRESS_SERVICE;
+export default LOCATION_SERVICE;

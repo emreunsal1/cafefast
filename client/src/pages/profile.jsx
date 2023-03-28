@@ -3,7 +3,8 @@ import {
   Form, Input, Button, Select,
 } from "antd";
 import USER_SERVICE from "../services/user";
-import ADRESS_SERVICE from "../services/address";
+import ADRESS_SERVICE from "../services/location";
+import COMPANY_SERVICE from "../services/company";
 
 export default function Profile() {
   const [isEdit, setIsEdit] = useState(false);
@@ -40,15 +41,10 @@ export default function Profile() {
   };
 
   const userUpdateHandler = (data) => {
-    console.log(data);
-    const initialUser = user;
-    initialUser[data.name] = data.value;
-    setUser(initialUser);
+    setUser({ ...user, [data.name]: data.value });
   };
   const companyUpdateHandler = (data) => {
-    const initialCompany = companyData;
-    initialCompany[data.name] = data.value;
-    setCompanyData(initialCompany);
+    setCompanyData({ ...companyData, [data.name]: data.value });
   };
 
   const getDistrict = async (cityID) => {
@@ -58,16 +54,22 @@ export default function Profile() {
   };
 
   const addressUpdateHandler = (data) => {
-    if (data.name === city) {
+    if (data.name === "city") {
       getDistrict(data.value);
     }
-    const initialAddress = companyAddress;
-    initialAddress[data.name] = data.value;
-    setCompanyAddress(initialAddress);
+    if (data.name === "postalCode") {
+      return setCompanyAddress({ ...companyAddress, [data.name]: Number(data.value) });
+    }
+    setCompanyAddress({ ...companyAddress, [data.name]: data.value });
   };
 
-  const saveButtonClickHandler = () => {
-    const response = USER_SERVICE.update({ user, companyData, companyAddress });
+  const saveButtonClickHandler = async () => {
+    const response = await USER_SERVICE.update(user);
+    const companyResponse = await COMPANY_SERVICE.update({ name: companyData.name, address: companyAddress });
+
+    if (response !== false && companyResponse !== false) {
+      setIsEdit(false);
+    }
   };
 
   const getCity = async () => {
@@ -155,9 +157,9 @@ export default function Profile() {
              <Input name="phoneNumber" value={user.phoneNumber} onChange={(e) => userUpdateHandler({ name: "phoneNumber", value: e.target.value })} />
            </Form.Item>
            <Form.Item label="Company Name" initialValue={companyData.name} name="companyName">
-             <Input name="companyName" value={companyData.name} onChange={(e) => companyUpdateHandler({ name: "name", data: e.target.value })} />
+             <Input name="companyName" value={companyData.name} onChange={(e) => companyUpdateHandler({ name: "name", value: e.target.value })} />
            </Form.Item>
-           <Form.Item label="City" name="city">
+           <Form.Item initialValue={companyAddress.city} label="City" name="city">
              <Select
                style={{ width: 120 }}
                onChange={(e) => addressUpdateHandler({ name: "city", value: e })}
@@ -166,7 +168,7 @@ export default function Profile() {
                value={companyAddress.city}
              />
            </Form.Item>
-           <Form.Item label="district" name="district">
+           <Form.Item label="district" name="district" initialValue={companyAddress.district}>
              <Select
                style={{ width: 120 }}
                onChange={(e) => addressUpdateHandler({ name: "district", value: e })}
@@ -178,8 +180,9 @@ export default function Profile() {
            <Form.Item label="postal code" initialValue={companyAddress.postalCode} name="postalCode">
              <Input
                name="postalCode"
+               type="number"
                value={companyAddress.postalCode}
-               onChange={(e) => addressUpdateHandler({ name: "postalCode", value: e.target.value })}
+               onChange={(e) => addressUpdateHandler({ name: "postalCode", value: Number(e.target.value) })}
              />
            </Form.Item>
            <Form.Item initialValue={companyAddress.mailingAddress} label="Mailing Address" name="mailingAddress">
