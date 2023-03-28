@@ -1,5 +1,5 @@
 import menuModel, { IMenu } from "../models/menu";
-import { removeMenuFromCompany } from "./company";
+import { getCompany, removeMenuFromCompany } from "./company";
 
 export const createMenu = async (menuData: IMenu) => {
   try {
@@ -7,6 +7,34 @@ export const createMenu = async (menuData: IMenu) => {
     return { data: newMenu };
   } catch (error) {
     return { error };
+  }
+};
+
+export const getMenus = async (companyId) => {
+  const companyData = await getCompany({ query: { _id: companyId }, populate: false });
+
+  if (!companyData.data || companyData.error) {
+    return {
+      error: "Company not found",
+    };
+  }
+  try {
+    const query = menuModel.find({ _id: { $in: companyData.data.menus } });
+
+    query.populate("categories");
+    query.populate("categories.products");
+    // query.populate("campaigns");
+    // query.populate("campaigns.products");
+
+    const result = await query.exec();
+
+    return {
+      data: result,
+    };
+  } catch (err) {
+    return {
+      error: err,
+    };
   }
 };
 
