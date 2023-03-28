@@ -8,8 +8,8 @@ const router = Router();
 
 router.get("/", AUTH_REQUIRED_MIDDLEWARE, getMenusController);
 router.post("/", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, createMenuController);
-router.delete("/:id", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, deleteMenuController);
+router.delete("/:menuId", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, deleteMenuController);
 
-router.post("/:id/category", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, createCategoryController);
+router.post("/:menuId/category", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, createCategoryController);
 
 export default router;
