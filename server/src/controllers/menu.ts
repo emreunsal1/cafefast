@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { createMenuVerifier, updateMenuVerifier } from "../models/menu";
 import {
-  addMenuToCompany, checkCompanyHasMenu, getCompany, removeMenuFromCompany,
+  addMenuToCompany, getCompany, removeMenuFromCompany,
 } from "../services/company";
 import {
   createMenu, deleteMenu, getMenus, updateMenu,
@@ -50,10 +50,8 @@ export const createMenuController = async (req: Request, res: Response) => {
 
 export const deleteMenuController = async (req: Request, res: Response) => {
   const { menuId } = req.params;
-  const { company: companyId } = req.user;
-
   try {
-    const { data: removeMenuData, error: removeMenuError } = await removeMenuFromCompany(menuId, companyId);
+    const { data: removeMenuData, error: removeMenuError } = await removeMenuFromCompany(menuId);
     if (!removeMenuData || removeMenuError) {
       return res.send({ error: removeMenuError });
     }
@@ -74,16 +72,8 @@ export const deleteMenuController = async (req: Request, res: Response) => {
 
 export const updateMenuController = async (req: Request, res: Response) => {
   const { menuId } = req.params;
-  const { company: companyId } = req.user;
 
   try {
-    const isExists = await checkCompanyHasMenu(menuId, companyId);
-    if (!isExists) {
-      return res.status(404).send({
-        message: "menu not found",
-      });
-    }
-
     const verifiedMenuData = await updateMenuVerifier.parseAsync(req.body);
     const updatedMenu = await updateMenu({ query: { menuId }, data: verifiedMenuData });
     if (updatedMenu.error || !updatedMenu.data) {

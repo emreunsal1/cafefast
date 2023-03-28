@@ -1,24 +1,15 @@
 import { Request, Response } from "express";
 import { createCategoryValidator } from "../models/category";
 import { createCategory, deleteCategory } from "../services/category";
-import { checkCompanyHasMenu } from "../services/company";
 import { addCategoryToMenu, removeCategoryFromMenu } from "../services/menu";
 
 export const createCategoryController = async (req: Request, res: Response) => {
-  const { company: companyId } = req.user;
   const { menuId } = req.params;
 
   try {
     const validatedPoruct = await createCategoryValidator.parseAsync(req.body);
-    const isExists = await checkCompanyHasMenu(menuId, companyId);
-
-    if (!isExists) {
-      return res.status(404).send({
-        message: "menu not exists",
-      });
-    }
-
     const createdCategory = await createCategory(validatedPoruct);
+
     if (!createdCategory.data || createdCategory.error) {
       return res.send(400).send({ message: "error when creating category", error: createdCategory.error });
     }
@@ -37,17 +28,9 @@ export const createCategoryController = async (req: Request, res: Response) => {
 };
 
 export const deleteCategoryController = async (req: Request, res: Response) => {
-  const { company: companyId } = req.user;
-  const { menuId, categoryId } = req.params;
+  const { categoryId } = req.params;
 
   try {
-    const isExists = await checkCompanyHasMenu(menuId, companyId);
-    if (!isExists) {
-      return res.status(404).send({
-        message: "menu not exists",
-      });
-    }
-
     const categoryResult = await deleteCategory(categoryId);
     if (categoryResult.error || !categoryResult.data) {
       return res.send(400).send({
