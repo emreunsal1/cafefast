@@ -29,9 +29,9 @@ const userSchema = new mongoose.Schema<IUser>({
   },
 }, { timestamps: true });
 
-export const updateUserVerifier = z.object({
-  name: z.string().min(3).max(255).optional(),
-  surname: z.string().min(3).max(255).optional(),
+export const registerUserVerifier = z.object({
+  email: z.string().min(3).max(255),
+  password: z.string().min(3).max(255),
   phoneNumber: z.string().transform((val) => {
     if (Number.isNaN(Number(val)) || val.length !== 10) {
       throw new Error("Type4 must have 5 digits");
@@ -40,10 +40,7 @@ export const updateUserVerifier = z.object({
   }).optional(),
 });
 
-export const registerUserVerifier = z.object({
-  email: z.string().min(3).max(255),
-  password: z.string().min(3).max(255),
-});
+export const updateUserVerifier = registerUserVerifier.partial();
 
 const userModel = mongoose.model("user", userSchema);
 
