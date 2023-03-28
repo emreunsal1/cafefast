@@ -19,7 +19,7 @@ const companySchema = new mongoose.Schema<ICompany>({
     city: String,
     district: String,
     mailingAddress: String,
-    postalCode: String,
+    postalCode: Number,
   },
   menus: [{
     type: mongoose.Schema.Types.ObjectId,
