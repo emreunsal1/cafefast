@@ -11,6 +11,8 @@ export const createProductValidator = z.object({
   inStock: z.boolean().default(true).optional(),
 });
 
+export const updateProductValidator = createProductValidator.omit({ attributes: true, images: true }).optional();
+
 export type IProduct = z.infer<typeof createProductValidator>;
 
 const productSchema = new Schema<IProduct>({

@@ -50,23 +50,11 @@ export const addMenuToCompany = async (query: Partial<ICompany & {_id: any}>, me
   }
 };
 
-export const checkCompanyHasMenu = async (menuId, companyId, categoryId = undefined) => {
-  let query = companyModel.findOne({ menus: menuId, _id: companyId });
-  const result = true;
-
-  if (categoryId) {
-    query = query.populate("menus");
-  }
-  const companyData = await query.exec();
-
-  if (!companyData) {
-    return false;
-  }
-  if (categoryId) {
-    return (companyData.menus as any).some((menu) => (menu as any).categories.includes(categoryId));
-  }
-
-  return result;
+export const checkCompanyHasMenu = async ({
+  menuId, companyId,
+}) => {
+  const result = await companyModel.findOne({ menus: menuId, _id: companyId });
+  return !!result;
 };
 
 export const removeMenuFromCompany = async (menuId: any):Promise<{data?: any, error?: any}> => {

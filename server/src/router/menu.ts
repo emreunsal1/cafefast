@@ -14,6 +14,7 @@ router.post("/", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, createMen
 router.delete("/:menuId", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, deleteMenuController);
 router.put("/:menuId", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, updateMenuController);
 
+// Category
 router.post("/:menuId/category", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, createCategoryController);
 router.delete(
   "/:menuId/category/:categoryId",
@@ -23,8 +24,16 @@ router.delete(
   deleteCategoryController,
 );
 
+// Product
 router.post(
   "/:menuId/category/:categoryId/product",
+  AUTH_REQUIRED_MIDDLEWARE,
+  ADMIN_PERMISSON_MIDDLEWARE,
+  MENU_EXISTS_MIDDLEWARE,
+  createProductController,
+);
+router.put(
+  "/:menuId/category/:categoryId/product/:productId",
   AUTH_REQUIRED_MIDDLEWARE,
   ADMIN_PERMISSON_MIDDLEWARE,
   MENU_EXISTS_MIDDLEWARE,

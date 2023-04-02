@@ -34,14 +34,17 @@ export const createMenuController = async (req: Request, res: Response) => {
     const createdMenu = await createMenu(verifiedMenu);
 
     if (!createdMenu.data || createdMenu.error) {
-      res.send({
+      return res.send({
         error: createdMenu.error,
       });
-      return;
     }
-    const { data } = await addMenuToCompany({ _id: company }, createdMenu.data._id);
-
-    res.send(data.menus);
+    const newMenu = await addMenuToCompany({ _id: company }, createdMenu.data._id);
+    if (!newMenu.data || newMenu.error) {
+      return res.send({
+        error: createdMenu.error,
+      });
+    }
+    res.send(createdMenu);
     return;
   } catch (err) {
     res.status(400).send();

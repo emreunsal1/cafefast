@@ -29,6 +29,11 @@ export const getMenus = async (menuIds) => {
   }
 };
 
+export const checkMenuHasCategory = async (menuId, categoryId) => {
+  const query = menuModel.findOne({ _id: menuId, categories: categoryId });
+  return !!query;
+};
+
 export const addCategoryToMenu = async (query: Partial<IMenu & {_id: any}>, categoryId: any):Promise<{data?: any, error?: any}> => {
   try {
     const response = await menuModel.findOneAndUpdate(

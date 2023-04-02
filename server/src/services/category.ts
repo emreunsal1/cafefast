@@ -17,3 +17,23 @@ export const deleteCategory = async (categoryId) => {
     return { error: (error as any).message || error };
   }
 };
+
+export const checkCategoryHasProduct = async (categoryId, productId) => {
+  const data = await categoryModel.findOne(
+    { _id: categoryId, products: productId },
+  ).exec();
+  return !!data;
+};
+
+export const addProductToCategory = async (categoryId, productId) => {
+  try {
+    const data = await categoryModel.findOneAndUpdate(
+      { _id: categoryId },
+      { $push: { products: productId } },
+      { new: true },
+    ).populate("products").exec();
+    return { data };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
