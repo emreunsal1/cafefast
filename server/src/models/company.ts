@@ -3,7 +3,6 @@ import z from "zod";
 
 export type ICompany = {
   name: string;
-  activeMenu: mongoose.Schema.Types.ObjectId;
   address: {
     city: string;
     district: string;
@@ -11,6 +10,7 @@ export type ICompany = {
     postalCode: number;
   }
   menus?: number[];
+  activeMenu?: mongoose.Schema.Types.ObjectId;
   isDeleted?: boolean;
 }
 
@@ -19,7 +19,7 @@ const companySchema = new mongoose.Schema<ICompany>({
   activeMenu: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "menu",
-    default: null,
+    default: undefined,
   },
   address: {
     city: String,
