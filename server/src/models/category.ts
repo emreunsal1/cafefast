@@ -8,6 +8,8 @@ export const createCategoryValidator = z.object({
   products: z.array(z.string()).default([]).optional(),
 });
 
+export const updateCategoryValidator = createCategoryValidator.omit({ products: true, images: true }).optional();
+
 export type ICategory = z.infer<typeof createCategoryValidator>;
 
 const categorySchema = new Schema<ICategory>({

@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
-import { createCategoryValidator } from "../models/category";
-import { createCategory, deleteCategory } from "../services/category";
+import { createCategoryValidator, updateCategoryValidator } from "../models/category";
+import { createCategory, deleteCategory, updateCategory } from "../services/category";
 import { addCategoryToMenu, removeCategoryFromMenu } from "../services/menu";
 
 export const createCategoryController = async (req: Request, res: Response) => {
   const { menuId } = req.params;
 
   try {
-    const validatedPoruct = await createCategoryValidator.parseAsync(req.body);
-    const createdCategory = await createCategory(validatedPoruct);
+    const validatedCategory = await createCategoryValidator.parseAsync(req.body);
+    const createdCategory = await createCategory(validatedCategory);
 
     if (!createdCategory.data || createdCategory.error) {
       return res.send(400).send({ message: "error when creating category", error: createdCategory.error });
@@ -16,10 +16,28 @@ export const createCategoryController = async (req: Request, res: Response) => {
 
     const newMenu = await addCategoryToMenu({ _id: menuId }, createdCategory.data._id);
     if (!newMenu.data || newMenu.error) {
-      return res.send(400).send({ message: "error when adding category to menu", error: newMenu.error });
+      return res.send(400).send({ error: newMenu.error });
     }
 
     res.status(201).send(newMenu);
+  } catch (error) {
+    res.status(400).send({
+      error,
+    });
+  }
+};
+
+export const updateCategoryController = async (req: Request, res: Response) => {
+  const { categoryId } = req.params;
+  try {
+    const validatedCategory = await updateCategoryValidator.parseAsync(req.body);
+
+    const newCategory = await updateCategory(categoryId, validatedCategory);
+    if (!newCategory.data || newCategory.error) {
+      return res.send(400).send({ error: newCategory.error });
+    }
+
+    res.send(newCategory);
   } catch (error) {
     res.status(400).send({
       error,

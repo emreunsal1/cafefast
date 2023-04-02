@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createCategoryController, deleteCategoryController } from "../controllers/category";
+import { createCategoryController, deleteCategoryController, updateCategoryController } from "../controllers/category";
 import {
   createMenuController, deleteMenuController, getMenusController, updateMenuController,
 } from "../controllers/menu";
@@ -16,6 +16,7 @@ router.put("/:menuId", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, MEN
 
 // Category
 router.post("/:menuId/category", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, createCategoryController);
+router.put("/:menuId/category/:categoryId", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, updateCategoryController);
 router.delete(
   "/:menuId/category/:categoryId",
   AUTH_REQUIRED_MIDDLEWARE,
