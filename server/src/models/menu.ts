@@ -11,7 +11,11 @@ export type IMenu = {
 
 const menuSchema = new Schema({
   name: String,
-  description: String,
+  description: {
+    type: String,
+    ref: "description",
+    default: "",
+  },
   campaigns: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "campaign",

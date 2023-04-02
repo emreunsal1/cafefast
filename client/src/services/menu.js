@@ -12,10 +12,11 @@ const get = async () => {
   }
 };
 
-const create = async (name) => {
+const create = async (name, desc) => {
   try {
     const response = await instance.post(MENU_ROUTE, {
       name,
+      description: desc,
     });
     return response;
   } catch (error) {
