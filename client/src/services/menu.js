@@ -2,6 +2,8 @@ import instance from "../utils/axios";
 
 const { MENU_ROUTE } = require("../constants");
 
+// MENUS SERVICE
+
 const get = async () => {
   try {
     const response = await instance.get(MENU_ROUTE);
@@ -49,6 +51,18 @@ const deleteMenu = async (id) => {
   }
 };
 
+// MENU
+
+const detail = async (menuId) => {
+  try {
+    const response = await instance.get(`${MENU_ROUTE}/${menuId}`);
+    return response;
+  } catch (error) {
+    console.log("get menu detail error", { error });
+    return false;
+  }
+};
+
 // CATEGORY SERVICE
 
 const createCategory = async (menuID, name, order) => {
@@ -66,6 +80,7 @@ export const MENU_SERVICE = {
   create,
   update,
   deleteMenu,
+  detail,
 };
 
 export const CATEGORY_SERVICE = {
