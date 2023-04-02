@@ -12,7 +12,7 @@ export const createCompany = async (companyData: ICompany) => {
 export const getCompany = async ({
   query,
   populate = false,
-}: {query: Partial<ICompany & {_id: any}>, populate?: boolean}): Promise<{data?: ICompany | null, error?: any}> => {
+}: {query, populate?: boolean}) => {
   try {
     const mongooseQuery = companyModel.findOne({ ...query, isDeleted: false });
 
@@ -27,7 +27,7 @@ export const getCompany = async ({
   }
 };
 
-export const updateCompany = async (query: Partial<ICompany & {_id: any}>, data):Promise<{data?: any, error?: any}> => {
+export const updateCompany = async (query, data) => {
   try {
     const response = await companyModel.findOneAndUpdate(query, data, { new: true }).exec();
     return { data: response };
@@ -36,7 +36,7 @@ export const updateCompany = async (query: Partial<ICompany & {_id: any}>, data)
   }
 };
 
-export const addMenuToCompany = async (query: Partial<ICompany & {_id: any}>, menuId: any):Promise<{data?: any, error?: any}> => {
+export const addMenuToCompany = async (query, menuId) => {
   try {
     const response = await companyModel.findOneAndUpdate(
       query,

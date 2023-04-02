@@ -10,16 +10,15 @@ export type ICompany = {
     postalCode: number;
   }
   menus?: number[];
-  activeMenu?: mongoose.Schema.Types.ObjectId;
+  activeMenu?: string | undefined;
   isDeleted?: boolean;
 }
 
 const companySchema = new mongoose.Schema<ICompany>({
   name: String,
   activeMenu: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: "menu",
-    default: undefined,
   },
   address: {
     city: String,
@@ -42,7 +41,7 @@ const companyModel = mongoose.model("company", companySchema);
 
 export const createCompanyValidator = z.object({
   name: z.string().min(3).max(255),
-  activeMenu: z.string().optional(),
+  activeMenu: z.string().min(3).max(255).optional(),
   address: z.object({
     city: z.string().min(3).max(255),
     district: z.string().min(3).max(255),
