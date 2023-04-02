@@ -44,7 +44,7 @@ export const createMenuController = async (req: Request, res: Response) => {
         error: createdMenu.error,
       });
     }
-    res.send(createdMenu);
+    res.send(createdMenu.data);
     return;
   } catch (err) {
     res.status(400).send();

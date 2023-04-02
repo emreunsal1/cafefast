@@ -18,6 +18,15 @@ export const deleteCategory = async (categoryId) => {
   }
 };
 
+export const updateCategory = async (categoryId, data) => {
+  try {
+    const result = await categoryModel.findOneAndUpdate({ _id: categoryId }, data, { new: true });
+    return { data: result };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
+
 export const checkCategoryHasProduct = async (categoryId, productId) => {
   const data = await categoryModel.findOne(
     { _id: categoryId, products: productId },
