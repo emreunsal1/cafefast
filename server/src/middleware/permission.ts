@@ -17,7 +17,7 @@ export const ADMIN_PERMISSON_MIDDLEWARE = async (req: Request, res: Response, ne
 export const MENU_EXISTS_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
   const { menuId, categoryId } = req.params;
   const { company } = req.user;
-  const isExists = await checkCompanyHasMenu(menuId, company, categoryId);
+  const isExists = await checkCompanyHasMenu(menuId, company, categoryId as any);
 
   if (!isExists) {
     return res.status(404).send({

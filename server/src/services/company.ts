@@ -50,20 +50,23 @@ export const addMenuToCompany = async (query: Partial<ICompany & {_id: any}>, me
   }
 };
 
-export const checkCompanyHasMenu = (menuId, companyId, categoryId = "") => {
-  const query: any = { menus: menuId, _id: companyId };
-
-  if (categoryId.length) {
-    query["menus.category._id"] = categoryId;
-  }
-
-  const mongooseQuery = companyModel.findOne();
+export const checkCompanyHasMenu = async (menuId, companyId, categoryId = undefined) => {
+  let query = companyModel.findOne({ menus: menuId, _id: companyId });
+  const result = true;
 
   if (categoryId) {
-    mongooseQuery.populate("menus");
+    query = query.populate("menus");
+  }
+  const companyData = await query.exec();
+
+  if (!companyData) {
+    return false;
+  }
+  if (categoryId) {
+    return (companyData.menus as any).some((menu) => (menu as any).categories.includes(categoryId));
   }
 
-  return mongooseQuery.exec();
+  return result;
 };
 
 export const removeMenuFromCompany = async (menuId: any):Promise<{data?: any, error?: any}> => {
