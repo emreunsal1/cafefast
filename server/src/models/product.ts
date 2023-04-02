@@ -11,7 +11,7 @@ export const createProductValidator = z.object({
   inStock: z.boolean().default(true).optional(),
 });
 
-export const updateProductValidator = createProductValidator.omit({ attributes: true, images: true }).optional();
+export const updateProductValidator = createProductValidator.omit({ attributes: true, images: true }).partial();
 
 export type IProduct = z.infer<typeof createProductValidator>;
 
@@ -25,6 +25,6 @@ const productSchema = new Schema<IProduct>({
   inStock: { type: Boolean, default: true },
 });
 
-const productModel = mongoose.model("product", productSchema);
+const productModel = mongoose.model<IProduct>("product", productSchema);
 
 export default productModel;

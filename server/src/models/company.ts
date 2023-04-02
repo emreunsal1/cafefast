@@ -3,6 +3,7 @@ import z from "zod";
 
 export type ICompany = {
   name: string;
+  activeMenu: mongoose.Schema.Types.ObjectId;
   address: {
     city: string;
     district: string;
@@ -15,6 +16,11 @@ export type ICompany = {
 
 const companySchema = new mongoose.Schema<ICompany>({
   name: String,
+  activeMenu: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "menu",
+    default: null,
+  },
   address: {
     city: String,
     district: String,
@@ -36,6 +42,7 @@ const companyModel = mongoose.model("company", companySchema);
 
 export const createCompanyValidator = z.object({
   name: z.string().min(3).max(255),
+  activeMenu: z.string().optional(),
   address: z.object({
     city: z.string().min(3).max(255),
     district: z.string().min(3).max(255),

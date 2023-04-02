@@ -3,7 +3,7 @@ import { createCategoryController, deleteCategoryController, updateCategoryContr
 import {
   createMenuController, deleteMenuController, getMenusController, updateMenuController,
 } from "../controllers/menu";
-import { createProductController } from "../controllers/product";
+import { createProductController, updateProductController } from "../controllers/product";
 import { AUTH_REQUIRED_MIDDLEWARE } from "../middleware/jwt";
 import { ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE } from "../middleware/permission";
 
@@ -38,7 +38,7 @@ router.put(
   AUTH_REQUIRED_MIDDLEWARE,
   ADMIN_PERMISSON_MIDDLEWARE,
   MENU_EXISTS_MIDDLEWARE,
-  createProductController,
+  updateProductController,
 );
 
 export default router;

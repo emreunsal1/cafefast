@@ -59,6 +59,7 @@ export const deleteMenuController = async (req: Request, res: Response) => {
       return res.send({ error: removeMenuError });
     }
     const deletedMenu = await deleteMenu(menuId);
+    // TODO: Delete all fields of menu (like: Products, Categories, etc.)
 
     if (deletedMenu.error || !deletedMenu.data) {
       res.send({

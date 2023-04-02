@@ -40,7 +40,20 @@ export const addProductToCategory = async (categoryId, productId) => {
       { _id: categoryId },
       { $push: { products: productId } },
       { new: true },
-    ).populate("products").exec();
+    ).exec();
+    return { data };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
+
+export const deleteProductFromCategory = async (categoryId, productId) => {
+  try {
+    const data = await categoryModel.findOneAndUpdate(
+      { _id: categoryId },
+      { $pull: { products: productId } },
+      { new: true },
+    ).exec();
     return { data };
   } catch (error) {
     return { error: (error as any).message || error };
