@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { checkCompanyHasMenu } from "../services/company";
 import { getUser } from "../services/user";
-import { checkMenuHasCategory } from "../services/menu";
+import { checkMenuHasCampaign, checkMenuHasCategory } from "../services/menu";
 import { checkCategoryHasProduct } from "../services/category";
 
 export const ADMIN_PERMISSON_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
@@ -17,7 +17,9 @@ export const ADMIN_PERMISSON_MIDDLEWARE = async (req: Request, res: Response, ne
 };
 
 export const MENU_EXISTS_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
-  const { menuId, categoryId, productId } = req.params;
+  const {
+    menuId, categoryId, productId, campaignId,
+  } = req.params;
   const { company: companyId } = req.user;
   try {
     const isExists = await checkCompanyHasMenu({
@@ -28,6 +30,14 @@ export const MENU_EXISTS_MIDDLEWARE = async (req: Request, res: Response, next: 
       return res.status(404).send({
         message: "[MENU_EXISTS_MIDDLEWARE] not allowed for this request",
       });
+    }
+    if (campaignId) {
+      const isCampaignExists = await checkMenuHasCampaign(menuId, campaignId);
+      if (!isCampaignExists) {
+        return res.status(404).send({
+          message: "[MENU_EXISTS_MIDDLEWARE] not allowed for this request",
+        });
+      }
     }
     if (categoryId) {
       const isCategoryExists = await checkMenuHasCategory(menuId, categoryId);

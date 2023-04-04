@@ -18,6 +18,8 @@ export const createCampaignVerifier = z.object({
   }).optional(),
 });
 
+export const updateCampaignVerifier = createCampaignVerifier.partial();
+
 type ICampaign = z.infer<typeof createCampaignVerifier>
 
 const campaignSchema = new Schema<ICampaign>({

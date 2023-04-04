@@ -53,6 +53,11 @@ export const checkMenuHasCategory = async (menuId, categoryId) => {
   return !!query;
 };
 
+export const checkMenuHasCampaign = async (menuId, campaignId) => {
+  const query = menuModel.findOne({ _id: menuId, campaigns: campaignId });
+  return !!query;
+};
+
 export const addCategoryToMenu = async (query: Partial<IMenu & {_id: any}>, categoryId: any):Promise<{data?: any, error?: any}> => {
   try {
     const response = await menuModel.findOneAndUpdate(
@@ -109,6 +114,15 @@ export const updateMenu = async ({ query, data }: UpdateMenuParams) => {
 export const removeCategoryFromMenu = async (categoryId) => {
   try {
     await menuModel.findOneAndUpdate({ categories: categoryId }, { $pull: { menus: categoryId } });
+    return { data: true };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
+
+export const removeCampaignFromMenu = async (campaignId) => {
+  try {
+    await menuModel.findOneAndUpdate({ campaigns: campaignId }, { $pull: { campaigns: campaignId } });
     return { data: true };
   } catch (error) {
     return { error: (error as any).message || error };

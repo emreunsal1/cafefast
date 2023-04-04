@@ -19,7 +19,7 @@ export const createCategoryController = async (req: Request, res: Response) => {
       return res.send(400).send({ error: newMenu.error });
     }
 
-    res.status(201).send(newMenu);
+    res.status(201).send(createdCategory.data);
   } catch (error) {
     res.status(400).send({
       error,
