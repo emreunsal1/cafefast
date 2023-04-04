@@ -6,7 +6,7 @@ export const createCampaignVerifier = z.object({
   price: z.number().positive(),
   image: z.string().url(),
   description: z.string().min(1).max(500),
-  order: z.number().positive().default(0),
+  order: z.number().default(0),
   products: z.array(z.string()),
   applicable: z.object({
     end: z.date().optional(),
