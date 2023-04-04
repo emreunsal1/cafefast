@@ -6,6 +6,7 @@ import {
 import { createProductController, updateProductController } from "../controllers/product";
 import { AUTH_REQUIRED_MIDDLEWARE } from "../middleware/jwt";
 import { ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE } from "../middleware/permission";
+import { createCampaignController } from "../controllers/campaign";
 
 const router = Router();
 
@@ -41,5 +42,8 @@ router.put(
   MENU_EXISTS_MIDDLEWARE,
   updateProductController,
 );
+
+// Campaign
+router.post("/:menuId/campaign", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, createCampaignController);
 
 export default router;

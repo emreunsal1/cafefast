@@ -11,14 +11,7 @@ export const createMenu = async (menuData: IMenu) => {
 
 export const getMenus = async (menuIds) => {
   try {
-    const query = menuModel.find({ _id: { $in: menuIds } });
-
-    query.populate("categories");
-    // query.populate("categories.products");
-    // query.populate("campaigns");
-    // query.populate("campaigns.products");
-
-    const result = await query.exec();
+    const result = await menuModel.find({ _id: { $in: menuIds } }).exec();
     return {
       data: result,
     };
@@ -33,6 +26,12 @@ export const getMenu = async (menuId) => {
   try {
     const result = await menuModel.findOne({ _id: menuId }).populate({
       path: "categories",
+      populate: {
+        path: "products",
+        model: "product",
+      },
+    }).populate({
+      path: "campaigns",
       populate: {
         path: "products",
         model: "product",
@@ -59,6 +58,20 @@ export const addCategoryToMenu = async (query: Partial<IMenu & {_id: any}>, cate
     const response = await menuModel.findOneAndUpdate(
       query,
       { $push: { categories: categoryId } },
+      { new: true },
+    ).exec();
+
+    return { data: response };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
+
+export const addCampaignToMenu = async ({ menuId, campaignId }) => {
+  try {
+    const response = await menuModel.findOneAndUpdate(
+      { _id: menuId },
+      { $push: { campaigns: campaignId } },
       { new: true },
     ).exec();
 
