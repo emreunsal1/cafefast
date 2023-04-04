@@ -29,6 +29,26 @@ export const getMenus = async (menuIds) => {
   }
 };
 
+export const getMenu = async (menuId) => {
+  try {
+    const result = await menuModel.findOne({ _id: menuId }).populate({
+      path: "categories",
+      populate: {
+        path: "products",
+        model: "product",
+      },
+    }).exec();
+
+    return {
+      data: result,
+    };
+  } catch (error) {
+    return {
+      error: (error as any).message || error,
+    };
+  }
+};
+
 export const checkMenuHasCategory = async (menuId, categoryId) => {
   const query = menuModel.findOne({ _id: menuId, categories: categoryId });
   return !!query;

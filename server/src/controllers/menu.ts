@@ -4,7 +4,7 @@ import {
   addMenuToCompany, getCompany, removeMenuFromCompany,
 } from "../services/company";
 import {
-  createMenu, deleteMenu, getMenus, updateMenu,
+  createMenu, deleteMenu, getMenus, updateMenu, getMenu,
 } from "../services/menu";
 
 export const getMenusController = async (req: Request, res: Response) => {
@@ -12,19 +12,21 @@ export const getMenusController = async (req: Request, res: Response) => {
 
   const companyData = await getCompany({ query: { _id: companyId }, populate: false });
 
-  if (!companyData.data || companyData.error) {
-    return res.status(404).send({
-      error: "Company not found",
-    });
-  }
-
-  const { data: menus, error } = await getMenus(companyData.data.menus);
+  const { data: menus, error } = await getMenus(companyData.data!.menus);
 
   if (error || !menus) {
     return res.status(400).send({ error });
   }
 
   res.send(menus);
+};
+
+export const getMenuDetailController = async (req: Request, res: Response) => {
+  const { menuId } = req.params;
+
+  const menuData = await getMenu(menuId);
+
+  res.send(menuData.data);
 };
 
 export const createMenuController = async (req: Request, res: Response) => {

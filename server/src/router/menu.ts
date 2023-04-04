@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { createCategoryController, deleteCategoryController, updateCategoryController } from "../controllers/category";
 import {
-  createMenuController, deleteMenuController, getMenusController, updateMenuController,
+  createMenuController, deleteMenuController, getMenuDetailController, getMenusController, updateMenuController,
 } from "../controllers/menu";
 import { createProductController, updateProductController } from "../controllers/product";
 import { AUTH_REQUIRED_MIDDLEWARE } from "../middleware/jwt";
@@ -11,6 +11,7 @@ const router = Router();
 
 router.get("/", AUTH_REQUIRED_MIDDLEWARE, getMenusController);
 router.post("/", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, createMenuController);
+router.get("/:menuId", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, getMenuDetailController);
 router.delete("/:menuId", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, deleteMenuController);
 router.put("/:menuId", AUTH_REQUIRED_MIDDLEWARE, ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, updateMenuController);
 
