@@ -10,15 +10,19 @@ import {
 export const getMenusController = async (req: Request, res: Response) => {
   const { company: companyId } = req.user;
 
-  const companyData = await getCompany({ query: { _id: companyId }, populate: false });
+  try {
+    const companyData = await getCompany({ query: { _id: companyId }, populate: false });
 
-  const { data: menus, error } = await getMenus(companyData.data!.menus);
+    const { data: menus, error } = await getMenus(companyData.data!.menus);
 
-  if (error || !menus) {
+    if (error || !menus) {
+      return res.status(400).send({ error });
+    }
+
+    res.send(menus);
+  } catch (error) {
     return res.status(400).send({ error });
   }
-
-  res.send(menus);
 };
 
 export const getMenuDetailController = async (req: Request, res: Response) => {

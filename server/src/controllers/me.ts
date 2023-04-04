@@ -7,13 +7,16 @@ import { validateCityAndDistrict } from "../utils/address";
 
 export const getMeController = async (req: Request, res: Response) => {
   const { email } = req.user;
-  const { data, error } = await getUser({ query: { email }, populate: true });
-
-  if (error) {
+  try {
+    const { data, error } = await getUser({ query: { email }, populate: true });
+    if (error) {
+      res.status(400).send({ error });
+      return;
+    }
+    res.send(data);
+  } catch (error) {
     res.status(400).send({ error });
-    return;
   }
-  res.send(data);
 };
 
 export const updateMeController = async (req: Request, res: Response) => {

@@ -19,31 +19,37 @@ export const ADMIN_PERMISSON_MIDDLEWARE = async (req: Request, res: Response, ne
 export const MENU_EXISTS_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
   const { menuId, categoryId, productId } = req.params;
   const { company: companyId } = req.user;
-  const isExists = await checkCompanyHasMenu({
-    menuId,
-    companyId,
-  });
-  if (!isExists) {
-    return res.status(404).send({
-      message: "[MENU_EXISTS_MIDDLEWARE] not allowed for this request",
+  try {
+    const isExists = await checkCompanyHasMenu({
+      menuId,
+      companyId,
     });
-  }
-  if (categoryId) {
-    const isCategoryExists = await checkMenuHasCategory(menuId, categoryId);
-    if (!isCategoryExists) {
+    if (!isExists) {
       return res.status(404).send({
         message: "[MENU_EXISTS_MIDDLEWARE] not allowed for this request",
       });
     }
-    if (productId) {
-      const isProductExists = await checkCategoryHasProduct(categoryId, productId);
-      if (!isProductExists) {
+    if (categoryId) {
+      const isCategoryExists = await checkMenuHasCategory(menuId, categoryId);
+      if (!isCategoryExists) {
         return res.status(404).send({
           message: "[MENU_EXISTS_MIDDLEWARE] not allowed for this request",
         });
       }
+      if (productId) {
+        const isProductExists = await checkCategoryHasProduct(categoryId, productId);
+        if (!isProductExists) {
+          return res.status(404).send({
+            message: "[MENU_EXISTS_MIDDLEWARE] not allowed for this request",
+          });
+        }
+      }
     }
+    next();
+  } catch (error) {
+    return res.status(404).send({
+      message: "[MENU_EXISTS_MIDDLEWARE] not allowed for this request",
+      error,
+    });
   }
-
-  next();
 };
