@@ -12,6 +12,7 @@ export type ICompany = {
   menus?: number[];
   activeMenu?: string | undefined;
   isDeleted?: boolean;
+  products?: string[];
 }
 
 const companySchema = new mongoose.Schema<ICompany>({
@@ -31,6 +32,11 @@ const companySchema = new mongoose.Schema<ICompany>({
     ref: "menu",
     default: [],
   }],
+  products: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "product",
+    default: [],
+  }],
   isDeleted: {
     type: Boolean,
     default: false,
@@ -42,6 +48,7 @@ const companyModel = mongoose.model("company", companySchema);
 export const createCompanyValidator = z.object({
   name: z.string().min(3).max(255),
   activeMenu: z.string().min(3).max(255).optional(),
+  products: z.array(z.string()).optional().default([]),
   address: z.object({
     city: z.string().min(3).max(255),
     district: z.string().min(3).max(255),

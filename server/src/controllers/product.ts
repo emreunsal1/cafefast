@@ -32,8 +32,8 @@ export const updateProductController = async (req: Request, res: Response) => {
 
   try {
     const validatedProduct = await updateProductValidator.parseAsync(req.body);
-    const updatedProduct = await updateProduct(productId, validatedProduct);
 
+    const updatedProduct = await updateProduct(productId, validatedProduct);
     if (!updatedProduct.data || updatedProduct.error) {
       return res.status(400).send({
         error: updatedProduct.error,
@@ -55,8 +55,8 @@ export const deleteProductController = async (req: Request, res: Response) => {
     if (categoryData.error) {
       return res.status(400).send(categoryData.error);
     }
-    const updatedProduct = await deleteProduct(productId);
 
+    const updatedProduct = await deleteProduct(productId);
     if (!updatedProduct.data || updatedProduct.error) {
       return res.status(400).send({
         error: updatedProduct.error,

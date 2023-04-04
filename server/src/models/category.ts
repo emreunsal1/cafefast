@@ -5,21 +5,15 @@ export const createCategoryValidator = z.object({
   name: z.string(),
   order: z.number(),
   images: z.array(z.string()).default([]).optional(),
-  products: z.array(z.string()).default([]).optional(),
 });
 
-export const updateCategoryValidator = createCategoryValidator.omit({ products: true, images: true }).optional();
+export const updateCategoryValidator = createCategoryValidator.omit({ images: true }).optional();
 
 export type ICategory = z.infer<typeof createCategoryValidator>;
 
 const categorySchema = new Schema<ICategory>({
   name: String,
   order: Number,
-  products: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "product",
-    default: [],
-  }],
   images: [{ type: String, default: [] }],
 });
 

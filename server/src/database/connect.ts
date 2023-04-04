@@ -5,7 +5,6 @@ const connectDB = async () => {
   dotenv.config();
   const { DB_URL } = process.env;
   mongoose.set("strictQuery", true);
-  // mongoose.set("strictPopulate", false);
   try {
     await mongoose.connect(DB_URL as string);
     console.log("Connected to database");

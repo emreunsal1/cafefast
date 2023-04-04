@@ -6,7 +6,6 @@ export type IMenu = {
   description?: String,
   campaigns?: mongoose.Schema.Types.ObjectId[],
   categories?: mongoose.Schema.Types.ObjectId[],
-  products?: mongoose.Schema.Types.ObjectId[],
 }
 
 const menuSchema = new Schema({

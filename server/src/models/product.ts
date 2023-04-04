@@ -8,6 +8,7 @@ export const createProductValidator = z.object({
   images: z.array(z.string()).default([]),
   attributes: z.array(z.object({ name: z.string(), price: z.number() })).default([]).optional(),
   requiredAttributeCount: z.number().default(0).optional(),
+  menuPrices: z.array(z.object({ menuId: z.string(), price: z.number().positive() })).optional().default([]),
   inStock: z.boolean().default(true).optional(),
 });
 
@@ -20,8 +21,9 @@ const productSchema = new Schema<IProduct>({
   description: String,
   price: Number,
   images: [{ type: String, default: [] }],
-  attributes: [{ name: String, price: Number, default: [] }],
+  attributes: [{ type: { name: String, price: Number }, default: [] }],
   requiredAttributeCount: { type: Number, default: 0 },
+  menuPrices: [{ menuId: String, price: Number }],
   inStock: { type: Boolean, default: true },
 });
 
