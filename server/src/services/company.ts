@@ -52,10 +52,7 @@ export const addMenuToCompany = async (query, menuId) => {
 
 export const checkCompanyHasMenu = async ({
   menuId, companyId,
-}) => {
-  const result = await companyModel.findOne({ menus: menuId, _id: companyId });
-  return !!result;
-};
+}) => companyModel.findOne({ menus: menuId, _id: companyId });
 
 export const removeMenuFromCompany = async (menuId: any):Promise<{data?: any, error?: any}> => {
   try {
