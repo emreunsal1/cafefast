@@ -59,9 +59,37 @@ export const checkCompanyHasMenu = async ({
 
 export const removeMenuFromCompany = async (menuId: any):Promise<{data?: any, error?: any}> => {
   try {
-    const newMenu = await companyModel.findOneAndUpdate({ menus: menuId }, { $pull: { menus: menuId } }, { new: true });
+    const newCompany = await companyModel.findOneAndUpdate({ menus: menuId }, { $pull: { menus: menuId } }, { new: true });
 
-    return { data: newMenu };
+    return { data: newCompany };
+  } catch (error) {
+    return { error };
+  }
+};
+
+export const addProductToCompany = async (companyId, productId) => {
+  try {
+    const newCompany = await companyModel.findOneAndUpdate(
+      { _id: companyId },
+      { $push: { products: productId } },
+      { new: true },
+    );
+
+    return { data: newCompany };
+  } catch (error) {
+    return { error };
+  }
+};
+
+export const removeProductFromCompany = async (companyId, productId) => {
+  try {
+    const newCompany = await companyModel.findOneAndUpdate(
+      { _id: companyId },
+      { $pull: { products: productId } },
+      { new: true },
+    );
+
+    return { data: newCompany };
   } catch (error) {
     return { error };
   }

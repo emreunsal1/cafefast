@@ -6,7 +6,7 @@ export const createProductValidator = z.object({
   description: z.string(),
   price: z.number(),
   images: z.array(z.string()).default([]),
-  attributes: z.array(z.object({ name: z.string(), price: z.number() })).default([]).optional(),
+  attributes: z.array(z.object({ name: z.string(), price: z.number() })).optional().default([]),
   requiredAttributeCount: z.number().default(0).optional(),
   menuPrices: z.array(z.object({ menuId: z.string(), price: z.number().positive() })).optional().default([]),
   inStock: z.boolean().default(true).optional(),

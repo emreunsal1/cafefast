@@ -49,8 +49,8 @@ export const getMenu = async (menuId) => {
 };
 
 export const checkMenuHasCategory = async (menuId, categoryId) => {
-  const query = menuModel.findOne({ _id: menuId, categories: categoryId });
-  return !!query;
+  const query = await menuModel.findOne({ _id: menuId, categories: categoryId });
+  return query;
 };
 
 export const checkMenuHasCampaign = async (menuId, campaignId) => {

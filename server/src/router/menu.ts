@@ -15,15 +15,11 @@ import {
   updateMenuController,
 } from "../controllers/menu";
 import {
-  createProductController,
-  deleteProductController,
-  updateProductController,
-} from "../controllers/product";
-import {
   createCampaignController,
   deleteCampaignController,
   updateCampaignController,
 } from "../controllers/campaign";
+import { addProductToCategoryController, removeProductFromCategoryController } from "../controllers/product";
 
 const router = Router();
 
@@ -44,27 +40,20 @@ router.delete(
   deleteCategoryController,
 );
 
-// Product
 router.post(
-  "/:menuId/category/:categoryId/product",
-  AUTH_REQUIRED_MIDDLEWARE,
-  ADMIN_PERMISSON_MIDDLEWARE,
-  MENU_EXISTS_MIDDLEWARE,
-  createProductController,
-);
-router.delete(
-  "/:menuId/category/:categoryId/product",
-  AUTH_REQUIRED_MIDDLEWARE,
-  ADMIN_PERMISSON_MIDDLEWARE,
-  MENU_EXISTS_MIDDLEWARE,
-  deleteProductController,
-);
-router.put(
   "/:menuId/category/:categoryId/product/:productId",
   AUTH_REQUIRED_MIDDLEWARE,
   ADMIN_PERMISSON_MIDDLEWARE,
   MENU_EXISTS_MIDDLEWARE,
-  updateProductController,
+  addProductToCategoryController,
+);
+
+router.delete(
+  "/:menuId/category/:categoryId/product/:productId",
+  AUTH_REQUIRED_MIDDLEWARE,
+  ADMIN_PERMISSON_MIDDLEWARE,
+  MENU_EXISTS_MIDDLEWARE,
+  removeProductFromCategoryController,
 );
 
 // Campaign

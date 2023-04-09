@@ -18,7 +18,7 @@ export const ADMIN_PERMISSON_MIDDLEWARE = async (req: Request, res: Response, ne
 
 export const MENU_EXISTS_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
   const {
-    menuId, categoryId, productId, campaignId,
+    menuId, categoryId, campaignId, productId,
   } = req.params;
   const { company: companyId } = req.user;
   try {
@@ -46,7 +46,8 @@ export const MENU_EXISTS_MIDDLEWARE = async (req: Request, res: Response, next: 
           message: "[MENU_EXISTS_MIDDLEWARE] not allowed for this request",
         });
       }
-      if (productId) {
+      // POST Means it is a addition request. So we don't need to control this step
+      if (productId && req.method !== "POST") {
         const isProductExists = await checkCategoryHasProduct(categoryId, productId);
         if (!isProductExists) {
           return res.status(404).send({

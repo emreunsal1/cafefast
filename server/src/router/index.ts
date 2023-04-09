@@ -5,6 +5,7 @@ import paymentRouter from "./payment";
 import meRouter from "./me";
 import locationRouter from "./location";
 import menuRouter from "./menu";
+import productRouter from "./product";
 
 import { AUTH_REQUIRED_MIDDLEWARE } from "../middleware/jwt";
 
@@ -16,5 +17,6 @@ router.use("/me", AUTH_REQUIRED_MIDDLEWARE, meRouter);
 router.use("/payment", paymentRouter);
 router.use("/location", locationRouter);
 router.use("/menu", menuRouter);
+router.use("/product", productRouter);
 
 export default router;

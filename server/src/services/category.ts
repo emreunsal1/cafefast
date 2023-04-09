@@ -59,3 +59,15 @@ export const deleteProductFromCategory = async (categoryId, productId) => {
     return { error: (error as any).message || error };
   }
 };
+
+export const removeProductsFromAllCategories = async (productId) => {
+  try {
+    const data = await categoryModel.updateMany(
+      { products: productId },
+      { $pull: { products: productId } },
+    ).exec();
+    return { data };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
