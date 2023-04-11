@@ -33,9 +33,9 @@ const get = async () => {
   }
 };
 
-const update = async (id, data) => {
+const update = async (data) => {
   try {
-    const response = await instance.put(`${PRODUCT_ROUTE}/${id}`, data);
+    const response = await instance.put(`${PRODUCT_ROUTE}/${data._id}`, data);
     return response.data;
   } catch (error) {
     console.log("update Product Error", { error });

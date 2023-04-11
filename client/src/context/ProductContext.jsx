@@ -8,7 +8,6 @@ export function ProductContext({ children }) {
 
   const getProducts = async () => {
     const response = await PRODUCT_SERVICE.get();
-    console.log("abc products", response);
     setProducts(response);
     return response;
   };
@@ -18,12 +17,27 @@ export function ProductContext({ children }) {
     setProducts([...products, response.data]);
     return response.data;
   };
+
+  const updateProduct = async (data) => {
+    const response = await PRODUCT_SERVICE.update(data);
+    const filteredProducts = products.filter((product) => product._id !== data._id);
+    filteredProducts.push(response);
+    setProducts(filteredProducts);
+  };
+
+  const deleteProduct = async (id) => {
+    await PRODUCT_SERVICE.deleteProduct(id);
+    const filteredProducts = products.filter((product) => product._id !== id);
+    setProducts(filteredProducts);
+  };
   return (
     <Context.Provider value={{
       products,
       setProducts,
       getProducts,
       createProduct,
+      updateProduct,
+      deleteProduct,
     }}
     >
       {children}

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Modal,
@@ -9,20 +9,32 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 import { useProduct } from "../context/ProductContext";
 
-export default function AddProductModal({ setPopupVisible, isEdit }) {
-  const formRef = useRef();
-  const [first, setfirst] = useState(second);
-  const { createProduct } = useProduct();
+export default function AddProductModal({ setPopupVisible, isEdit, editedProduct }) {
+  const [product, setProduct] = useState({ name: "", price: "", description: "" });
+  const { createProduct, updateProduct } = useProduct();
 
-  const submitClickHandler = async (formValue) => {
-    formValue.price = Number(formValue.price);
-    createProduct(formValue);
+  const submitClickHandler = async () => {
+    const newProduct = { ...product, price: Number(product.price) };
+    setProduct(newProduct);
+    if (isEdit !== false) {
+      setProduct({ ...newProduct, _id: editedProduct._id });
+      updateProduct(newProduct);
+      setPopupVisible(false);
+      return;
+    }
     setPopupVisible(false);
+    createProduct(newProduct);
   };
 
   const selectImageHandler = (e) => {
     console.log(e);
   };
+
+  useEffect(() => {
+    if (isEdit) {
+      setProduct(editedProduct);
+    }
+  }, []);
 
   return (
     <div>
@@ -30,19 +42,19 @@ export default function AddProductModal({ setPopupVisible, isEdit }) {
         title="Basic Modal"
         open
         footer={[
-          <Button key="selam" onClick={() => formRef.current.submit()}>Submit</Button>,
-          <Button key="denem">Cancel</Button>,
+          <Button key="selam" onClick={submitClickHandler}>Submit</Button>,
+          <Button key="denem" onClick={() => setPopupVisible(false)}>Cancel</Button>,
         ]}
       >
-        <Form ref={formRef} onFinish={submitClickHandler}>
-          <Form.Item name="name">
-            <Input placeholder="name" />
+        <Form>
+          <Form.Item>
+            <Input placeholder="name" value={product.name} onChange={(e) => setProduct({ ...product, name: e.target.value })} />
           </Form.Item>
-          <Form.Item name="price">
-            <Input type="number" placeholder="price" />
+          <Form.Item>
+            <Input type="number" value={product.price} placeholder="price" onChange={(e) => setProduct({ ...product, price: e.target.value })} />
           </Form.Item>
-          <Form.Item name="description">
-            <Input placeholder="desc" />
+          <Form.Item>
+            <Input placeholder="desc" value={product.description} onChange={(e) => setProduct({ ...product, description: e.target.value })} />
           </Form.Item>
           <Form.Item label="Upload" valuePropName="fileList">
             <Upload onChange={(e) => selectImageHandler(e)} listType="picture-card">
