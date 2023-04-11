@@ -17,5 +17,6 @@ module.exports = {
     "react/no-array-index-key": "off",
     "no-underscore-dangle": "off",
     "no-param-reassign": "off",
+    "react/jsx-no-constructed-context-values": "off",
   },
 };

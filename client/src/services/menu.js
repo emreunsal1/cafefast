@@ -75,6 +75,28 @@ const createCategory = async (menuID, name, order) => {
   }
 };
 
+// product
+
+const addProduct = async (menuId, categoryId, ProductId) => {
+  try {
+    const response = await instance.post(`${MENU_ROUTE}/${menuId}/category/${categoryId}/product/${ProductId}`);
+    return response.data;
+  } catch (error) {
+    console.log("add Product to category Error", { error });
+    return false;
+  }
+};
+
+const deleteProduct = async (menuId, categoryId, ProductId) => {
+  try {
+    const response = await instance.delete(`${MENU_ROUTE}/${menuId}/category/${categoryId}/product/${ProductId}`);
+    return response.data;
+  } catch (error) {
+    console.log("delete Product to category Error", { error });
+    return false;
+  }
+};
+
 export const MENU_SERVICE = {
   get,
   create,
@@ -85,4 +107,6 @@ export const MENU_SERVICE = {
 
 export const CATEGORY_SERVICE = {
   createCategory,
+  addProduct,
+  deleteProduct,
 };
