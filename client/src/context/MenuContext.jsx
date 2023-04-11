@@ -4,7 +4,7 @@ import { CATEGORY_SERVICE, MENU_SERVICE } from "../services/menu";
 const Context = createContext({});
 
 export function MenuContext({ children }) {
-  const [menu, setMenu] = useState([]);
+  const [menu, setMenu] = useState(null);
   const [categories, setCategories] = useState([]);
 
   const getMenu = async (menuId) => {
@@ -12,6 +12,7 @@ export function MenuContext({ children }) {
     setMenu(response.data);
     const mutateCategories = response.data.categories.map((category) => ({ id: category._id, name: category.name }));
     setCategories(mutateCategories);
+    return response.data;
   };
 
   const addCategory = async (menuId, categoryName, order) => {

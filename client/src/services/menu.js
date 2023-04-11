@@ -77,9 +77,9 @@ const createCategory = async (menuID, name, order) => {
 
 // product
 
-const addProduct = async (menuId, categoryId, ProductId) => {
+const addProduct = async (menuId, categoryId, productId) => {
   try {
-    const response = await instance.post(`${MENU_ROUTE}/${menuId}/category/${categoryId}/product/${ProductId}`);
+    const response = await instance.post(`${MENU_ROUTE}/${menuId}/category/${categoryId}/product/${productId}`);
     return response.data;
   } catch (error) {
     console.log("add Product to category Error", { error });

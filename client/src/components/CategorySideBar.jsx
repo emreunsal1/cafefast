@@ -3,7 +3,7 @@ import { Input } from "antd";
 import { useRouter } from "next/router";
 import { useMenu } from "../context/MenuContext";
 
-export default function CategorySideBar({ selectedCategory, setSelectedCategory }) {
+export default function CategorySideBar({ selectedCategoryId, setSelectedCategoryId }) {
   const { categories, addCategory } = useMenu();
 
   const [newCategory, setNewCategory] = useState({ name: "", order: categories.length + 1 });
@@ -15,8 +15,7 @@ export default function CategorySideBar({ selectedCategory, setSelectedCategory 
       <div className="side-container">
         <div className="list">
           {categories.map((category) => (
-            <div className="item" onClick={() => setSelectedCategory(category.id)} key={category.id}>
-              <div className="icon">icon</div>
+            <div className="item" onClick={() => setSelectedCategoryId(category.id)} key={category.id}>
               <div className="category-name">{category.name}</div>
             </div>
           ))}

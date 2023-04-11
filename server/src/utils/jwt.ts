@@ -12,9 +12,7 @@ export const generateJwt = async (user) => {
     });
     return generatedJWT;
   } catch (error: Error | unknown) {
-    if (error instanceof Error) {
-      console.log("[generateJwt] => ", error);
-    }
+    console.log("[generateJwt] => ", error);
     return false;
   }
 };
