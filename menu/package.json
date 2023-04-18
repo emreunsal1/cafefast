@@ -1,16 +1,30 @@
 {
-  "name": "menu",
+  "name": "client-2",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
+    "start": "next start -p 3001",
     "build": "next build",
-    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "13.3.0",
+    "@ant-design/icons": "^5.0.1",
+    "antd": "^5.1.6",
+    "axios": "^1.2.4",
+    "eslint": "8.36.0",
+    "eslint-config-next": "13.2.4",
+    "formik": "^2.2.9",
+    "next": "13.2.4",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "yup": "^1.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.1",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-react": "^7.32.1"
   }
 }
