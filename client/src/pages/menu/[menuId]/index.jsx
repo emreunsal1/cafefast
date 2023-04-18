@@ -4,7 +4,7 @@ import { FloatButton } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import CategorySideBar from "../../../components/CategorySideBar";
 import { useMenu } from "../../../context/MenuContext";
-import ProductCard from "../../../components/ProductCard";
+import ProductCard, { PRODUCT_CARD_ACTIONS } from "../../../components/ProductCard";
 
 export default function MenuDetail() {
   const [selectedCategoryId, setSelectedCategoryId] = useState([]);
@@ -24,6 +24,15 @@ export default function MenuDetail() {
     router.push(`/menu/${router.query.menuId}/category/${selectedCategory._id}`);
   };
 
+  const productCardOnActionHandler = ({ action, data }) => {
+    if (action === PRODUCT_CARD_ACTIONS.UPDATE) {
+      // Update product data
+    }
+    if (action === PRODUCT_CARD_ACTIONS.DELETE) {
+      // Delete product data
+    }
+  };
+
   return (
     <div>
       <div className="side-bar">
@@ -37,7 +46,7 @@ export default function MenuDetail() {
       />
       )}
       <div className="products">
-        {selectedCategory?.products?.map((product) => <ProductCard product={product} />)}
+        {selectedCategory?.products?.map((product) => <ProductCard onAction={productCardOnActionHandler} product={product} />)}
       </div>
     </div>
   );

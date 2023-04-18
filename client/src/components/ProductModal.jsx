@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Modal,
@@ -7,34 +7,29 @@ import {
   Upload,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { useProduct } from "../context/ProductContext";
 
-export default function AddProductModal({ setPopupVisible, isEdit, editedProduct }) {
-  const [product, setProduct] = useState({ name: "", price: "", description: "" });
-  const { createProduct, updateProduct } = useProduct();
+export const PRODUCT_MODAL_ACTIONS = {
+  UPDATE: "update",
+  CREATE: "create",
+  CANCEL: "cancel",
+};
+
+export default function ProductModal({ data, onAction, action }) {
+  const [product, setProduct] = useState(data || { name: "", price: "", description: "" });
 
   const submitClickHandler = async () => {
     const newProduct = { ...product, price: Number(product.price) };
     setProduct(newProduct);
-    if (isEdit !== false) {
-      setProduct({ ...newProduct, _id: editedProduct._id });
-      updateProduct(newProduct);
-      setPopupVisible(false);
+    if (action === PRODUCT_MODAL_ACTIONS.UPDATE) {
+      onAction({ action: PRODUCT_MODAL_ACTIONS.UPDATE, data: newProduct });
       return;
     }
-    setPopupVisible(false);
-    createProduct(newProduct);
+    onAction({ action: PRODUCT_MODAL_ACTIONS.CREATE, data: newProduct });
   };
 
   const selectImageHandler = (e) => {
     console.log(e);
   };
-
-  useEffect(() => {
-    if (isEdit) {
-      setProduct(editedProduct);
-    }
-  }, []);
 
   return (
     <div>
@@ -43,7 +38,7 @@ export default function AddProductModal({ setPopupVisible, isEdit, editedProduct
         open
         footer={[
           <Button key="selam" onClick={submitClickHandler}>Submit</Button>,
-          <Button key="denem" onClick={() => setPopupVisible(false)}>Cancel</Button>,
+          <Button key="denem" onClick={() => onAction(PRODUCT_MODAL_ACTIONS.CANCEL)}>Cancel</Button>,
         ]}
       >
         <Form>
