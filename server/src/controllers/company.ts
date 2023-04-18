@@ -23,8 +23,8 @@ export const getActiveMenuController = async (req: Request, res: Response) => {
 
   const { data, error } = await getMenu(companyData?.activeMenu);
 
-  if (error) {
-    return res.status(400).send(error);
+  if (error || !data) {
+    return res.status(404).send({ message: "active menu not found", error });
   }
 
   res.send(data);
