@@ -10,20 +10,26 @@ export function MenuContext({ children }) {
   const getMenu = async (menuId) => {
     const response = await MENU_SERVICE.detail(menuId);
     setMenu(response.data);
-    const mutateCategories = response.data.categories.map((category) => ({ id: category._id, name: category.name }));
-    setCategories(mutateCategories);
+    setCategories(response.data.categories);
     return response.data;
   };
 
   const addCategory = async (menuId, categoryName, order) => {
     const response = await CATEGORY_SERVICE.createCategory(menuId, categoryName, order);
-    const { name, _id: id } = response.data;
-    setCategories([...categories, { name, id }]);
+    setCategories([...categories, response.data]);
+  };
+
+  const updateCategory = async (menuId, data) => {
+    const response = await CATEGORY_SERVICE.updateCategory(menuId, data);
+    const foundCategoryIndex = categories.findIndex((_category) => _category._id === data._id);
+    const newCategories = [...categories];
+    newCategories[foundCategoryIndex] = response.data.data;
+    setCategories(newCategories);
   };
 
   return (
     <Context.Provider value={{
-      menu, categories, addCategory, getMenu,
+      menu, categories, addCategory, getMenu, updateCategory,
     }}
     >
       {children}

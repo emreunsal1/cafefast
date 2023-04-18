@@ -15,7 +15,7 @@ router.use("/auth", authRouter);
 router.use("/location", locationRouter);
 
 router.use("/me", AUTH_REQUIRED_MIDDLEWARE, meRouter);
-router.use("/company", AUTH_REQUIRED_MIDDLEWARE, companyRouter);
+router.use("/company", companyRouter);
 router.use("/menu", AUTH_REQUIRED_MIDDLEWARE, menuRouter);
 router.use("/product", AUTH_REQUIRED_MIDDLEWARE, productRouter);
 

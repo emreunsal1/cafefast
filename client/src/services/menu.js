@@ -75,8 +75,17 @@ const createCategory = async (menuID, name, order) => {
   }
 };
 
-// product
+const updateCategory = async (menuId, data) => {
+  try {
+    const response = await instance.put(`${MENU_ROUTE}/${menuId}/category/${data._id}`, data);
+    return response;
+  } catch (error) {
+    console.log("abc update category error", { error });
+    return false;
+  }
+};
 
+// product
 const addProduct = async (menuId, categoryId, productId) => {
   try {
     const response = await instance.post(`${MENU_ROUTE}/${menuId}/category/${categoryId}/product/${productId}`);
@@ -107,6 +116,7 @@ export const MENU_SERVICE = {
 
 export const CATEGORY_SERVICE = {
   createCategory,
+  updateCategory,
   addProduct,
   deleteProduct,
 };

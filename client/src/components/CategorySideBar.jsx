@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Input } from "antd";
 import { useRouter } from "next/router";
 import { useMenu } from "../context/MenuContext";
+import CategorySideBarItem from "./CategorySideBarItem";
 
 export default function CategorySideBar({ selectedCategoryId, setSelectedCategoryId }) {
   const { categories, addCategory } = useMenu();
@@ -15,9 +16,11 @@ export default function CategorySideBar({ selectedCategoryId, setSelectedCategor
       <div className="side-container">
         <div className="list">
           {categories.map((category) => (
-            <div className="item" onClick={() => setSelectedCategoryId(category.id)} key={category.id}>
-              <div className="category-name">{category.name}</div>
-            </div>
+            <CategorySideBarItem
+              data={category}
+              selectedCategoryId={selectedCategoryId}
+              onClick={() => setSelectedCategoryId(category._id)}
+            />
           ))}
         </div>
         <div className="add-button" onClick={() => setIsCreateCategory(true)}> + </div>
