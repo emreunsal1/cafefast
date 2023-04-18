@@ -15,8 +15,8 @@ export const getCompanyController = async (req: Request, res: Response) => {
 };
 
 export const getActiveMenuController = async (req: Request, res: Response) => {
-  const { company } = req.user;
-  const { data: companyData, error: companyError } = await getCompany({ query: { _id: company } });
+  const { companyId } = req.params;
+  const { data: companyData, error: companyError } = await getCompany({ query: { _id: companyId } });
   if (companyError) {
     return res.status(400).send(companyError);
   }
