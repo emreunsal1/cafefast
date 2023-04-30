@@ -30,6 +30,8 @@ const menuSchema = new Schema({
 export const createMenuVerifier = z.object({
   name: z.string().min(3).max(255),
   description: z.string().min(3).max(255).optional(),
+  campaigns: z.array(z.string()).optional(),
+  categories: z.array(z.string()).optional(),
 });
 
 export const updateMenuVerifier = createMenuVerifier.optional();

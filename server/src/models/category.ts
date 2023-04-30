@@ -4,11 +4,11 @@ import z from "zod";
 export const createCategoryValidator = z.object({
   name: z.string(),
   order: z.number(),
-  products: z.array(z.string()).optional().default([]),
-  images: z.array(z.string()).default([]).optional(),
+  products: z.array(z.string()).optional(),
+  images: z.array(z.string()).optional(),
 });
 
-export const updateCategoryValidator = createCategoryValidator.omit({ images: true }).optional();
+export const updateCategoryValidator = createCategoryValidator.optional();
 
 export type ICategory = z.infer<typeof createCategoryValidator>;
 
