@@ -1,9 +1,8 @@
 import instance from "../utils/axios";
 
-const update = async ({ name, address }) => {
+const update = async (data) => {
   try {
-    console.log("data", { name, address });
-    const response = await instance.put("/company", { name, address });
+    const response = await instance.put("/company", data);
     return response;
   } catch (error) {
     console.log("update company error", { error });

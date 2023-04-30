@@ -6,15 +6,25 @@ import {
 } from "antd";
 import { useRouter } from "next/router";
 import { MENU_SERVICE } from "../../services/menu";
+import COMPANY_SERVICE from "@/services/company";
 
 export default function Menu() {
   const [menus, setMenus] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newMenu, setNewMenu] = useState({ name: "", desc: "" });
+  const [isUpdate, setIsUpdate] = useState(false);
+  const [newMenu, setNewMenu] = useState({ name: "", description: "" });
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (isUpdate !== false) {
+      setIsModalOpen(true);
+      const data = menus.find((menu) => menu._id === isUpdate);
+      setNewMenu(data);
+    }
+  }, [isUpdate]);
 
   const getMenu = async () => {
     setLoading(true);
@@ -22,12 +32,22 @@ export default function Menu() {
     setLoading(false);
     setMenus(response.data);
   };
+
   const deleteClickHandler = async (menuId) => {
     const response = await MENU_SERVICE.deleteMenu(menuId);
     if (response) {
       const clearedMenu = menus.filter((menu) => menu._id !== menuId);
       setMenus(clearedMenu);
     }
+  };
+
+  const updateClickHandler = async () => {
+    const response = await MENU_SERVICE.update(isUpdate, { name: newMenu.name, description: newMenu.description });
+    const filteredMenu = menus.filter((menu) => menu._id !== isUpdate);
+    filteredMenu.push(response.data);
+    setMenus(filteredMenu);
+    setIsUpdate(false);
+    setIsModalOpen(false);
   };
 
   const rowclickHandler = (menu) => {
@@ -50,6 +70,13 @@ export default function Menu() {
     setMenus([...menus, response.data]);
     setIsModalOpen(false);
   };
+
+  const activeMenuChangeHandler = async (menuId) => {
+    console.log("menu ıd", menuId);
+    const response = await COMPANY_SERVICE.update({ activeMenu: menuId });
+    console.log("active menu update", response.data);
+    return response.data;
+  };
   useEffect(() => {
     getMenu();
   }, []);
@@ -64,6 +91,7 @@ export default function Menu() {
           rowKey="_id"
           rowSelection={{
             type: "radio",
+            onSelect: (record) => activeMenuChangeHandler(record._id),
           }}
           dataSource={menus}
         >
@@ -77,7 +105,7 @@ export default function Menu() {
             )}
           />
           <Table.Column
-            title="description"
+            title="Description"
             key="description"
             render={(_, record) => (
               <Space>
@@ -92,6 +120,7 @@ export default function Menu() {
             render={(_, record) => (
               <Space size="middle">
                 <div onClick={() => deleteClickHandler(record._id)}>delete</div>
+                <div onClick={() => setIsUpdate(record._id)}>update</div>
               </Space>
             )}
           />
@@ -106,13 +135,20 @@ export default function Menu() {
         onCancel={() => setIsModalOpen(false)}
         open={isModalOpen}
         footer={[
-          <Button key="create" loading={loading} onClick={() => createMenu()}>Add</Button>,
-          <Button key="cancel" onClick={() => setIsModalOpen(false)}>Cancel</Button>,
+          <Button key="create" loading={loading} onClick={() => (!isUpdate ? createMenu() : updateClickHandler())}>
+            {!isUpdate ? "add" : "update"}
+          </Button>,
+          <Button key="cancel" onClick={() => { setIsModalOpen(false); setIsUpdate(false); }}>Cancel</Button>,
         ]}
       >
         <div className="modal">
-          <Input placeholder="Name" key="name" onChange={(e) => setNewMenu({ ...newMenu, name: e.target.value })} />
-          <Input placeholder="Description" key="desc" onChange={(e) => setNewMenu({ ...newMenu, desc: e.target.value })} />
+          <Input placeholder="Name" key="name" value={newMenu.name} onChange={(e) => setNewMenu({ ...newMenu, name: e.target.value })} />
+          <Input
+            placeholder="Description"
+            key="desc"
+            value={newMenu.description}
+            onChange={(e) => setNewMenu({ ...newMenu, description: e.target.value })}
+          />
         </div>
       </Modal>
     </div>

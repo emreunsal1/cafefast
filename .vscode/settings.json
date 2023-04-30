@@ -10,7 +10,7 @@
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "eslint.workingDirectories": ["./client", "./server"],
+  "eslint.workingDirectories": ["./client", "./server", "./menu"],
   "[javascriptreact]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.codeActionsOnSave": {

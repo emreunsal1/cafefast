@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import ProductModal, { PRODUCT_MODAL_ACTIONS } from "./ProductModal";
-import PRODUCT_SERVICE from "@/services/product";
+import PRODUCT_SERVICE from "../services/product";
 
 const { Meta } = Card;
 

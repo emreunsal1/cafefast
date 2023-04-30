@@ -27,10 +27,11 @@ const create = async (name, desc) => {
   }
 };
 
-const update = async (id, name) => {
+const update = async (id, { name, description }) => {
   try {
     const resposne = instance.put(`${MENU_ROUTE}/${id}`, {
       name,
+      description,
     });
     return resposne;
   } catch (error) {

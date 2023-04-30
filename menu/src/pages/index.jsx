@@ -1,13 +1,22 @@
-import MENU_SERVICE from '@/services/menu'
-import React, { useEffect } from 'react'
+import React, { useEffect } from "react";
+import { useMenu } from "../context/Menu";
+import Header from "@/components/Header";
+import ProductList from "@/components/ProductList";
 
-export default function index() {
-
+export default function Index() {
+  const { getMenu } = useMenu();
   useEffect(() => {
-    MENU_SERVICE.getMenu("64208d2c890cdcf8376c87a5");
-  }, [])
-  
+    getMenu();
+  }, []);
+
   return (
-    <div>index</div>
-  )
+    <div>
+      <div className="header">
+        <Header />
+      </div>
+      <div className="product-list">
+        <ProductList />
+      </div>
+    </div>
+  );
 }
