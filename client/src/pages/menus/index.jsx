@@ -51,7 +51,7 @@ export default function Menu() {
   };
 
   const rowclickHandler = (menu) => {
-    router.push(`/menu/${menu._id}`);
+    router.push(`/menus/${menu._id}`);
   };
 
   const createMenu = async () => {

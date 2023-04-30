@@ -6,7 +6,6 @@ export const createCampaignVerifier = z.object({
   price: z.number().positive(),
   image: z.string().url(),
   description: z.string().min(1).max(500),
-  order: z.number().default(0),
   products: z.array(z.string()),
   applicable: z.object({
     end: z.date().optional(),
@@ -14,8 +13,8 @@ export const createCampaignVerifier = z.object({
       start: z.date(),
       end: z.date(),
     }).optional(),
-    days: z.array(z.number()).optional().default([]),
-  }).optional(),
+    days: z.array(z.number()).optional(),
+  }),
 });
 
 export const updateCampaignVerifier = createCampaignVerifier.partial();
@@ -27,7 +26,6 @@ const campaignSchema = new Schema<ICampaign>({
   price: Number,
   image: String,
   description: String,
-  order: Number,
   products: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "product",

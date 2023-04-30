@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import {
+  Button,
   Col, Empty, FloatButton, Row,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
@@ -25,6 +26,14 @@ export default function MenuDetail() {
     router.push(`/menu/${router.query.menuId}/category/${selectedCategory._id}`);
   };
 
+  const redirectToCampaignPage = (campaignId) => {
+    let url = `/menus/${router.query.menuId}/campaign`;
+    if (campaignId) {
+      url += `/${campaignId}`;
+    }
+    router.push(url);
+  };
+
   const productCardOnActionHandler = ({ action, data }) => {
     if (action === PRODUCT_CARD_ACTIONS.UPDATE) {
       // Update product data
@@ -36,6 +45,7 @@ export default function MenuDetail() {
 
   return (
     <div>
+      <h2>Categories</h2>
       <Row>
         <Col span={4}>
           <div className="side-bar">
@@ -51,6 +61,22 @@ export default function MenuDetail() {
                   <ProductCard onAction={productCardOnActionHandler} product={product} />
                 </Col>
               ))}
+            </Row>
+          </div>
+        </Col>
+      </Row>
+      <h2>Campaigns</h2>
+      <Row>
+        <Col span={4}>
+          <div className="side-bar">
+            <h3>Campaigns should be rendered in this</h3>
+            <Button onClick={() => redirectToCampaignPage()}>Add Campaign</Button>
+          </div>
+        </Col>
+        <Col span={18}>
+          <div className="campaigns">
+            <Row>
+              <h3>CampaignDetail</h3>
             </Row>
           </div>
         </Col>

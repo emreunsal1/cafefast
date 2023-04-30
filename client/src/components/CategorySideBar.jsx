@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Input } from "antd";
+import { Button, Input } from "antd";
 import { useRouter } from "next/router";
 import { useMenu } from "../context/MenuContext";
 import CategorySideBarItem from "./CategorySideBarItem";
@@ -23,7 +23,7 @@ export default function CategorySideBar({ selectedCategoryId, setSelectedCategor
             />
           ))}
         </div>
-        <div className="add-button" onClick={() => setIsCreateCategory(true)}> + </div>
+        <div className="add-button" onClick={() => setIsCreateCategory(true)}><Button>Add Category + </Button></div>
         {isCreateCategory && (
         <div className="new-category">
           <Input

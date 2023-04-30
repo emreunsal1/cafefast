@@ -1,14 +1,19 @@
 import { useRouter } from "next/router";
 import React from "react";
 
+const MenuItems = [
+  { key: "Profile", route: "/profile" },
+  { key: "Menus", route: "/menus" },
+  { key: "Products", route: "/products" },
+];
+
 export default function MenuBar() {
-  const menuItem = [{ key: "Profile", route: "/profile" }, { key: "Menu", route: "/menu" }, { key: "Product", route: "/product" }];
   const router = useRouter();
   return (
     <div id="Menu">
       <div className="container">
         {
-          menuItem.map((item, index) => (
+          MenuItems.map((item, index) => (
             <div
               className="menu-item"
               key={index}
