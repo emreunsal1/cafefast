@@ -30,6 +30,7 @@ function CampaignDetail() {
   const [allProducts, setAllProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [applicable, setApplicable] = useState({ days: DEFAULT_DAYS_VALUE });
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const message = useMessage();
 
@@ -40,19 +41,25 @@ function CampaignDetail() {
     setAllProducts(response);
   };
 
-  const fetchCurrentCampaign = async () => {
-    const currentMenu = await MENU_SERVICE.detail(router.query.menuId);
-    const currentCampaign = currentMenu.data.campaigns.find((campaign) => campaign._id === campaignId);
-
+  const setCurrentCampaign = (currentData) => {
     setData({
-      name: currentCampaign.name,
-      description: currentCampaign.description,
-      price: currentCampaign.price,
+      name: currentData.name,
+      description: currentData.description,
+      price: currentData.price,
     });
 
-    const productIds = currentCampaign.products.map((product) => product._id);
+    const productIds = currentData.products.map((product) => product._id || product);
     setSelectedProducts(productIds);
-    setApplicable(currentCampaign.applicable);
+    setApplicable(currentData.applicable);
+  };
+
+  const fetchCurrentCampaign = async () => {
+    setIsLoading(true);
+    const currentMenu = await MENU_SERVICE.detail(router.query.menuId);
+    setIsLoading(false);
+    const currentCampaign = currentMenu.data.campaigns.find((campaign) => campaign._id === campaignId);
+
+    setCurrentCampaign(currentCampaign);
   };
 
   useEffect(() => {
@@ -83,7 +90,7 @@ function CampaignDetail() {
 
     const response = await CAMPAIGN_SERVICE.update(router.query.menuId, campaignId, submitData);
     if (response) {
-      fetchCurrentCampaign();
+      setCurrentCampaign(response.data);
       message("success", "Güncelleme başarılı!");
     }
   };
@@ -111,6 +118,10 @@ function CampaignDetail() {
       [key]: value,
     });
   };
+
+  if (!router.isReady || isLoading) {
+    return null;
+  }
 
   return (
     <Form
