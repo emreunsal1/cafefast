@@ -3,7 +3,6 @@ import instance from "../utils/axios";
 const { MENU_ROUTE } = require("../constants");
 
 // MENUS SERVICE
-
 const get = async () => {
   try {
     const response = await instance.get(MENU_ROUTE);

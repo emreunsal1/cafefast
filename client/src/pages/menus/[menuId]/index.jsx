@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import {
@@ -11,7 +12,7 @@ import ProductCard, { PRODUCT_CARD_ACTIONS } from "../../../components/ProductCa
 
 export default function MenuDetail() {
   const [selectedCategoryId, setSelectedCategoryId] = useState([]);
-  const { categories, getMenu } = useMenu();
+  const { menu, categories, getMenu } = useMenu();
   const router = useRouter();
 
   useEffect(() => {
@@ -67,17 +68,19 @@ export default function MenuDetail() {
       </Row>
       <h2>Campaigns</h2>
       <Row>
-        <Col span={4}>
+        <Col span={10}>
           <div className="side-bar">
-            <h3>Campaigns should be rendered in this</h3>
+            <ul>
+              {menu?.campaigns.map((campaign) => (
+                <li
+                  onClick={() => router.push(`/menus/${menu._id}/campaign/${campaign._id}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {campaign.name}
+                </li>
+              ))}
+            </ul>
             <Button onClick={() => redirectToCampaignPage()}>Add Campaign</Button>
-          </div>
-        </Col>
-        <Col span={18}>
-          <div className="campaigns">
-            <Row>
-              <h3>CampaignDetail</h3>
-            </Row>
           </div>
         </Col>
       </Row>

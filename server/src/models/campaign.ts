@@ -10,8 +10,8 @@ export const createCampaignVerifier = z.object({
   applicable: z.object({
     end: z.date().optional(),
     time: z.object({
-      start: z.date(),
-      end: z.date(),
+      start: z.number(),
+      end: z.number(),
     }).optional(),
     days: z.array(z.number()).optional(),
   }),
@@ -32,7 +32,7 @@ const campaignSchema = new Schema<ICampaign>({
   }],
   applicable: {
     end: String,
-    time: { start: String, end: String },
+    time: { start: Number, end: Number },
     days: [Number],
   },
 });
