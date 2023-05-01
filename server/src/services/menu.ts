@@ -1,6 +1,6 @@
 import menuModel, { IMenu } from "../models/menu";
 
-export const createMenu = async (menuData: IMenu) => {
+export const createMenu = async (menuData) => {
   try {
     const newMenu = await menuModel.create(menuData);
     return { data: newMenu };

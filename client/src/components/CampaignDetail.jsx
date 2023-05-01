@@ -96,29 +96,11 @@ function CampaignDetail() {
         <Select onChange={timeHandler}>
           {HOURS.map((hour) => (
             <Select.Option key={hour} value={hour}>
-              {/* <Space>{i % 10 }</Space> */}
+              <Space>{hour}</Space>
             </Select.Option>
           ))}
         </Select>
         <p>Bu alan zorunlu değildir. Kampanyanız sadece seçtiğiniz tarih arasında aktif olur.</p>
-      </Form.Item>
-
-      <Form.Item
-        label="Ürünler"
-      >
-        <Select
-          mode="multiple"
-          style={{ width: "100%" }}
-          onChange={daysChangeHandler}
-          defaultValue={DEFAULT_DAYS_VALUE}
-        >
-          {DAYS.map((day, i) => (
-            <Select.Option key={i} value={i} label={day}>
-              <Space>{day}</Space>
-            </Select.Option>
-          ))}
-        </Select>
-        <p>Kampanyanız sadece seçtiğiniz günler için geçerli olacaktır.</p>
       </Form.Item>
 
       <Form.Item
