@@ -18,6 +18,9 @@ export default function Product() {
   }, []);
 
   const productCardOnActionHandler = ({ action, data }) => {
+    if (action === PRODUCT_CARD_ACTIONS.CREATE) {
+      createProduct(data);
+    }
     if (action === PRODUCT_CARD_ACTIONS.UPDATE) {
       updateProduct(data);
     }

@@ -3,19 +3,7 @@ import instance from "../utils/axios";
 
 const create = async (data) => {
   try {
-    const {
-      name,
-      description,
-      price,
-      image,
-    } = data;
-
-    const response = await instance.post(PRODUCT_ROUTE, {
-      name,
-      description,
-      price,
-      image,
-    });
+    const response = await instance.post(PRODUCT_ROUTE, data);
     return response;
   } catch (error) {
     console.log("create product error", { error });

@@ -18,7 +18,7 @@ export default function ProductModal({ data, onAction, action }) {
   const [product, setProduct] = useState(data || { name: "", price: "", description: "" });
 
   const submitClickHandler = async () => {
-    const newProduct = { ...product, price: Number(product.price) };
+    const newProduct = { ...product, price: Number(product.price), images: ["https://http.cat/102"] };
     setProduct(newProduct);
     if (action === PRODUCT_MODAL_ACTIONS.UPDATE) {
       onAction({ action: PRODUCT_MODAL_ACTIONS.UPDATE, data: newProduct });

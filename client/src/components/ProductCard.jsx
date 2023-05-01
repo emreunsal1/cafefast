@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Card } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import ProductModal, { PRODUCT_MODAL_ACTIONS } from "./ProductModal";
-import PRODUCT_SERVICE from "../services/product";
 
 const { Meta } = Card;
 
@@ -19,8 +18,7 @@ export default function ProductCard({ product, onAction }) {
   };
 
   const deleteHandler = () => {
-    PRODUCT_SERVICE.deleteProduct();
-    onAction({ action: PRODUCT_CARD_ACTIONS.DELETE, product });
+    onAction({ action: PRODUCT_CARD_ACTIONS.DELETE, data: product });
   };
 
   const modalActionHandler = ({ action, data }) => {
