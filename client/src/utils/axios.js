@@ -12,7 +12,7 @@ instance.interceptors.response.use((res) => res, (err) => {
     window?.location?.assign("/auth/login");
     return;
   }
-  return err;
+  return Promise.reject(err);
 });
 
 export default instance;

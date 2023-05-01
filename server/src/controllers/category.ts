@@ -1,13 +1,22 @@
 import { Request, Response } from "express";
 import { createCategoryValidator, updateCategoryValidator } from "../models/category";
-import { createCategory, deleteCategory, updateCategory } from "../services/category";
-import { addCategoryToMenu, removeCategoryFromMenu } from "../services/menu";
+import {
+  createCategory, deleteCategory, updateCategory,
+} from "../services/category";
+import { addCategoryToMenu, getMenuWithId, removeCategoryFromMenu } from "../services/menu";
 
 export const createCategoryController = async (req: Request, res: Response) => {
   const { menuId } = req.params;
+  const { name } = req.body;
 
   try {
     const validatedCategory = await createCategoryValidator.parseAsync(req.body);
+    const menu = await getMenuWithId(menuId);
+    const isExistCategory = menu?.categories.some((category:any) => name.toLowerCase() === category.name.toLowerCase());
+    if (isExistCategory) {
+      return res.status(400).send({ error: "CATEGORY_NAME_MUST_BE_UNIQUE" });
+    }
+
     const createdCategory = await createCategory(validatedCategory);
 
     if (!createdCategory.data || createdCategory.error) {
@@ -28,9 +37,15 @@ export const createCategoryController = async (req: Request, res: Response) => {
 };
 
 export const updateCategoryController = async (req: Request, res: Response) => {
-  const { categoryId } = req.params;
+  const { categoryId, menuId } = req.params;
+  const { name } = req.body;
   try {
     const validatedCategory = await updateCategoryValidator.parseAsync(req.body);
+    const menu = await getMenuWithId(menuId);
+    const isExistCategory = menu?.categories.some((category:any) => name.toLowerCase() === category.name.toLowerCase());
+    if (isExistCategory) {
+      return res.status(400).send({ error: "CATEGORY_NAME_MUST_BE_UNIQUE" });
+    }
 
     const newCategory = await updateCategory(categoryId, validatedCategory);
     if (!newCategory.data || newCategory.error) {

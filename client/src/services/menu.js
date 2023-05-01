@@ -66,25 +66,9 @@ const detail = async (menuId) => {
 
 // CATEGORY SERVICE
 
-const createCategory = async (menuID, name, order) => {
-  try {
-    const response = await instance.post(`${MENU_ROUTE}/${menuID}/category`, { name, order });
-    return response;
-  } catch (error) {
-    console.log("abc create category error", { error });
-    return false;
-  }
-};
+const createCategory = async (menuID, name, order) => instance.post(`${MENU_ROUTE}/${menuID}/category`, { name, order });
 
-const updateCategory = async (menuId, data) => {
-  try {
-    const response = await instance.put(`${MENU_ROUTE}/${menuId}/category/${data._id}`, data);
-    return response;
-  } catch (error) {
-    console.log("abc update category error", { error });
-    return false;
-  }
-};
+const updateCategory = (menuId, data) => instance.put(`${MENU_ROUTE}/${menuId}/category/${data._id}`, data);
 
 // product
 const addProduct = async (menuId, categoryId, productId) => {
@@ -97,12 +81,13 @@ const addProduct = async (menuId, categoryId, productId) => {
   }
 };
 
-const deleteProduct = async (menuId, categoryId, ProductId) => {
+const deleteCategory = async (menuId, categoryId) => {
   try {
-    const response = await instance.delete(`${MENU_ROUTE}/${menuId}/category/${categoryId}/product/${ProductId}`);
+    console.log("silinecek category id", categoryId);
+    const response = await instance.delete(`${MENU_ROUTE}/${menuId}/category/${categoryId}`);
     return response.data;
   } catch (error) {
-    console.log("delete Product to category Error", { error });
+    console.log("delete Category", { error });
     return false;
   }
 };
@@ -119,5 +104,5 @@ export const CATEGORY_SERVICE = {
   createCategory,
   updateCategory,
   addProduct,
-  deleteProduct,
+  deleteCategory,
 };

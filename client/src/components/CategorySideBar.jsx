@@ -17,6 +17,7 @@ export default function CategorySideBar({ selectedCategoryId, setSelectedCategor
         <div className="list">
           {categories.map((category) => (
             <CategorySideBarItem
+              key={category._id}
               data={category}
               selectedCategoryId={selectedCategoryId}
               onClick={() => setSelectedCategoryId(category._id)}

@@ -1,15 +1,16 @@
 import React, { useRef, useState } from "react";
 import {
-  Button, Col, Input, Row,
+  Button, Col, Row,
 } from "antd";
-import { EditOutlined, SaveOutlined } from "@ant-design/icons";
+import { EditOutlined, SaveOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
-import { useMenu } from "@/context/MenuContext";
+import { useMenu } from "../context/MenuContext";
+import { CATEGORY_SERVICE } from "../services/menu";
 
 export default function CategorySideBarItem({ data, selectedCategoryId, onClick }) {
   const [isEdit, setIsEdit] = useState(false);
   const [editData, setEditData] = useState({ _id: data._id, order: data.order, name: data.name });
-  const { updateCategory } = useMenu();
+  const { categories, updateCategory, setCategories } = useMenu();
   const router = useRouter();
   const inputRef = useRef(null);
 
@@ -19,9 +20,13 @@ export default function CategorySideBarItem({ data, selectedCategoryId, onClick 
   };
 
   const editHandler = () => {
-    console.log("inputRef.current :>> ", inputRef);
-    // inputRef.current.focus();
     setIsEdit(true);
+  };
+
+  const deleteHandler = () => {
+    CATEGORY_SERVICE.deleteCategory(router.query.menuId, data._id);
+    const filteredCategory = categories.filter((category) => category._id !== data._id);
+    setCategories(filteredCategory);
   };
 
   return (
@@ -51,6 +56,12 @@ export default function CategorySideBarItem({ data, selectedCategoryId, onClick 
             shape="circle"
             onClick={isEdit ? saveHandler : editHandler}
             icon={isEdit ? <SaveOutlined /> : <EditOutlined />}
+          />
+          <Button
+            type="primary"
+            shape="circle"
+            icon={<DeleteOutlined />}
+            onClick={deleteHandler}
           />
         </Col>
       </Row>
