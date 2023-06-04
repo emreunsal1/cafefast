@@ -7,6 +7,7 @@ import {
 import { useRouter } from "next/router";
 import { MENU_SERVICE } from "../../services/menu";
 import COMPANY_SERVICE from "@/services/company";
+import Layout from "../../components/Layout";
 
 export default function Menu() {
   const [menus, setMenus] = useState([]);
@@ -154,3 +155,11 @@ export default function Menu() {
     </div>
   );
 }
+
+Menu.getLayout = function getLayout(menu) {
+  return (
+    <Layout>
+      {menu}
+    </Layout>
+  );
+};

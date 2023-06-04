@@ -34,7 +34,7 @@ export default function CategoryProducts() {
   }, []);
 
   const redirectToMenuPage = () => {
-    router.push(`/menu/${router.query.menuId}`);
+    router.push(`/menus/${router.query.menuId}`);
   };
 
   const addProductsToSelectedCategory = async (productData) => {

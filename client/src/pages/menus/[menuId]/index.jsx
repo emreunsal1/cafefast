@@ -24,7 +24,7 @@ export default function MenuDetail() {
   const selectedCategory = categories?.find((category) => category._id === selectedCategoryId) || null;
 
   const redirectToProductAddPage = () => {
-    router.push(`/menu/${router.query.menuId}/category/${selectedCategory._id}`);
+    router.push(`/menus/${router.query.menuId}/category/${selectedCategory._id}`);
   };
 
   const redirectToCampaignPage = (campaignId) => {

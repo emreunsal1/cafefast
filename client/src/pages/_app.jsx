@@ -5,7 +5,9 @@ import { ProductContext } from "../context/ProductContext";
 import { GlobalMessageContext } from "../context/GlobalMessage";
 
 export default function App({ Component, pageProps }) {
-  return (
+  const getLayout = Component.getLayout || ((page) => page);
+
+  return getLayout(
     <GlobalMessageContext>
       <UserContext>
         <ProductContext>
@@ -14,6 +16,6 @@ export default function App({ Component, pageProps }) {
           </MenuContext>
         </ProductContext>
       </UserContext>
-    </GlobalMessageContext>
+    </GlobalMessageContext>,
   );
 }

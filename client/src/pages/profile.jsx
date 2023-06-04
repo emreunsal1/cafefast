@@ -5,6 +5,7 @@ import {
 import USER_SERVICE from "../services/user";
 import ADRESS_SERVICE from "../services/location";
 import COMPANY_SERVICE from "../services/company";
+import Layout from "@/components/Layout";
 
 export default function Profile() {
   const [isEdit, setIsEdit] = useState(false);
@@ -202,3 +203,11 @@ export default function Profile() {
     </div>
   );
 }
+
+Profile.getLayout = function getLayout(profile) {
+  return (
+    <Layout>
+      {profile}
+    </Layout>
+  );
+};
