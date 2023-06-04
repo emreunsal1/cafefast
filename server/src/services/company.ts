@@ -1,4 +1,5 @@
 import companyModel, { ICompany } from "../models/company";
+import { getMenu } from "./menu";
 
 export const createCompany = async (companyData: ICompany) => {
   try {
@@ -25,6 +26,18 @@ export const getCompany = async ({
   } catch (error) {
     return { error: (error as any).message || error };
   }
+};
+
+export const getCompanyActiveMenu = async (companyId) => {
+  const { data: companyData, error: companyError } = await getCompany({ query: { _id: companyId } });
+  if (companyError) {
+    return { error: companyError };
+  }
+  const { data, error } = await getMenu(companyData?.activeMenu);
+  if (error) {
+    return { error };
+  }
+  return { data };
 };
 
 export const updateCompany = async (query, data) => {

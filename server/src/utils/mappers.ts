@@ -3,3 +3,8 @@ export const mapUserForJWT = (userData) => ({
   email: userData.email,
   company: userData.company,
 });
+
+export const mapShopperForJWT = (shopperData) => ({
+  _id: shopperData._id,
+  phone: shopperData.phone,
+});

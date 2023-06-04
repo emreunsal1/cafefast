@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { AUTH_TOKEN_COOKIE_NAME } from "../constants";
+import { AUTH_TOKEN_COOKIE_NAME, SHOPPER_AUTH_TOKEN_NAME } from "../constants";
 import { IUserWithoutPassword } from "../models/user";
 import { getUser } from "../services/user";
 import { generateJwt, verifyJwt } from "../utils/jwt";
@@ -27,5 +27,21 @@ export const AUTH_REQUIRED_MIDDLEWARE = async (req: Request, res: Response, next
     );
   }
   req.user = data as IUserWithoutPassword;
+  next();
+};
+
+export const SHOPPER_AUTH_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
+  const authToken = req.cookies[SHOPPER_AUTH_TOKEN_NAME];
+  if (!authToken) {
+    return;
+  }
+
+  const data = verifyJwt(authToken);
+  if (!data) {
+    res.status(401).send("Unauthorized");
+    return;
+  }
+
+  req.shopper = data;
   next();
 };
