@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import MenuBar from "../components/MenuBar";
 import USER_SERVICE from "../services/user";
+import Layout from "@/components/Layout";
 
 export default function Index() {
   useEffect(() => {
@@ -16,3 +17,11 @@ export default function Index() {
     </div>
   );
 }
+
+Index.getLayout = function getLayout(index) {
+  return (
+    <Layout>
+      {index}
+    </Layout>
+  );
+};

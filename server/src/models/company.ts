@@ -48,7 +48,7 @@ const companyModel = mongoose.model("company", companySchema);
 
 export const createCompanyValidator = z.object({
   name: z.string().min(3).max(255),
-  activeMenu: z.string().min(3).max(255).nullable(),
+  activeMenu: z.string().min(3).max(255).optional(),
   products: z.array(z.string()).optional().default([]),
   address: z.object({
     city: z.string().min(3).max(255),

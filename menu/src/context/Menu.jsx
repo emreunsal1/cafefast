@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState } from "react";
+import React, {
+  createContext, useContext, useEffect, useState,
+} from "react";
 import MENU_SERVICE from "../services/menu";
 
 const Context = createContext({});
@@ -6,17 +8,17 @@ const Context = createContext({});
 export function MenuContext({ children }) {
   const [menu, setMenu] = useState(null);
   const [products, setProducts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const categories = menu?.categories;
 
-  console.log("products context", products);
   const getProductsWithCategory = (categoryId, activeMenu) => {
-    if (menu === null) {
+    if (menu === null && selectedCategory === null) {
       const result = activeMenu.categories.find((category) => category._id === categoryId).products;
-      console.log("result1", result);
       setProducts(result);
       return;
     }
-    const result = categories.find((category) => category._id === categoryId).products;
+    const result = categories.find((category) => category._id === selectedCategory).products;
+    console.log("products result", result);
     setProducts(result);
   };
 
@@ -25,15 +27,22 @@ export function MenuContext({ children }) {
     setMenu(response.data);
     const { data } = response;
     const resultCategories = data.categories.map((category) => ({ name: category.name, _id: category._id }));
+    setSelectedCategory(resultCategories[0]._id);
     if (!products.length) {
       getProductsWithCategory(resultCategories[0]._id, data);
     }
     return data;
   };
 
+  useEffect(() => {
+    if (selectedCategory !== null) {
+      getProductsWithCategory();
+    }
+  }, [selectedCategory]);
+
   return (
     <Context.Provider value={{
-      menu, categories, products, getMenu, getProductsWithCategory,
+      menu, categories, products, selectedCategory, getMenu, getProductsWithCategory, setSelectedCategory,
     }}
     >
       {children}

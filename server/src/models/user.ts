@@ -34,7 +34,7 @@ export const registerUserVerifier = z.object({
   password: z.string().min(3).max(255),
   phoneNumber: z.string().transform((val) => {
     if (Number.isNaN(Number(val)) || val.length !== 10) {
-      throw new Error("Type4 must have 5 digits");
+      throw new Error("Phone Number must have 10 digits");
     }
     return val;
   }).optional(),

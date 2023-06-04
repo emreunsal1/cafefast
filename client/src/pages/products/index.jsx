@@ -4,6 +4,7 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import { useProduct } from "../../context/ProductContext";
 import ProductCard, { PRODUCT_CARD_ACTIONS } from "../../components/ProductCard";
 import ProductModal, { PRODUCT_MODAL_ACTIONS } from "../../components/ProductModal";
+import Layout from "../../components/Layout";
 
 export default function Product() {
   const {
@@ -48,3 +49,11 @@ export default function Product() {
     </div>
   );
 }
+
+Product.getLayout = function getLayout(product) {
+  return (
+    <Layout>
+      {product}
+    </Layout>
+  );
+};
