@@ -5,3 +5,4 @@ export const THREED_START_PAGE = "/payment/3d-start";
 export const ADRESS_ROUTE = "/location";
 export const MENU_ROUTE = "/menu";
 export const PRODUCT_ROUTE = "/product";
+export const AUTH_TOKEN_NAME = "auth_token";
