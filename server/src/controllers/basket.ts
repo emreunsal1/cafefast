@@ -1,6 +1,12 @@
 import { Request, Response } from "express";
 import {
-  addCampaignToShopper, addProductToShopper, createShopper, getShopper, getShopperBasketItems, updateCampaignCount, updateProductCount,
+  addCampaignToShopper,
+  addProductToShopper,
+  createShopper,
+  getShopper,
+  getShopperBasketItems,
+  updateCampaignCount,
+  updateProductCount,
 } from "../services/shopper";
 import { createShopperVerifier, addNewItemVerifier, updateQuantityVerifier } from "../models/shopper";
 import { getCompanyActiveMenu } from "../services/company";

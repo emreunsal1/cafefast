@@ -10,6 +10,7 @@ export default function ProductList() {
       <div className="container">
         { products?.map((product) => (
           <ProductCard
+            id={product._id}
             price={product.price}
             name={product.name}
             description={product.description}
