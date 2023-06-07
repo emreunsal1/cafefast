@@ -3,4 +3,4 @@ export const checkMenuHasProduct = (menu, productId) => {
   return menuProducts.some((product) => String(product._id) === productId);
 };
 
-export const checkMenuHasCampaign = (menu, campaignId) => menu.campaigns.some((campaign) => campaign._id === campaignId);
+export const checkMenuHasCampaign = (menu, campaignId) => menu.campaigns.some((campaign) => String(campaign._id) === campaignId);

@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
-import { createShopper } from "../services/shopper";
-import { IShopper, createShopperVerifier } from "../models/shopper";
+import {
+  addCampaignToShopper, addProductToShopper, createShopper, getShopper, getShopperBasketItems,
+} from "../services/shopper";
+import { createShopperVerifier, addNewItemVerifier } from "../models/shopper";
 import { getCompanyActiveMenu } from "../services/company";
 import { checkMenuHasCampaign, checkMenuHasProduct } from "../utils/menu";
 import { generateJwt } from "../utils/jwt";
 import { mapShopperForJWT } from "../utils/mappers";
 import { SHOPPER_AUTH_TOKEN_NAME } from "../constants";
+import { createBasketObject, mapBasket } from "../utils/basket";
 
 export const addToBasketController = async (req: Request, res: Response) => {
   const { shopper } = req;
@@ -39,19 +42,64 @@ export const addToBasketController = async (req: Request, res: Response) => {
   }
 
   if (!shopper) {
-    const newBasket: Partial<IShopper["basket"]> = { products: [], campaigns: [] };
-    if (product) {
-      newBasket.products = [product];
+    const verifiedShopper = await createShopperVerifier.parseAsync({ product, campaign });
+    if (!verifiedShopper.campaign && !verifiedShopper.product) {
+      return res.status(400).send({ message: "at least one product or campaign should be in body" });
     }
-    if (campaign) {
-      newBasket.campaigns = [campaign];
-    }
-    const verifiedShopper = await createShopperVerifier.parseAsync({ basket: newBasket });
-    const newShopper = await createShopper(verifiedShopper);
+    const newBasketObject = createBasketObject({ product: verifiedShopper.product, campaign: verifiedShopper.campaign });
+
+    const newShopper = await createShopper({
+      basket: newBasketObject,
+    });
+
     const newShopperJWT = await generateJwt(mapShopperForJWT(newShopper.data));
     return res.cookie(SHOPPER_AUTH_TOKEN_NAME, newShopperJWT, { httpOnly: !!process.env.ENVIRONMENT }).send({ token: newShopperJWT });
   }
 
-  // TODO: Handle authenticated users.
-  return res.status(400).send({ message: "not handled" });
+  const newItemObject = await addNewItemVerifier.parseAsync(req.body);
+  if (!newItemObject.campaign && !newItemObject.product) {
+    return res.status(400).send({ message: "at least one product or campaign should be in body" });
+  }
+  const { data: shopperItemsData, error: shopperItemsError } = await getShopperBasketItems(shopper._id);
+  if (!shopperItemsData || shopperItemsError) {
+    return res.status(500).send({
+      message: "error when fetching user basket items",
+      stack: shopperItemsError,
+    });
+  }
+
+  if (newItemObject.product) {
+    if (shopperItemsData?.products?.includes(newItemObject.product)) {
+      return res.status(400).send({
+        message: "You can not add same items again",
+        field: "product",
+      });
+    }
+    await addProductToShopper(shopper._id, newItemObject.product);
+  }
+  if (newItemObject.campaign) {
+    if (shopperItemsData?.campaigns?.includes(newItemObject.campaign)) {
+      return res.status(400).send({
+        message: "You can not add same items again",
+        field: "campaign",
+      });
+    }
+    await addCampaignToShopper(shopper._id, newItemObject.campaign);
+  }
+
+  return res.status(201).send({ message: "items added" });
+};
+
+export const getBasketController = async (req: Request, res: Response) => {
+  const { shopper } = req;
+  const { data, error } = await getShopper(shopper._id);
+
+  if (!data || error) {
+    return res.status(404).send({
+      message: "Shopper not found",
+      stack: error,
+    });
+  }
+
+  res.send(mapBasket(data));
 };

@@ -33,7 +33,7 @@ export const AUTH_REQUIRED_MIDDLEWARE = async (req: Request, res: Response, next
 export const SHOPPER_AUTH_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
   const authToken = req.cookies[SHOPPER_AUTH_TOKEN_NAME];
   if (!authToken) {
-    return;
+    return next();
   }
 
   const data = verifyJwt(authToken);

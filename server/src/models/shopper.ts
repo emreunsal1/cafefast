@@ -2,24 +2,36 @@ import z from "zod";
 import mongoose, { Schema } from "mongoose";
 
 export const createShopperVerifier = z.object({
-  phone: z.string().optional(),
-  basket: z.object({
-    products: z.array(z.string()),
-    campaigns: z.array(z.string()),
-  }),
-  orders: z.array(z.string()).optional().default([]),
-  cards: z.array(z.string()).optional().default([]),
+  product: z.string().optional(),
+  campaign: z.string().optional(),
 });
-
-export const updateShopperVerifier = createShopperVerifier.partial();
+export const updateShopperVerifier = z.object({ phone: z.string() });
+export const addNewItemVerifier = createShopperVerifier.pick({ product: true, campaign: true });
 
 export type IShopper = z.infer<typeof createShopperVerifier>
 
-const shopperSchema = new Schema<IShopper>({
-  phone: String,
+const shopperSchema = new Schema({
+  phone: {
+    type: String,
+    default: null,
+  },
   basket: {
-    products: [String],
-    campaigns: [String],
+    products: {
+      type: [{
+        product: { type: String, ref: "product" },
+        count: { type: Number, default: 1 },
+        _id: false,
+      }],
+      default: [],
+    },
+    campaigns: {
+      type: [{
+        campaign: { type: String, ref: "campaign" },
+        count: { type: Number, default: 1 },
+        _id: false,
+      }],
+      default: [],
+    },
   },
   orders: {
     type: [String],
