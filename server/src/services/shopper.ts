@@ -55,3 +55,39 @@ export const addCampaignToShopper = async (shopperId, campaignId) => {
     return { error: (error as any).message || error };
   }
 };
+
+export const updateProductCount = async ({ shopperId, productId, quantity }) => {
+  try {
+    const newShopper = await shopperModel.findOneAndUpdate(
+      { _id: shopperId, "basket.products.product": productId },
+      {
+        $set: {
+          "basket.products.$.count": quantity,
+        },
+      },
+      { new: true },
+    );
+
+    return { data: newShopper };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
+
+export const updateCampaignCount = async ({ shopperId, campaignId, quantity }) => {
+  try {
+    const newShopper = await shopperModel.findOneAndUpdate(
+      { _id: shopperId, "basket.campaigns.campaign": campaignId },
+      {
+        $set: {
+          "basket.campaigns.$.count": quantity,
+        },
+      },
+      { new: true },
+    );
+
+    return { data: newShopper };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};

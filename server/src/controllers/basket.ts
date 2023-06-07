@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import {
-  addCampaignToShopper, addProductToShopper, createShopper, getShopper, getShopperBasketItems,
+  addCampaignToShopper, addProductToShopper, createShopper, getShopper, getShopperBasketItems, updateCampaignCount, updateProductCount,
 } from "../services/shopper";
-import { createShopperVerifier, addNewItemVerifier } from "../models/shopper";
+import { createShopperVerifier, addNewItemVerifier, updateQuantityVerifier } from "../models/shopper";
 import { getCompanyActiveMenu } from "../services/company";
 import { checkMenuHasCampaign, checkMenuHasProduct } from "../utils/menu";
 import { generateJwt } from "../utils/jwt";
@@ -102,4 +102,55 @@ export const getBasketController = async (req: Request, res: Response) => {
   }
 
   res.send(mapBasket(data));
+};
+
+export const updateQuantityController = async (req: Request, res: Response) => {
+  const { shopper } = req;
+
+  try {
+    const { campaign, product, quantity } = await updateQuantityVerifier.parseAsync(req.body);
+
+    if ((!campaign && !product) || (!!campaign && !!product)) {
+      res.status(400).send({
+        message: "only one product or campaign id should be sent",
+      });
+    }
+
+    if (product) {
+      const { data, error } = await updateProductCount({
+        shopperId: shopper._id,
+        productId: product,
+        quantity,
+      });
+      if (!data || error) {
+        return res.status(404).send({
+          message: "Product can not be updated",
+          stack: error,
+        });
+      }
+    }
+
+    if (campaign) {
+      const { data, error } = await updateCampaignCount({
+        shopperId: shopper._id,
+        campaignId: campaign,
+        quantity,
+      });
+      if (!data || error) {
+        return res.status(404).send({
+          message: "Campaign can not be updated",
+          stack: error,
+        });
+      }
+    }
+
+    return res.status(200).send({
+      message: "item updated successfully",
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: "error occured",
+      stack: err,
+    });
+  }
 };

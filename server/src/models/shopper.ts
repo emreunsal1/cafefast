@@ -7,6 +7,9 @@ export const createShopperVerifier = z.object({
 });
 export const updateShopperVerifier = z.object({ phone: z.string() });
 export const addNewItemVerifier = createShopperVerifier.pick({ product: true, campaign: true });
+export const updateQuantityVerifier = createShopperVerifier.pick({ product: true, campaign: true }).merge(z.object({
+  quantity: z.number().min(1).max(15),
+}));
 
 export type IShopper = z.infer<typeof createShopperVerifier>
 
