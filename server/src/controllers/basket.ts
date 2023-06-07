@@ -41,50 +41,57 @@ export const addToBasketController = async (req: Request, res: Response) => {
     }
   }
 
-  if (!shopper) {
-    const verifiedShopper = await createShopperVerifier.parseAsync({ product, campaign });
-    if (!verifiedShopper.campaign && !verifiedShopper.product) {
+  try {
+    if (!shopper) {
+      const verifiedShopper = await createShopperVerifier.parseAsync({ product, campaign });
+      if (!verifiedShopper.campaign && !verifiedShopper.product) {
+        return res.status(400).send({ message: "at least one product or campaign should be in body" });
+      }
+      const newBasketObject = createBasketObject({ product: verifiedShopper.product, campaign: verifiedShopper.campaign });
+
+      const newShopper = await createShopper({
+        basket: newBasketObject,
+      });
+
+      const newShopperJWT = await generateJwt(mapShopperForJWT(newShopper.data));
+      return res.cookie(SHOPPER_AUTH_TOKEN_NAME, newShopperJWT, { httpOnly: !!process.env.ENVIRONMENT }).send({ token: newShopperJWT });
+    }
+
+    const newItemObject = await addNewItemVerifier.parseAsync(req.body);
+    if (!newItemObject.campaign && !newItemObject.product) {
       return res.status(400).send({ message: "at least one product or campaign should be in body" });
     }
-    const newBasketObject = createBasketObject({ product: verifiedShopper.product, campaign: verifiedShopper.campaign });
-
-    const newShopper = await createShopper({
-      basket: newBasketObject,
-    });
-
-    const newShopperJWT = await generateJwt(mapShopperForJWT(newShopper.data));
-    return res.cookie(SHOPPER_AUTH_TOKEN_NAME, newShopperJWT, { httpOnly: !!process.env.ENVIRONMENT }).send({ token: newShopperJWT });
-  }
-
-  const newItemObject = await addNewItemVerifier.parseAsync(req.body);
-  if (!newItemObject.campaign && !newItemObject.product) {
-    return res.status(400).send({ message: "at least one product or campaign should be in body" });
-  }
-  const { data: shopperItemsData, error: shopperItemsError } = await getShopperBasketItems(shopper._id);
-  if (!shopperItemsData || shopperItemsError) {
-    return res.status(500).send({
-      message: "error when fetching user basket items",
-      stack: shopperItemsError,
-    });
-  }
-
-  if (newItemObject.product) {
-    if (shopperItemsData?.products?.includes(newItemObject.product)) {
-      return res.status(400).send({
-        message: "You can not add same items again",
-        field: "product",
+    const { data: shopperItemsData, error: shopperItemsError } = await getShopperBasketItems(shopper._id);
+    if (!shopperItemsData || shopperItemsError) {
+      return res.status(500).send({
+        message: "error when fetching user basket items",
+        stack: shopperItemsError,
       });
     }
-    await addProductToShopper(shopper._id, newItemObject.product);
-  }
-  if (newItemObject.campaign) {
-    if (shopperItemsData?.campaigns?.includes(newItemObject.campaign)) {
-      return res.status(400).send({
-        message: "You can not add same items again",
-        field: "campaign",
-      });
+
+    if (newItemObject.product) {
+      if (shopperItemsData?.products?.includes(newItemObject.product)) {
+        return res.status(400).send({
+          message: "You can not add same items again",
+          field: "product",
+        });
+      }
+      await addProductToShopper(shopper._id, newItemObject.product);
     }
-    await addCampaignToShopper(shopper._id, newItemObject.campaign);
+    if (newItemObject.campaign) {
+      if (shopperItemsData?.campaigns?.includes(newItemObject.campaign)) {
+        return res.status(400).send({
+          message: "You can not add same items again",
+          field: "campaign",
+        });
+      }
+      await addCampaignToShopper(shopper._id, newItemObject.campaign);
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: "error occured",
+      stack: err,
+    });
   }
 
   return res.status(201).send({ message: "items added" });
