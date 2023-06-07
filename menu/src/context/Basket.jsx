@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from "react";
 
 const Context = createContext({});
 
-export function MenuContext({ children }) {
+export function BasketContext({ children }) {
   const [basketItems, setBasketItems] = useState([]);
 
   const addBasketItem = (productId) => {};

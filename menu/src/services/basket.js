@@ -23,9 +23,25 @@ const getBasket = async ({ companyId }) => {
   }
 };
 
+const updateItemQuantity = async ({
+  companyId, productId, campaignId, quantity,
+}) => {
+  try {
+    const response = await instance.put(`${ROUTES.BASKET}/${companyId}/quantity`, {
+      product: productId,
+      campaign: campaignId,
+      quantity,
+    });
+    return response;
+  } catch (error) {
+    return false;
+  }
+};
+
 const BASKET_SERVICE = {
   addToBasket,
   getBasket,
+  updateItemQuantity,
 };
 
 export default BASKET_SERVICE;
