@@ -28,11 +28,25 @@ const updateItemQuantity = async ({
 }) => {
   try {
     const response = await instance.put(`${ROUTES.BASKET}/${companyId}/quantity`, {
-      product: productId,
       campaign: campaignId,
+      product: productId,
       quantity,
     });
     return response;
+  } catch (error) {
+    return false;
+  }
+};
+
+const deleteProduct = async ({ companyId, productId, campaignId }) => {
+  try {
+    await instance.delete(`${ROUTES.BASKET}/${companyId}`, {
+      data: {
+        product: productId,
+        campaign: campaignId,
+      },
+    });
+    return true;
   } catch (error) {
     return false;
   }
@@ -42,6 +56,7 @@ const BASKET_SERVICE = {
   addToBasket,
   getBasket,
   updateItemQuantity,
+  deleteProduct,
 };
 
 export default BASKET_SERVICE;

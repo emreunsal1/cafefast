@@ -1,10 +1,15 @@
 import React from "react";
 import { MenuContext } from "../context/Menu";
+import { BasketContext } from "../context/Basket";
 
 export default function App({ Component, pageProps }) {
-  return (
+  const getLayout = Component.getLayout || ((page) => page);
+
+  return getLayout(
     <MenuContext>
-      <Component {...pageProps} />
-    </MenuContext>
+      <BasketContext>
+        <Component {...pageProps} />
+      </BasketContext>
+    </MenuContext>,
   );
 }

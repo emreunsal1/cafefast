@@ -91,3 +91,34 @@ export const updateCampaignCount = async ({ shopperId, campaignId, quantity }) =
     return { error: (error as any).message || error };
   }
 };
+
+export const deleteProduct = async ({ shopperId, productId }) => {
+  try {
+    // buranın daha kısa bir yolu varsa ona gidelim
+    const shopper = await shopperModel.findById(shopperId);
+    if (shopper) {
+      if (shopper.basket) {
+        shopper.basket.products = shopper.basket.products.filter(
+          (product) => product.product !== productId,
+        );
+
+        await shopper.save();
+        return true;
+      }
+      return false;
+    }
+    return false;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const deleteCampaing = async ({ shopperId, campaignId }) => {
+  // delete prodcut kısmı gibi burayada uygulanacak
+  try {
+    await shopperModel.findByIdAndRemove({ _id: shopperId, "basket.campaigns.campaign": campaignId });
+    return true;
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};

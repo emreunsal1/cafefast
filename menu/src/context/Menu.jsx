@@ -18,14 +18,13 @@ export function MenuContext({ children }) {
       return;
     }
     const result = categories.find((category) => category._id === selectedCategory).products;
-    console.log("products result", result);
     setProducts(result);
   };
 
   const getMenu = async (menuId) => {
-    const response = await MENU_SERVICE.getMenu("64208d2c890cdcf8376c87a5");
-    setMenu(response.data);
+    const response = await MENU_SERVICE.getMenu(menuId);
     const { data } = response;
+    setMenu(data);
     const resultCategories = data.categories.map((category) => ({ name: category.name, _id: category._id }));
     setSelectedCategory(resultCategories[0]._id);
     if (!products.length) {

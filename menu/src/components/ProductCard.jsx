@@ -1,7 +1,8 @@
 /* eslint-disable react/button-has-type */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Button } from "antd";
-import BASKET_SERVICE from "@/services/basket";
+import BASKET_SERVICE from "../services/basket";
+import { useBasket } from "../context/Basket";
 
 const { Meta } = Card;
 
@@ -12,23 +13,40 @@ export default function ProductCard({
   price,
   inStock,
   menuPrices,
+  count,
 }) {
+  const { addBasketItem } = useBasket();
   const [quantity, setQuantity] = useState(0);
-  const addToBasketHandler = async () => {
-    await BASKET_SERVICE.addToBasket({ productId: id, companyId: "64208d2c890cdcf8376c87a5" });
-    setQuantity(1);
-    const basketResponse = await BASKET_SERVICE.getBasket({ companyId: "64208d2c890cdcf8376c87a5" });
-    console.log("response.data :>> ", basketResponse.data);
+  useEffect(() => {
+    if (count !== undefined) {
+      setQuantity(count);
+    }
+  }, []);
+
+  const addBasketClickHandler = async () => {
+    await addBasketItem(id);
+    setQuantity((prev) => prev + 1);
   };
 
   const updateQuantityHandler = async (type) => {
-    const newQuantity = type === "increase" ? quantity + 1 : quantity - 1;
+    let newQuantity = quantity;
+    if (type === "decrease" && quantity > 0) {
+      setQuantity((prev) => prev - 1);
+      newQuantity -= 1;
+    } else {
+      setQuantity((prev) => prev + 1);
+      newQuantity += 1;
+    }
+
+    if (newQuantity === 0) {
+      await BASKET_SERVICE.deleteProduct({ companyId: "64208d2c890cdcf8376c87a5", productId: id });
+      return;
+    }
     await BASKET_SERVICE.updateItemQuantity({
-      companyId: "64208d2c890cdcf8376c87a5",
       productId: id,
+      companyId: "64208d2c890cdcf8376c87a5",
       quantity: newQuantity,
     });
-    setQuantity(newQuantity);
   };
 
   return (
@@ -42,7 +60,7 @@ export default function ProductCard({
           cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
         >
           <Meta title={name} description={price} />
-          {quantity === 0 && <Button type="primary" onClick={addToBasketHandler}>Sepete EKle</Button>}
+          {quantity === 0 && <Button type="primary" onClick={() => addBasketClickHandler()}>Sepete EKle</Button>}
           {quantity > 0 && (
           <>
             <button onClick={() => updateQuantityHandler("decrease")}>-</button>
