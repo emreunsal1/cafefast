@@ -38,14 +38,18 @@ const updateItemQuantity = async ({
   }
 };
 
-const deleteProduct = async ({ companyId, productId, campaignId }) => {
+const deleteProduct = async ({ companyId, productId }) => {
   try {
-    await instance.delete(`${ROUTES.BASKET}/${companyId}`, {
-      data: {
-        product: productId,
-        campaign: campaignId,
-      },
-    });
+    await instance.delete(`${ROUTES.BASKET}/${companyId}/product/${productId}`);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+const deleteCampaign = async ({ companyId, campaignId }) => {
+  try {
+    await instance.delete(`${ROUTES.BASKET}/${companyId}/campaign/${campaignId}`);
     return true;
   } catch (error) {
     return false;
@@ -57,6 +61,7 @@ const BASKET_SERVICE = {
   getBasket,
   updateItemQuantity,
   deleteProduct,
+  deleteCampaign,
 };
 
 export default BASKET_SERVICE;

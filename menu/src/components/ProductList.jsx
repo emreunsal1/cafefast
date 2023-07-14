@@ -5,12 +5,12 @@ import { useBasket } from "../context/Basket";
 
 export default function ProductList() {
   const { products } = useMenu();
-  const { basketItems } = useBasket();
+  const { productCounts } = useBasket();
 
   return (
     <div id="productList">
       <div className="container">
-        { products?.map((product) => (
+        {products?.map((product) => (
           <ProductCard
             id={product._id}
             price={product.price}
@@ -19,7 +19,7 @@ export default function ProductList() {
             inStock={product.inStock}
             menuPrices={product.menuPrices}
             key={product._id}
-            count={basketItems !== undefined ? basketItems.products.find((basketItem) => basketItem._id === product._id)?.count : 0}
+            count={productCounts[product._id]}
           />
         ))}
       </div>

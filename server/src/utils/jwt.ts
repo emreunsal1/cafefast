@@ -7,9 +7,7 @@ const secretKey = process.env.JWT_SECRET_KEY as string;
 
 export const generateJwt = async (user) => {
   try {
-    const generatedJWT = await jwt.sign(user, secretKey, {
-      expiresIn: 3600,
-    });
+    const generatedJWT = await jwt.sign(user, secretKey);
     return generatedJWT;
   } catch (error: Error | unknown) {
     console.log("[generateJwt] => ", error);

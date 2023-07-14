@@ -4,7 +4,12 @@ import BASKET_SERVICE from "@/services/basket";
 const Context = createContext({});
 
 export function BasketContext({ children }) {
-  const [basketItems, setBasketItems] = useState([]);
+  const [basketItems, setBasketItems] = useState(null);
+
+  const productCounts = basketItems?.products.reduce((prev, curr) => {
+    prev[curr._id] = curr.count;
+    return prev;
+  }, {}) || {};
 
   const getBasketItems = async ({ companyId }) => {
     const response = await BASKET_SERVICE.getBasket({ companyId });
@@ -13,16 +18,11 @@ export function BasketContext({ children }) {
     return data;
   };
 
-  const addBasketItem = async (productId) => {
-    await BASKET_SERVICE.addToBasket({ companyId: "64208d2c890cdcf8376c87a5", productId });
-  };
-
   return (
     <Context.Provider value={{
       getBasketItems,
-      addBasketItem,
       basketItems,
-      setBasketItems,
+      productCounts,
     }}
     >
       {children}
