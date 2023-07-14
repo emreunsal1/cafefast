@@ -92,32 +92,47 @@ export const updateCampaignCount = async ({ shopperId, campaignId, quantity }) =
   }
 };
 
-export const deleteProduct = async ({ shopperId, productId }) => {
+export const deleteProductFromShopper = async ({ shopperId, productId }) => {
   try {
-    // buranın daha kısa bir yolu varsa ona gidelim
-    const shopper = await shopperModel.findById(shopperId);
-    if (shopper) {
-      if (shopper.basket) {
-        shopper.basket.products = shopper.basket.products.filter(
-          (product) => product.product !== productId,
-        );
+    const newShopper = await shopperModel.findOneAndUpdate(
+      { _id: shopperId },
+      {
+        $pull: {
+          "basket.products": {
+            product: productId,
+          },
+        },
+      },
+      { new: true },
+    );
 
-        await shopper.save();
-        return true;
-      }
-      return false;
+    if (!newShopper) {
+      return { error: "Shopper not found" };
     }
-    return false;
+    return { data: newShopper };
   } catch (error) {
-    return false;
+    return { error: (error as any).message || error };
   }
 };
 
-export const deleteCampaing = async ({ shopperId, campaignId }) => {
-  // delete prodcut kısmı gibi burayada uygulanacak
+export const deleteCampaignFromShopper = async ({ shopperId, campaignId }) => {
   try {
-    await shopperModel.findByIdAndRemove({ _id: shopperId, "basket.campaigns.campaign": campaignId });
-    return true;
+    const newShopper = await shopperModel.findOneAndUpdate(
+      { _id: shopperId },
+      {
+        $pull: {
+          "basket.campaigns": {
+            campaign: campaignId,
+          },
+        },
+      },
+      { new: true },
+    );
+
+    if (!newShopper) {
+      return { error: "Shopper not found" };
+    }
+    return { data: newShopper };
   } catch (error) {
     return { error: (error as any).message || error };
   }

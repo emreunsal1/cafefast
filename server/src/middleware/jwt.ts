@@ -30,10 +30,27 @@ export const AUTH_REQUIRED_MIDDLEWARE = async (req: Request, res: Response, next
   next();
 };
 
-export const SHOPPER_AUTH_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
+export const SHOPPER_RESOLVE_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
   const authToken = req.cookies[SHOPPER_AUTH_TOKEN_NAME];
   if (!authToken) {
     return next();
+  }
+
+  const data = verifyJwt(authToken);
+  if (!data) {
+    res.status(401).send("Unauthorized");
+    return;
+  }
+
+  req.shopper = data;
+  next();
+};
+
+export const SHOPPER_AUTH_REQUIRED_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
+  const authToken = req.cookies[SHOPPER_AUTH_TOKEN_NAME];
+  if (!authToken) {
+    res.status(401).send("Unauthorized");
+    return;
   }
 
   const data = verifyJwt(authToken);

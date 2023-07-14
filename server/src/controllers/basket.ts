@@ -3,8 +3,8 @@ import {
   addCampaignToShopper,
   addProductToShopper,
   createShopper,
-  deleteCampaing,
-  deleteProduct,
+  deleteCampaignFromShopper,
+  deleteProductFromShopper,
   getShopper,
   getShopperBasketItems,
   updateCampaignCount,
@@ -107,12 +107,6 @@ export const addToBasketController = async (req: Request, res: Response) => {
 
 export const getBasketController = async (req: Request, res: Response) => {
   const { shopper } = req;
-  if (shopper === undefined) {
-    return res.status(404).send({
-      message: "basket is null",
-      stack: undefined,
-    });
-  }
   const { data, error } = await getShopper(shopper._id);
 
   if (!data || error) {
@@ -176,59 +170,53 @@ export const updateQuantityController = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteProductInBasket = async (req: Request, res: Response) => {
+export const deleteProductInBasketController = async (req: Request, res: Response) => {
   try {
     const { shopper } = req;
-    const { companyId } = req.params;
-    const { product, campaign } = req.body;
-    const { data, error } = await getShopper(shopper._id);
+    const { companyId, productId } = req.params;
 
     const companyActiveMenu = await getCompanyActiveMenu(companyId);
-    const basketData = mapBasket(data);
 
-    if (shopper === undefined) {
-      return res.status(404).send({
-        message: "you aren't shopper",
-        stack: undefined,
-      });
-    }
-    if (!basketData.products.length) {
-      return res.status(404).send({
-        message: "You do not have this product in your cart",
-        stack: undefined,
-      });
-    }
-    if (product) {
-      const isProductExists = checkMenuHasProduct(companyActiveMenu.data, product);
-      if (!isProductExists) {
-        return res.status(400).json({
-          error: "Product not found in menu",
-        });
-      }
-      const result = await deleteProduct({ shopperId: shopper._id, productId: product });
-      if (result) {
-        return res.send("success");
-      }
+    const isProductExists = checkMenuHasProduct(companyActiveMenu.data, productId);
+    if (!isProductExists) {
       return res.status(400).json({
-        error: "product could not be deleted",
+        error: "Product not found in menu",
       });
     }
-    if (campaign) {
-      const isCampaignExists = checkMenuHasCampaign(companyActiveMenu.data, campaign);
-      if (!isCampaignExists) {
-        return res.status(404).json({
-          error: "Campaign not found in menu",
-        });
-      }
-      const result = await deleteCampaing({ shopperId: shopper._id, campaignId: campaign });
-      if (result) {
-        return res.send("success");
-      }
+    const result = await deleteProductFromShopper({ shopperId: shopper._id, productId });
+    if (result.error || !result.data) {
       return res.status(400).json({
-        error: "campaign could not be deleted",
+        error: result.error,
       });
     }
-  } catch (err) {
-    res.status(404).send({ msg: "delete error", err });
+    return res.send({ message: "deleted successfully" });
+  } catch (error) {
+    res.status(404).send({ message: "delete error", error });
+  }
+};
+
+export const deleteCampaignInBasketController = async (req: Request, res: Response) => {
+  try {
+    const { shopper } = req;
+    const { companyId, campaignId } = req.params;
+
+    const companyActiveMenu = await getCompanyActiveMenu(companyId);
+
+    const isCampaignExists = checkMenuHasCampaign(companyActiveMenu.data, campaignId);
+    if (!isCampaignExists) {
+      return res.status(404).json({
+        error: "Campaign not found in menu",
+      });
+    }
+    const result = await deleteCampaignFromShopper({ shopperId: shopper._id, campaignId });
+    if (result.error || !result.data) {
+      res.status(400).json({
+        error: result.error,
+      });
+      return;
+    }
+    return res.send({ message: "deleted successfully" });
+  } catch (error) {
+    res.status(404).send({ message: "delete error", error });
   }
 };
