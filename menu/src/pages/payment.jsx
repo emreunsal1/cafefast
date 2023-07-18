@@ -37,7 +37,6 @@ export default function Payment() {
       thruYear: card.expiry.slice(2, 4),
       name: card.name,
     };
-    console.log("basket Items", basketItems);
     BASKET_SERVICE.approveBasket({ companyId: "64208d2c890cdcf8376c87a5", card: cardData, price: basketItems.totalPrice });
   };
 
