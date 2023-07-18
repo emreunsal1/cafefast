@@ -244,12 +244,25 @@ export const approveBasketController = async (req: Request, res: Response) => {
     const { companyId } = req.params;
     const { price, card } = req.body;
 
-    const shopperData = await getShopper(shopper._id, false);
+    const shopperData = await getShopper(shopper._id, true);
 
     if (shopperData.error || !shopperData.data) {
       return res.status(404).send({
         message: "shopper not found",
         stack: shopperData.error,
+      });
+    }
+
+    const { totalPrice, totalPriceText, totalPriceSymbolText } = mapBasket(shopperData.data);
+    if (totalPrice !== price) {
+      return res.status(400).send({
+        message: "Price not matching with real data. Please refresh page and try again.",
+        errorCode: "PRICE_NOT_MATCH_WITH_DATA",
+        newPrices: {
+          totalPrice,
+          totalPriceText,
+          totalPriceSymbolText,
+        },
       });
     }
 
