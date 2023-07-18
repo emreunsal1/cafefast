@@ -5,6 +5,7 @@ export const createOrder = async (orderData) => {
     const newOrder = await orderModel.create(orderData);
     return { data: newOrder };
   } catch (error) {
+    console.log("error", error);
     return { error: (error as any).message || error };
   }
 };

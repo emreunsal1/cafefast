@@ -2,6 +2,18 @@ import { ROUTES } from "../../constants";
 
 const { default: instance } = require("../../utils/axios");
 
+const approveBasket = async ({ companyId, card, price }) => {
+  try {
+    const response = await instance.post(`${ROUTES.BASKET}/${companyId}/approve`, {
+      price,
+      card,
+    });
+    return response;
+  } catch (error) {
+    return false;
+  }
+};
+
 const addToBasket = async ({ companyId, productId, campaignId }) => {
   try {
     const response = await instance.post(`${ROUTES.BASKET}/${companyId}`, {
@@ -58,6 +70,7 @@ const deleteCampaign = async ({ companyId, campaignId }) => {
 };
 
 const BASKET_SERVICE = {
+  approveBasket,
   addToBasket,
   getBasket,
   updateItemQuantity,
