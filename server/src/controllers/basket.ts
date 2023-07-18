@@ -276,14 +276,13 @@ export const approveBasketController = async (req: Request, res: Response) => {
     }
     const newOrder = {
       company: companyId,
-      campaigns: shopperData.data.basket?.campaigns,
-      products: shopperData.data.basket?.products,
+      campaigns: shopperData.data.basket?.campaigns.map((campaign) => (campaign as any).campaign._id),
+      products: shopperData.data.basket?.products.map((product) => (product as any).product._id),
       shopper: shopperData.data._id,
       cardId: (newCard.data as any)._id,
     };
 
     const { data: createdOrder, error: createdOrderError } = await createOrder(newOrder);
-
     if (createdOrderError || !createdOrder) {
       return res.status(400).send({
         message: "order can not be created",
@@ -292,7 +291,6 @@ export const approveBasketController = async (req: Request, res: Response) => {
     }
 
     const { data: addOrderData, error: addOrderError } = await addOrderToShopper(shopper._id, createdOrder._id);
-
     if (addOrderError || !addOrderData) {
       return res.status(400).send({
         message: "order can not added to shopper",
