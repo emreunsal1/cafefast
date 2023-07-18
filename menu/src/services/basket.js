@@ -17,6 +17,7 @@ const addToBasket = async ({ companyId, productId, campaignId }) => {
 const getBasket = async ({ companyId }) => {
   try {
     const response = await instance.get(`${ROUTES.BASKET}/${companyId}`);
+    console.log("get basket -->", response.data);
     return response;
   } catch (error) {
     return false;
