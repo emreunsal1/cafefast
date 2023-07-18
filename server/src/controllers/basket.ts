@@ -24,6 +24,7 @@ import { SHOPPER_AUTH_TOKEN_NAME } from "../constants";
 import { createBasketObject, mapBasket } from "../utils/basket";
 import { createOrder } from "../services/order";
 
+// TODO: Seperate add campaign and add product controllers.
 export const addToBasketController = async (req: Request, res: Response) => {
   const { shopper } = req;
   const { companyId } = req.params;
@@ -266,6 +267,7 @@ export const approveBasketController = async (req: Request, res: Response) => {
       });
     }
 
+    // TODO: Check user has card already
     const validatedCard = await shopperCardVerifier.parseAsync(card);
     const newCard = await addCardToShopper(shopper._id, validatedCard);
 
