@@ -5,6 +5,7 @@ import {
   updateQuantityController,
   deleteProductInBasketController,
   deleteCampaignInBasketController,
+  approveBasketController,
 } from "../controllers/basket";
 import {
   SHOPPER_RESOLVE_MIDDLEWARE,
@@ -18,5 +19,6 @@ route.get("/:companyId", SHOPPER_AUTH_REQUIRED_MIDDLEWARE, getBasketController);
 route.put("/:companyId/quantity", SHOPPER_AUTH_REQUIRED_MIDDLEWARE, updateQuantityController);
 route.delete("/:companyId/product/:productId", SHOPPER_AUTH_REQUIRED_MIDDLEWARE, deleteProductInBasketController);
 route.delete("/:companyId/campaign/:campaignId", SHOPPER_AUTH_REQUIRED_MIDDLEWARE, deleteCampaignInBasketController);
+route.post("/:companyId/approve", SHOPPER_AUTH_REQUIRED_MIDDLEWARE, approveBasketController);
 
 export default route;

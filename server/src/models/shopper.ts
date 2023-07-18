@@ -5,6 +5,13 @@ export const createShopperVerifier = z.object({
   product: z.string().optional(),
   campaign: z.string().optional(),
 });
+export const shopperCardVerifier = z.object({
+  cardNo: z.string().min(16).max(16),
+  cvv: z.string().min(3).max(3),
+  thruMonth: z.string().min(2).max(2),
+  thruYear: z.string().min(2).max(2),
+  name: z.string().max(255),
+});
 export const updateShopperVerifier = z.object({ phone: z.string() });
 export const addNewItemVerifier = createShopperVerifier.pick({ product: true, campaign: true });
 export const updateQuantityVerifier = createShopperVerifier.pick({ product: true, campaign: true }).merge(z.object({
@@ -19,6 +26,7 @@ const shopperSchema = new Schema({
     default: null,
   },
   basket: {
+    company: String,
     products: {
       type: [{
         product: { type: String, ref: "product" },
@@ -41,7 +49,13 @@ const shopperSchema = new Schema({
     default: [],
   },
   cards: {
-    type: [String],
+    type: [{
+      cardNo: String,
+      cvv: String,
+      thruMonth: String,
+      thruYear: String,
+      name: String,
+    }],
     default: [],
   },
 });

@@ -1,5 +1,6 @@
-export const createBasketObject = ({ product, campaign }) => {
+export const createBasketObject = ({ product, campaign, companyId }) => {
   const newBasketObject: any = {
+    company: companyId,
     products: [],
     campaigns: [],
   };

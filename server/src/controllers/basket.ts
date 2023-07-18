@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import {
   addCampaignToShopper,
+  addCardToShopper,
+  addOrderToShopper,
   addProductToShopper,
+  clearShopperBasket,
   createShopper,
   deleteCampaignFromShopper,
   deleteProductFromShopper,
@@ -10,13 +13,16 @@ import {
   updateCampaignCount,
   updateProductCount,
 } from "../services/shopper";
-import { createShopperVerifier, addNewItemVerifier, updateQuantityVerifier } from "../models/shopper";
+import {
+  createShopperVerifier, addNewItemVerifier, updateQuantityVerifier, shopperCardVerifier,
+} from "../models/shopper";
 import { getCompanyActiveMenu } from "../services/company";
 import { checkMenuHasCampaign, checkMenuHasProduct } from "../utils/menu";
 import { generateJwt } from "../utils/jwt";
 import { mapShopperForJWT } from "../utils/mappers";
 import { SHOPPER_AUTH_TOKEN_NAME } from "../constants";
 import { createBasketObject, mapBasket } from "../utils/basket";
+import { createOrder } from "../services/order";
 
 export const addToBasketController = async (req: Request, res: Response) => {
   const { shopper } = req;
@@ -55,7 +61,7 @@ export const addToBasketController = async (req: Request, res: Response) => {
       if (!verifiedShopper.campaign && !verifiedShopper.product) {
         return res.status(400).send({ message: "at least one product or campaign should be in body" });
       }
-      const newBasketObject = createBasketObject({ product: verifiedShopper.product, campaign: verifiedShopper.campaign });
+      const newBasketObject = createBasketObject({ product: verifiedShopper.product, campaign: verifiedShopper.campaign, companyId });
 
       const newShopper = await createShopper({
         basket: newBasketObject,
@@ -70,6 +76,17 @@ export const addToBasketController = async (req: Request, res: Response) => {
       return res.status(400).send({ message: "at least one product or campaign should be in body" });
     }
     const { data: shopperItemsData, error: shopperItemsError } = await getShopperBasketItems(shopper._id);
+
+    if (companyId !== shopperItemsData?.companyId) {
+      const { error: clearShopperError } = await clearShopperBasket(shopper._id, companyId);
+      if (clearShopperError) {
+        return res.status(500).send({
+          message: "something wrong when clear shopper basket",
+          stack: clearShopperError,
+        });
+      }
+    }
+
     if (!shopperItemsData || shopperItemsError) {
       return res.status(500).send({
         message: "error when fetching user basket items",
@@ -218,5 +235,69 @@ export const deleteCampaignInBasketController = async (req: Request, res: Respon
     return res.send({ message: "deleted successfully" });
   } catch (error) {
     res.status(404).send({ message: "delete error", error });
+  }
+};
+
+export const approveBasketController = async (req: Request, res: Response) => {
+  try {
+    const { shopper } = req;
+    const { companyId } = req.params;
+    const { price, card } = req.body;
+
+    const shopperData = await getShopper(shopper._id, false);
+
+    if (shopperData.error || !shopperData.data) {
+      return res.status(404).send({
+        message: "shopper not found",
+        stack: shopperData.error,
+      });
+    }
+
+    const validatedCard = await shopperCardVerifier.parseAsync(card);
+    const newCard = await addCardToShopper(shopper._id, validatedCard);
+
+    if (newCard.error || !newCard.data) {
+      return res.status(400).send({
+        error: newCard.error,
+      });
+    }
+    const newOrder = {
+      company: companyId,
+      campaigns: shopperData.data.basket?.campaigns,
+      products: shopperData.data.basket?.products,
+      shopper: shopperData.data._id,
+      cardId: (newCard.data as any)._id,
+    };
+
+    const { data: createdOrder, error: createdOrderError } = await createOrder(newOrder);
+
+    if (createdOrderError || !createdOrder) {
+      return res.status(400).send({
+        message: "order can not be created",
+        stack: createdOrderError,
+      });
+    }
+
+    const { data: addOrderData, error: addOrderError } = await addOrderToShopper(shopper._id, createdOrder._id);
+
+    if (addOrderError || !addOrderData) {
+      return res.status(400).send({
+        message: "order can not added to shopper",
+        stack: addOrderError,
+      });
+    }
+
+    const { data: clearShopperData, error: clearShopperError } = await clearShopperBasket(shopper._id, companyId);
+    if (clearShopperError || !clearShopperData) {
+      return res.status(400).send({
+        message: "shopper basket can not be cleared",
+        stack: clearShopperError,
+      });
+    }
+
+    res.send(createdOrder);
+  } catch (error) {
+    console.log("error :>> ", error);
+    res.send(error);
   }
 };

@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { updateCompanyValidator } from "../models/company";
 import { getCompany, updateCompany } from "../services/company";
 import { getMenu } from "../services/menu";
+import { getOrders } from "../services/order";
+import { mapOrders } from "../utils/mappers";
 
 export const getCompanyController = async (req: Request, res: Response) => {
   const { company } = req.user;
@@ -12,6 +14,24 @@ export const getCompanyController = async (req: Request, res: Response) => {
   }
 
   res.send(companyData);
+};
+
+export const getCompanyOrdersController = async (req: Request, res: Response) => {
+  try {
+    const { company } = req.user;
+    const { data: ordersData, error: ordersError } = await getOrders(company);
+
+    if (ordersError || !ordersData) {
+      return res.status(400).send(ordersError);
+    }
+    const orders = mapOrders(ordersData);
+
+    res.send(orders);
+  } catch (error: any) {
+    res.send({
+      error: error?.message || error,
+    });
+  }
 };
 
 export const getActiveMenuController = async (req: Request, res: Response) => {

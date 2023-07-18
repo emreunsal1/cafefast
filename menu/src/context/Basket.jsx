@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import BASKET_SERVICE from "@/services/basket";
+import BASKET_SERVICE from "../services/basket";
 
 const Context = createContext({});
 

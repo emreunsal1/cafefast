@@ -9,10 +9,21 @@ export const createShopper = async (shopperData) => {
   }
 };
 
-export const getShopper = async (shopperId) => {
+export const getShopper = async (shopperId, populate = true) => {
   try {
-    const foundShopper = await shopperModel.findById(shopperId).populate("basket.products.product").populate("basket.campaigns.campaign");
-    return { data: foundShopper };
+    const foundShopper = shopperModel.findById(shopperId);
+    if (populate) {
+      foundShopper.populate("basket.products.product").populate({
+        path: "basket.campaigns.campaign",
+        populate: {
+          path: "products",
+          model: "product",
+        },
+      });
+    }
+
+    const result = await foundShopper.exec();
+    return { data: result };
   } catch (error) {
     return { error: (error as any).message || error };
   }
@@ -24,7 +35,7 @@ export const getShopperBasketItems = async (shopperId) => {
     const allProducts = foundShopper?.basket?.products.map((_product) => _product.product);
     const allCampaigns = foundShopper?.basket?.campaigns.map((_campaign) => _campaign.campaign);
 
-    return { data: { products: allProducts, campaigns: allCampaigns } };
+    return { data: { products: allProducts, campaigns: allCampaigns, companyId: foundShopper?.basket?.company } };
   } catch (error) {
     return { error: (error as any).message || error };
   }
@@ -37,6 +48,39 @@ export const addProductToShopper = async (shopperId, productId) => {
       { $push: { "basket.products": { product: productId, count: 1 } } },
       { new: true },
     );
+    return { data: newShopper };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
+
+export const addCardToShopper = async (shopperId, cardData) => {
+  try {
+    const newShopper = await shopperModel.findOneAndUpdate(
+      { _id: shopperId },
+      { $push: { cards: cardData } },
+      { new: true },
+    );
+
+    if (newShopper?.cards.length) {
+      const lastCard = newShopper.cards[newShopper.cards.length - 1];
+      return { data: lastCard };
+    }
+
+    return { error: "card can not added to shopper" };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
+
+export const addOrderToShopper = async (shopperId, orderId) => {
+  try {
+    const newShopper = await shopperModel.findOneAndUpdate(
+      { _id: shopperId },
+      { $push: { orders: orderId } },
+      { new: true },
+    );
+
     return { data: newShopper };
   } catch (error) {
     return { error: (error as any).message || error };
@@ -81,6 +125,28 @@ export const updateCampaignCount = async ({ shopperId, campaignId, quantity }) =
       {
         $set: {
           "basket.campaigns.$.count": quantity,
+        },
+      },
+      { new: true },
+    );
+
+    return { data: newShopper };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
+
+export const clearShopperBasket = async (shopperId, companyId) => {
+  try {
+    const newShopper = await shopperModel.findOneAndUpdate(
+      { _id: shopperId },
+      {
+        $set: {
+          basket: {
+            products: [],
+            campaigns: [],
+            companyId,
+          },
         },
       },
       { new: true },
