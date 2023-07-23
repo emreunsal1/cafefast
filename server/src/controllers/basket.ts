@@ -134,8 +134,8 @@ export const getBasketController = async (req: Request, res: Response) => {
   const { data, error } = await getShopper(shopper._id);
 
   if (!data || error) {
-    return res.status(404).send({
-      message: "Shopper not found",
+    return res.status(401).send({
+      message: "Please add item to basket, unauthorized user or deleted user detected.",
       stack: error,
     });
   }
