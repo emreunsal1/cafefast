@@ -73,20 +73,6 @@ export const addCardToShopper = async (shopperId, cardData) => {
   }
 };
 
-export const addOrderToShopper = async (shopperId, orderId) => {
-  try {
-    const newShopper = await shopperModel.findOneAndUpdate(
-      { _id: shopperId },
-      { $push: { orders: orderId } },
-      { new: true },
-    );
-
-    return { data: newShopper };
-  } catch (error) {
-    return { error: (error as any).message || error };
-  }
-};
-
 export const addCampaignToShopper = async (shopperId, campaignId) => {
   try {
     const newShopper = await shopperModel.findOneAndUpdate(
@@ -145,7 +131,7 @@ export const clearShopperBasket = async (shopperId, companyId) => {
           basket: {
             products: [],
             campaigns: [],
-            companyId,
+            company: companyId,
           },
         },
       },

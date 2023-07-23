@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import {
   addCampaignToShopper,
   addCardToShopper,
-  addOrderToShopper,
   addProductToShopper,
   clearShopperBasket,
   createShopper,
@@ -78,6 +77,7 @@ export const addToBasketController = async (req: Request, res: Response) => {
     }
     const { data: shopperItemsData, error: shopperItemsError } = await getShopperBasketItems(shopper._id);
 
+    console.log("ne bu :>> ", shopperItemsData?.companyId);
     if (companyId !== shopperItemsData?.companyId) {
       const { error: clearShopperError } = await clearShopperBasket(shopper._id, companyId);
       if (clearShopperError) {
@@ -243,6 +243,7 @@ export const approveBasketController = async (req: Request, res: Response) => {
   try {
     const { shopper } = req;
     const { companyId } = req.params;
+    // TODO: get cardId from user for saved cards
     const { price, card } = req.body;
 
     const shopperData = await getShopper(shopper._id, true);
@@ -251,6 +252,13 @@ export const approveBasketController = async (req: Request, res: Response) => {
       return res.status(404).send({
         message: "shopper not found",
         stack: shopperData.error,
+      });
+    }
+
+    if (shopperData.data.basket?.company !== companyId) {
+      return res.status(400).send({
+        message: "i have got a one pencil",
+        code: "CAN_NOT_APPROVE_OTHER_COMPANY",
       });
     }
 
@@ -267,20 +275,36 @@ export const approveBasketController = async (req: Request, res: Response) => {
       });
     }
 
-    // TODO: Check user has card already
     const validatedCard = await shopperCardVerifier.parseAsync(card);
-    const newCard = await addCardToShopper(shopper._id, validatedCard);
-
-    if (newCard.error || !newCard.data) {
-      return res.status(400).send({
-        error: newCard.error,
+    const alreadyHaveCard = shopperData.data.cards.find((_card) => _card.cardNo === validatedCard.cardNo);
+    let newCard;
+    if (!alreadyHaveCard) {
+      newCard = await addCardToShopper(shopper._id, validatedCard);
+      if (newCard.error || !newCard.data) {
+        return res.status(400).send({
+          message: "card can not created",
+          error: newCard.error,
+        });
+      }
+    }
+    if (alreadyHaveCard) {
+      return res.send({
+        message: "sent a cardId for saved card",
+        errorCode: "CARD_ALREADY_SAVED_TO_SHOPPER",
       });
     }
+
     const newOrder = {
       company: companyId,
-      campaigns: shopperData.data.basket?.campaigns.map((campaign) => (campaign as any).campaign._id),
-      products: shopperData.data.basket?.products.map((product) => (product as any).product._id),
       shopper: shopperData.data._id,
+      campaigns: shopperData.data.basket?.campaigns.map((campaign) => ({
+        campaign: (campaign as any).campaign._id,
+        count: (campaign as any).campaign.count,
+      })),
+      products: shopperData.data.basket?.products.map((product) => ({
+        product: (product as any).product._id,
+        count: (product as any).product.count,
+      })),
       cardId: (newCard.data as any)._id,
     };
 
@@ -289,14 +313,6 @@ export const approveBasketController = async (req: Request, res: Response) => {
       return res.status(400).send({
         message: "order can not be created",
         stack: createdOrderError,
-      });
-    }
-
-    const { data: addOrderData, error: addOrderError } = await addOrderToShopper(shopper._id, createdOrder._id);
-    if (addOrderError || !addOrderData) {
-      return res.status(400).send({
-        message: "order can not added to shopper",
-        stack: addOrderError,
       });
     }
 
@@ -310,7 +326,6 @@ export const approveBasketController = async (req: Request, res: Response) => {
 
     res.send(createdOrder);
   } catch (error) {
-    console.log("error :>> ", error);
     res.send(error);
   }
 };
