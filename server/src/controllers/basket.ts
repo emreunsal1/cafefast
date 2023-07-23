@@ -77,7 +77,6 @@ export const addToBasketController = async (req: Request, res: Response) => {
     }
     const { data: shopperItemsData, error: shopperItemsError } = await getShopperBasketItems(shopper._id);
 
-    console.log("ne bu :>> ", shopperItemsData?.companyId);
     if (companyId !== shopperItemsData?.companyId) {
       const { error: clearShopperError } = await clearShopperBasket(shopper._id, companyId);
       if (clearShopperError) {
