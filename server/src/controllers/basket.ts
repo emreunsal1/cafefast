@@ -19,13 +19,13 @@ import { getCompanyActiveMenu } from "../services/company";
 import { checkMenuHasCampaign, checkMenuHasProduct } from "../utils/menu";
 import { generateJwt } from "../utils/jwt";
 import { mapShopperForJWT } from "../utils/mappers";
-import { SHOPPER_AUTH_TOKEN_NAME } from "../constants";
+import { SHOPPER_AUTH_TOKEN_NAME, SHOPPER_NOT_FOUND_IN_DATABASE } from "../constants";
 import { createBasketObject, mapBasket } from "../utils/basket";
 import { createOrder } from "../services/order";
 
 // TODO: Seperate add campaign and add product controllers.
 export const addToBasketController = async (req: Request, res: Response) => {
-  const { shopper } = req;
+  let { shopper } = req;
   const { companyId } = req.params;
   const { product, campaign } = req.body;
   const companyActiveMenu = await getCompanyActiveMenu(companyId);
@@ -75,7 +75,21 @@ export const addToBasketController = async (req: Request, res: Response) => {
     if (!newItemObject.campaign && !newItemObject.product) {
       return res.status(400).send({ message: "at least one product or campaign should be in body" });
     }
-    const { data: shopperItemsData, error: shopperItemsError } = await getShopperBasketItems(shopper._id);
+    const { data: shopperItemsData, error: shopperItemsError, errorCode: shopperItemsErrorCode } = await getShopperBasketItems(shopper._id);
+
+    if (shopperItemsErrorCode === SHOPPER_NOT_FOUND_IN_DATABASE) {
+      const newShopper = await createShopper();
+      const mappedDataForJwt = mapShopperForJWT(newShopper.data);
+      const newShopperJWT = await generateJwt(mappedDataForJwt);
+
+      shopper = JSON.parse(JSON.stringify(mappedDataForJwt));
+      res.cookie(SHOPPER_AUTH_TOKEN_NAME, newShopperJWT, { httpOnly: !!process.env.ENVIRONMENT });
+    } else if (shopperItemsError || !shopperItemsData) {
+      return res.status(500).send({
+        message: "error when fetching user basket items",
+        stack: shopperItemsError,
+      });
+    }
 
     if (companyId !== shopperItemsData?.companyId) {
       const { error: clearShopperError } = await clearShopperBasket(shopper._id, companyId);
@@ -85,13 +99,6 @@ export const addToBasketController = async (req: Request, res: Response) => {
           stack: clearShopperError,
         });
       }
-    }
-
-    if (!shopperItemsData || shopperItemsError) {
-      return res.status(500).send({
-        message: "error when fetching user basket items",
-        stack: shopperItemsError,
-      });
     }
 
     if (newItemObject.product) {

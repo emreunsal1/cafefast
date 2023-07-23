@@ -12,7 +12,11 @@ export const mapShopperForJWT = (shopperData) => ({
 });
 
 const mapShopperInfoForOrders = (shopper, cardId) => {
-  const foundCard = shopper.cards.find((card) => String(card._id) === cardId);
+  const foundCard = shopper?.cards?.find((card) => String(card._id) === cardId);
+
+  if (!foundCard) {
+    return null;
+  }
 
   return {
     name: foundCard.name,
@@ -26,6 +30,7 @@ export const mapOrders = (orders: Array<any>) => {
     const basketInfo = mapBasket({ basket: { campaigns: order.campaigns, products: order.products } });
 
     return {
+      _id: order._id,
       shopper: foundInfo,
       products: order.products,
       campaigns: order.campaigns,

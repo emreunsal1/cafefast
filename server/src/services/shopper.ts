@@ -1,6 +1,7 @@
+import { SHOPPER_NOT_FOUND_IN_DATABASE } from "../constants";
 import shopperModel from "../models/shopper";
 
-export const createShopper = async (shopperData) => {
+export const createShopper = async (shopperData = {}) => {
   try {
     const newShopper = await shopperModel.create(shopperData);
     return { data: newShopper };
@@ -32,6 +33,10 @@ export const getShopper = async (shopperId, populate = true) => {
 export const getShopperBasketItems = async (shopperId) => {
   try {
     const foundShopper = await shopperModel.findById(shopperId);
+    if (!foundShopper) {
+      return { errorCode: SHOPPER_NOT_FOUND_IN_DATABASE };
+    }
+
     const allProducts = foundShopper?.basket?.products.map((_product) => _product.product);
     const allCampaigns = foundShopper?.basket?.campaigns.map((_campaign) => _campaign.campaign);
 
