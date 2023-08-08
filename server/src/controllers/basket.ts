@@ -305,11 +305,11 @@ export const approveBasketController = async (req: Request, res: Response) => {
       shopper: shopperData.data._id,
       campaigns: shopperData.data.basket?.campaigns.map((campaign) => ({
         campaign: (campaign as any).campaign._id,
-        count: (campaign as any).campaign.count,
+        count: (campaign as any).count,
       })),
       products: shopperData.data.basket?.products.map((product) => ({
         product: (product as any).product._id,
-        count: (product as any).product.count,
+        count: (product as any).count,
       })),
       cardId: (newCard.data as any)._id,
     };
