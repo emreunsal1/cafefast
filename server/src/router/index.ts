@@ -12,6 +12,7 @@ import { AUTH_REQUIRED_MIDDLEWARE } from "../middleware/jwt";
 import { getActiveMenuController } from "../controllers/company";
 
 const router = express.Router();
+router.get("/", (_, res) => res.send({ ready: "to fly 🚀" }));
 
 // ADMIN ROUTES START
 router.use("/auth", authRouter);

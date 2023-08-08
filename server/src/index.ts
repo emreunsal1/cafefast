@@ -5,19 +5,22 @@ import cookieParser from "cookie-parser";
 
 import router from "./router";
 import connectDB from "./database/connect";
-
-dotenv.config();
+import logger, { clearLogs } from "./utils/logger";
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors({ credentials: true, origin: ["http://localhost:3000", "http://localhost:3001"] }));
-app.use(cookieParser());
-app.use("/", router);
 
-connectDB();
+const init = async () => {
+  dotenv.config();
+  await clearLogs();
+  await connectDB();
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(cors({ credentials: true, origin: ["http://localhost:3000", "http://localhost:3001"] }));
+  app.use(cookieParser());
+  app.use("/", router);
 
-const port = process.env.PORT || 4000;
-app.listen(port, () => {
-  console.log(`App is running on http://localhost:${port}`);
-});
+  const port = process.env.PORT || 4000;
+  app.listen(port, () => logger.info({ message: `App is running on http://localhost:${port}` }));
+};
+
+init();

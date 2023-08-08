@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import logger from "../utils/logger";
 
 const connectDB = async () => {
   dotenv.config();
@@ -7,9 +8,9 @@ const connectDB = async () => {
   mongoose.set("strictQuery", true);
   try {
     await mongoose.connect(DB_URL as string);
-    console.log("Connected to database");
+    logger.info({ message: "Connected to MongoDB" });
   } catch (err) {
-    console.log("Error while connecting to database => ", err);
+    logger.error({ message: "Error when connecting database", stack: err });
   }
 };
 

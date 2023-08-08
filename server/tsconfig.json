@@ -17,5 +17,10 @@
     "typeRoots": ["./src/types"]
   },
   "include": ["src/**/*"],
-  "exclude": ["./node_modules/**", "jest.config.js"]
+  "exclude": [
+    "./node_modules/**",
+    "jest.config.js",
+    "./error.log",
+    "./info.log"
+  ]
 }
