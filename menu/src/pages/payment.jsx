@@ -3,6 +3,7 @@ import Cards from "react-credit-cards";
 import { useBasket } from "@/context/Basket";
 import BASKET_SERVICE from "@/services/basket";
 import "react-credit-cards/es/styles-compiled.css";
+import { useRouter } from "next/router";
 
 export default function Payment() {
   const [card, setCard] = useState({
@@ -12,6 +13,7 @@ export default function Payment() {
     name: "",
     number: "",
   });
+  const rouuter = useRouter();
 
   const { getBasketItems, basketItems } = useBasket();
 
@@ -28,7 +30,7 @@ export default function Payment() {
     setCard((prev) => ({ ...prev, [name]: value }));
   };
 
-  const formSubmitHandler = (e) => {
+  const formSubmitHandler = async (e) => {
     e.preventDefault();
     const cardData = {
       cardNo: card.number,
@@ -37,7 +39,10 @@ export default function Payment() {
       thruYear: card.expiry.slice(2, 4),
       name: card.name,
     };
-    BASKET_SERVICE.approveBasket({ companyId: "64208d2c890cdcf8376c87a5", card: cardData, price: basketItems.totalPrice });
+    const response = await BASKET_SERVICE.approveBasket({ companyId: "64208d2c890cdcf8376c87a5", card: cardData, price: basketItems.totalPrice });
+    if (response) {
+      rouuter.push("/");
+    }
   };
 
   return (
