@@ -8,7 +8,7 @@ const approveBasket = async ({ companyId, card, price }) => {
       price,
       card,
     });
-    return response;
+    return true;
   } catch (error) {
     return false;
   }
