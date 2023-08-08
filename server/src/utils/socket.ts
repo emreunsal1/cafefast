@@ -11,7 +11,11 @@ const createSocketServer = (server) => {
   });
 
   io.on("connection", (socket) => {
-    console.log("socket :>> ", socket.handshake.headers);
+    socket.on("join:company", (data) => {
+      if (data.companyId) {
+        socket.join(data.companyId);
+      }
+    });
   });
 };
 

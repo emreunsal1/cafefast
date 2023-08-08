@@ -22,6 +22,7 @@ import { mapShopperForJWT } from "../utils/mappers";
 import { SHOPPER_AUTH_TOKEN_NAME, SHOPPER_NOT_FOUND_IN_DATABASE } from "../constants";
 import { createBasketObject, mapBasket } from "../utils/basket";
 import { createOrder } from "../services/order";
+import { getIO } from "../utils/socket";
 
 // TODO: Seperate add campaign and add product controllers.
 export const addToBasketController = async (req: Request, res: Response) => {
@@ -330,6 +331,9 @@ export const approveBasketController = async (req: Request, res: Response) => {
       });
     }
 
+    const io = getIO();
+
+    io.to(companyId).emit("refresh:kitchen");
     res.send(createdOrder);
   } catch (error) {
     res.send(error);
