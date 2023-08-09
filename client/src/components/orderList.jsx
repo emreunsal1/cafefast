@@ -1,12 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Space, Checkbox, Table } from "antd";
 
 export default function OrderList({ data }) {
-  const [orders, setOrders] = useState(data || []);
-  useEffect(() => {
-    console.log("order list in", orders);
-  }, [orders]);
-
   const approvedUpdateHandler = (event) => [
     console.log("event", event),
   ];
@@ -53,7 +48,7 @@ export default function OrderList({ data }) {
   ];
   return (
     <div>
-      <Table rowKey="_id" columns={columns} dataSource={orders} />
+      <Table rowKey="_id" columns={columns} dataSource={data} />
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { useSocket } from "@/context/SocketContext";
 
 export default function Index() {
   const [orders, setOrders] = useState([]);
-  const { listener } = useSocket();
+  const { listener, socket } = useSocket();
 
   const getOrders = async () => {
     const response = await COMPANY_SERVICE.getOrders();
@@ -14,8 +14,13 @@ export default function Index() {
 
   useEffect(() => {
     getOrders();
-    listener("refresh:kitchen", () => { getOrders(); });
   }, []);
+
+  useEffect(() => {
+    if (socket !== null) {
+      listener("refresh:kitchen", () => getOrders());
+    }
+  }, [socket]);
 
   return (
     <div>

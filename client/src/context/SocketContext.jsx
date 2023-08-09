@@ -1,35 +1,37 @@
 import React, {
-  createContext, useContext, useEffect, useRef, useState,
+  createContext, useContext, useEffect, useState,
 } from "react";
 import { io } from "socket.io-client";
 
 const Context = createContext({});
 
 export function SocketContext({ children }) {
-  const socket = useRef(null);
+  const [socket, setSocket] = useState(null);
+
   const connectSocket = () => {
-    socket.current = io("http://localhost:4000/");
-    socket.current.on("connect", () => {
-      console.log("connected socket");
-    });
-    socket.current.emit("join:company", {
+    const socketInstance = io("http://localhost:4000/");
+    setSocket(socketInstance);
+    socketInstance.on("connect", () => console.log("connected socket"));
+    socketInstance.emit("join:company", {
       companyId: "64208d2c890cdcf8376c87a5",
     });
   };
+
+  const listener = (key, func) => {
+    socket.on(key, func);
+  };
+
+  const emitter = (key, data) => {
+    socket.emit(key, data);
+  };
+
   useEffect(() => {
     connectSocket();
   }, []);
 
-  const listener = (key, func) => {
-    socket.current?.on(key, func);
-  };
-
-  const emitter = (key, data) => {
-    socket.current.emit(key, data);
-  };
   return (
     <Context.Provider value={{
-      listener, emitter,
+      listener, emitter, socket,
     }}
     >
       {children}
