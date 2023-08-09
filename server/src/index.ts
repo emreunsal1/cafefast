@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import http from "http";
-import { Server } from "socket.io";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -8,7 +7,7 @@ import cookieParser from "cookie-parser";
 import router from "./router";
 import connectDB from "./database/connect";
 import logger, { clearLogs } from "./utils/logger";
-import { createSocketServer, groupByCompany } from "./utils/socket";
+import { createSocketServer } from "./utils/socket";
 
 const app = express();
 
@@ -25,7 +24,6 @@ const init = async () => {
   const port = process.env.PORT || 4000;
   const server = http.createServer(app);
   createSocketServer(server);
-  groupByCompany();
 
   server.listen(port, () => logger.info({ message: `App is running on http://localhost:${port}` }));
 };

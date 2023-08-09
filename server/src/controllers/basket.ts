@@ -295,7 +295,7 @@ export const approveBasketController = async (req: Request, res: Response) => {
       }
     }
     if (alreadyHaveCard) {
-      return res.send({
+      return res.status(400).send({
         message: "sent a cardId for saved card",
         errorCode: "CARD_ALREADY_SAVED_TO_SHOPPER",
       });

@@ -21,10 +21,4 @@ const createSocketServer = (server) => {
 
 const getIO = () => io;
 
-const groupByCompany = () => {
-  // io.on("join:company", (socket, data) => {
-  //   // socket.join()
-  // });
-};
-
-export { createSocketServer, getIO, groupByCompany };
+export { createSocketServer, getIO };
