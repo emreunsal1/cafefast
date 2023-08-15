@@ -1,4 +1,5 @@
 import orderModel from "../models/order";
+import { ORDERBY_AS_MONGOOSE_SORT, ORDER_BY } from "../enums";
 
 export const createOrder = async (orderData) => {
   try {
@@ -10,15 +11,23 @@ export const createOrder = async (orderData) => {
   }
 };
 
-export const getOrders = async (companyId) => {
+export const getOrders = async (companyId, sortOptions: { createdAt: ORDER_BY } = { createdAt: ORDER_BY.DESC }) => {
   try {
-    const result = await orderModel.find({ company: companyId }).populate("shopper").populate("products.product").populate({
-      path: "campaigns.campaign",
-      populate: {
-        path: "products",
-        model: "product",
-      },
-    })
+    const sortObject = {
+      createdAt: ORDERBY_AS_MONGOOSE_SORT[sortOptions.createdAt],
+    };
+
+    const result = await orderModel.find({ company: companyId })
+      .sort(sortObject)
+      .populate("shopper")
+      .populate("products.product")
+      .populate({
+        path: "campaigns.campaign",
+        populate: {
+          path: "products",
+          model: "product",
+        },
+      })
       .exec();
 
     return {

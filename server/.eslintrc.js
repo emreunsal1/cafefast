@@ -41,5 +41,9 @@ module.exports = {
     "import/prefer-default-export": "off",
     "consistent-return": "off",
     "no-underscore-dangle": "off",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "warn",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
   },
 };
