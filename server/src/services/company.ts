@@ -95,6 +95,10 @@ export const updateCompanyDesks = async (companyId, desks: string[]) => {
   }
 };
 
+export const checkCompanyHasDesk = async ({
+  desk, companyId,
+}) => companyModel.findOne({ desks: desk, _id: companyId });
+
 export const checkCompanyHasMenu = async ({
   menuId, companyId,
 }) => companyModel.findOne({ menus: menuId, _id: companyId });

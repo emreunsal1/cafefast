@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import logger from "./logger";
 
 let io: Server;
 
@@ -9,6 +10,7 @@ const createSocketServer = (server) => {
     },
     cookie: true,
   });
+  logger.info("Socket server created");
 
   io.on("connection", (socket) => {
     socket.on("join:company", (data) => {

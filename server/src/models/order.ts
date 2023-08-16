@@ -4,6 +4,7 @@ import mongoose, { Schema } from "mongoose";
 export const createOrderValidator = z.object({
   shopper: z.string(),
   company: z.string(),
+  desk: z.string(),
   products: z.array(z.object({ product: z.string(), count: z.number() })),
   campaigns: z.array(z.object({ campaign: z.string(), count: z.number() })),
   approved: z.boolean(),
@@ -20,6 +21,7 @@ const orderSchema = new Schema<IOrder>(
   {
     shopper: { type: String, ref: "shopper" },
     company: String,
+    desk: String,
     products: {
       type: [{ product: { type: String, ref: "product" }, count: Number }],
       default: [],

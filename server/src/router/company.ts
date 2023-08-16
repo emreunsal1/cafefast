@@ -10,6 +10,7 @@ const router = Router();
 
 router.get("/", getCompanyController);
 router.put("/", ADMIN_PERMISSON_MIDDLEWARE, updateCompanyController);
+
 router.get("/orders", getCompanyOrdersController);
 
 router.get("/desks", getCompanyDesksController);

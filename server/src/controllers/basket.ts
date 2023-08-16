@@ -15,7 +15,7 @@ import {
 import {
   createShopperVerifier, addNewItemVerifier, updateQuantityVerifier, shopperCardVerifier,
 } from "../models/shopper";
-import { getCompanyActiveMenu } from "../services/company";
+import { checkCompanyHasDesk, getCompanyActiveMenu } from "../services/company";
 import { checkMenuHasCampaign, checkMenuHasProduct } from "../utils/menu";
 import { generateJwt } from "../utils/jwt";
 import { mapShopperForJWT } from "../utils/mappers";
@@ -251,9 +251,16 @@ export const approveBasketController = async (req: Request, res: Response) => {
     const { shopper } = req;
     const { companyId } = req.params;
     // TODO: get cardId from user for saved cards
-    const { price, card } = req.body;
+    const { price, card, desk } = req.body;
 
     const shopperData = await getShopper(shopper._id, true);
+    const hasDesk = await checkCompanyHasDesk({ companyId, desk });
+
+    if (!hasDesk) {
+      return res.status(404).send({
+        message: "sent desk not found",
+      });
+    }
 
     if (shopperData.error || !shopperData.data) {
       return res.status(404).send({
@@ -304,6 +311,7 @@ export const approveBasketController = async (req: Request, res: Response) => {
     const newOrder = {
       company: companyId,
       shopper: shopperData.data._id,
+      desk,
       campaigns: shopperData.data.basket?.campaigns.map((campaign) => ({
         campaign: (campaign as any).campaign._id,
         count: (campaign as any).count,

@@ -32,6 +32,7 @@ export const mapOrders = (orders: Array<any>) => {
     return {
       _id: order._id,
       shopper: foundInfo,
+      desk: order.desk,
       products: order.products,
       campaigns: order.campaigns,
       status: order.status,
