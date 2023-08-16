@@ -63,6 +63,38 @@ export const addMenuToCompany = async (query, menuId) => {
   }
 };
 
+export const getDesks = async (companyId) => {
+  try {
+    const result = await companyModel.findOne({ company: companyId }).select("desks");
+
+    return {
+      data: result?.desks,
+    };
+  } catch (error) {
+    return {
+      error: (error as any).message || error,
+    };
+  }
+};
+
+export const updateCompanyDesks = async (companyId, desks: string[]) => {
+  try {
+    const response = await companyModel.findOneAndUpdate(
+      companyId,
+      {
+        $set: {
+          desks,
+        },
+      },
+      { new: true },
+    ).select("desks").exec();
+
+    return { data: response };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
+
 export const checkCompanyHasMenu = async ({
   menuId, companyId,
 }) => companyModel.findOne({ menus: menuId, _id: companyId });
