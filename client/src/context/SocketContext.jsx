@@ -9,11 +9,12 @@ export function SocketContext({ children }) {
   const [socket, setSocket] = useState(null);
 
   const connectSocket = () => {
+    const companyId = localStorage.getItem("companyId");
     const socketInstance = io("http://localhost:4000/");
     setSocket(socketInstance);
     socketInstance.on("connect", () => console.log("connected socket"));
     socketInstance.emit("join:company", {
-      companyId: "64208d2c890cdcf8376c87a5",
+      companyId,
     });
   };
 
