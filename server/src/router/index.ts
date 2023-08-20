@@ -7,6 +7,7 @@ import locationRouter from "./location";
 import menuRouter from "./menu";
 import productRouter from "./product";
 import basketRouter from "./basket";
+import imageRouter from "./image";
 
 import { AUTH_REQUIRED_MIDDLEWARE } from "../middleware/jwt";
 import { getActiveMenuController } from "../controllers/company";
@@ -28,4 +29,7 @@ router.get("/active-menu/:companyId", getActiveMenuController);
 router.use("/basket", basketRouter);
 router.use("/payment", paymentRouter);
 // USER ROUTES END
+
+router.use("/image", imageRouter);
+
 export default router;

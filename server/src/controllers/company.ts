@@ -82,7 +82,7 @@ export const clearCompanyDesksController = async (req: Request, res: Response) =
       return res.status(400).send(desksError);
     }
 
-    res.send(desks);
+    res.send(desks.desks);
   } catch (error: any) {
     res.send({
       error: error?.message || error,

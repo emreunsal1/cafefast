@@ -4,5 +4,6 @@ declare namespace Express {
   interface Request {
     user: any;
     shopper: any;
+    file?: any;
   }
 }
