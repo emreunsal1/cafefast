@@ -1,5 +1,5 @@
 import instance from "../utils/axios";
-import { AUTH_PAGE_URL, USER_PATH } from "../constants";
+import { AUTH_PAGE_URL, LOCAL_COMPANY_ID_KEY, USER_PATH } from "../constants";
 
 const create = async (data) => {
   try {
@@ -49,10 +49,14 @@ const compeleteOnboarding = async (data) => {
 const me = async () => {
   try {
     const response = await instance.get("/me");
-    const companyId = response.data.company;
+    const companyId = response.data.company._id;
     if (!companyId) {
       window.location.assign("/auth/onboarding");
       return;
+    }
+    const localCompanyId = localStorage.getItem(LOCAL_COMPANY_ID_KEY);
+    if (!localCompanyId || localCompanyId !== companyId) {
+      localStorage.setItem(LOCAL_COMPANY_ID_KEY, companyId);
     }
 
     return { data: response };

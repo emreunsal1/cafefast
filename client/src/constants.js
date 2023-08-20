@@ -7,3 +7,7 @@ export const ADRESS_ROUTE = "/location";
 export const MENU_ROUTE = "/menu";
 export const AUTH_PAGE_URL = "/auth";
 export const USER_PATH = "/user";
+
+// LOCAL STORAGE KEYS
+
+export const LOCAL_COMPANY_ID_KEY = "companyID";

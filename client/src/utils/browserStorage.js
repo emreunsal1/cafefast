@@ -1,14 +1,6 @@
-// export class Storage {
-//   getLocal(name) {
-//     const result = localStorage.getItem(name);
-//     return result;
-//   }
-
-//   setLocal(name, value) {
-//     localStorage.setItem(name, value);
-//   }
-
-//   getCookie(name) {}
-
-//   setCookie(name, value) {}
-// }
+export const getLocalValue = (key) => {
+  if (localStorage.getItem(key)) {
+    return localStorage.getItem(key);
+  }
+  return false;
+};
