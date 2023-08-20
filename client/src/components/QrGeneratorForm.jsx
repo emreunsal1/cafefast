@@ -24,6 +24,7 @@ export default function QrGeneratorForm({ setCurrentStep, setData, data }) {
     window.alert("en az bir alan zorunludur");
   };
   const switchChangeHandler = (checked) => {
+    setIsExistKey(checked);
     if (checked) {
       setIsExistKey(checked);
       setData([{ key: "", count: 0 }]);

@@ -16,9 +16,26 @@ const getOrders = async () => {
   return response.data;
 };
 
+const getQr = async () => {
+  const response = await instance.get(`${COMPANY_ROUTE}/desks`);
+  return response.data;
+};
+
+const updateQr = async (data) => {
+  const response = await instance.put(`${COMPANY_ROUTE}/desks`, { desks: data });
+  return response.data;
+};
+
+const deleteQr = async () => {
+  await instance.put(`${COMPANY_ROUTE}/desks`);
+};
+
 const COMPANY_SERVICE = {
   update,
   getOrders,
+  getQr,
+  updateQr,
+  deleteQr,
 };
 
 export default COMPANY_SERVICE;

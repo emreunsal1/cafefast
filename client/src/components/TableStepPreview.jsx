@@ -5,6 +5,7 @@ export default function TableStepPreview({ data }) {
   const [tabsItem, setTabsItem] = useState([]);
   const [activeTabs, setActiveTabs] = useState(data[0].key);
   useEffect(() => {
+    console.log("data type", data);
     if (typeof data === "object") {
       const newTabsItem = data.map((table, index) => ({ label: table.key, key: index }));
       setTabsItem(newTabsItem);
@@ -18,7 +19,7 @@ export default function TableStepPreview({ data }) {
   return (
     <div id="table-preview">
       {tabsItem.length && <Tabs defaultActiveKey="1" items={tabsItem} onChange={tabsOnChangeHandler} />}
-      {data.map((table) => {
+      {typeof data === "object" && data.map((table) => {
         if (table.key === activeTabs) {
           return Array.from({ length: table.count }).map((_, index) => (
             <QRCode
@@ -29,8 +30,16 @@ export default function TableStepPreview({ data }) {
             />
           ));
         }
-        return null; // Veya bir varsayılan değer döndürebilirsiniz.
+        return null;
       })}
+      {typeof data === "string" && Array.from({ length: data }).map((_, index) => (
+        <QRCode
+          key={index} // Unutmayın: Her QRCode bileşeni için benzersiz bir anahtar eklemelisiniz.
+          errorLevel="H"
+          value="https://ant.design/"
+          icon="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+        />
+      ))}
     </div>
 
   );
