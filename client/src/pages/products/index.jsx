@@ -31,6 +31,10 @@ export default function Product() {
   };
 
   const productModalActionHandler = ({ data }) => {
+    if (data === PRODUCT_MODAL_ACTIONS.CANCEL) {
+      setPopupVisible(false);
+      return;
+    }
     createProduct(data);
     setPopupVisible(false);
   };

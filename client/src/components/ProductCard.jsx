@@ -8,6 +8,7 @@ const { Meta } = Card;
 export const PRODUCT_CARD_ACTIONS = {
   UPDATE: "update",
   DELETE: "delete",
+  CANCEL: "cancel",
 };
 
 export default function ProductCard({ product, onAction }) {

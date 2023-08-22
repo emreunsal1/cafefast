@@ -38,7 +38,7 @@ export default function ProductModal({ data, onAction, action }) {
         open
         footer={[
           <Button key="selam" onClick={submitClickHandler}>Submit</Button>,
-          <Button key="denem" onClick={() => onAction(PRODUCT_MODAL_ACTIONS.CANCEL)}>Cancel</Button>,
+          <Button key="denem" onClick={() => onAction({ data: PRODUCT_MODAL_ACTIONS.CANCEL })}>Cancel</Button>,
         ]}
       >
         <Form>
