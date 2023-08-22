@@ -6,6 +6,7 @@ import Layout from "@/components/Layout";
 import { useBasket } from "../context/Basket";
 import { useMenu } from "../context/Menu";
 import rollGif from "../assets/rooll.gif";
+import CampainSlider from "@/components/CampainSlider";
 
 export default function Index() {
   const [isFetchedData, setIsFetchedData] = useState(false);
@@ -29,6 +30,9 @@ export default function Index() {
       <>
         <div className="header">
           <Header />
+        </div>
+        <div className="campain-wrapper">
+          <CampainSlider />
         </div>
         <div className="product-list">
           <ProductList />

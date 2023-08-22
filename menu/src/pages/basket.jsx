@@ -29,7 +29,7 @@ export default function Basket() {
     <div>
       {basketData?.products.length && (
       <>
-        <BasketList data={basketData.products} />
+        <BasketList data={basketData} />
         <div className="footer">
           <div className="total">
             {basketData.totalPriceSymbolText}

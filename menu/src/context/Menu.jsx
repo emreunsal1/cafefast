@@ -8,6 +8,7 @@ const Context = createContext({});
 export function MenuContext({ children }) {
   const [menu, setMenu] = useState(null);
   const [products, setProducts] = useState([]);
+  const [campaigns, setCampaigns] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const categories = menu?.categories;
 
@@ -25,6 +26,7 @@ export function MenuContext({ children }) {
     const response = await MENU_SERVICE.getMenu(menuId);
     const { data } = response;
     setMenu(data);
+    setCampaigns(data.campaigns);
     const resultCategories = data.categories.map((category) => ({ name: category.name, _id: category._id }));
     setSelectedCategory(resultCategories[0]._id);
     if (!products.length) {
@@ -41,7 +43,7 @@ export function MenuContext({ children }) {
 
   return (
     <Context.Provider value={{
-      menu, categories, products, selectedCategory, getMenu, getProductsWithCategory, setSelectedCategory,
+      menu, categories, products, campaigns, selectedCategory, getMenu, getProductsWithCategory, setSelectedCategory,
     }}
     >
       {children}
