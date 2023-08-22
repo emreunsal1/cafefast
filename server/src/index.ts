@@ -3,6 +3,7 @@ import http from "http";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { checkS3Connection } from "./services/aws";
 
 import router from "./router";
 import connectDB from "./database/connect";
@@ -15,6 +16,7 @@ const init = async () => {
   dotenv.config();
   await clearLogs();
   await connectDB();
+  await checkS3Connection();
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(cors({ credentials: true, origin: ["http://localhost:3000", "http://localhost:3001"] }));
