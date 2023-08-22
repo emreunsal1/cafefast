@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import ProductModal, { PRODUCT_MODAL_ACTIONS } from "./ProductModal";
+import { API_URl } from "@/constants";
 
 const { Meta } = Card;
 
@@ -40,7 +41,7 @@ export default function ProductCard({ product, onAction }) {
         style={{
           width: 240,
         }}
-        cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
+        cover={<img alt="example" src={API_URl + product.images[0]} />}
         actions={[
           <EditOutlined onClick={editHandler} key="edit" />,
           <DeleteOutlined key="delete" onClick={deleteHandler} />,

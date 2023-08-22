@@ -5,6 +5,7 @@ import { useProduct } from "../../context/ProductContext";
 import ProductCard, { PRODUCT_CARD_ACTIONS } from "../../components/ProductCard";
 import ProductModal, { PRODUCT_MODAL_ACTIONS } from "../../components/ProductModal";
 import Layout from "../../components/Layout";
+import { CDN_SERVICE } from "@/services/cdn";
 
 export default function Product() {
   const {
@@ -30,12 +31,18 @@ export default function Product() {
     }
   };
 
-  const productModalActionHandler = ({ data }) => {
+  const productModalActionHandler = async ({ data, images }) => {
     if (data === PRODUCT_MODAL_ACTIONS.CANCEL) {
       setPopupVisible(false);
       return;
     }
-    createProduct(data);
+    const uploadedImages = [];
+    if (images.length) {
+      const promises = images.map((image) => CDN_SERVICE.uploadImage(image.originFileObj));
+      const response = await Promise.all(promises);
+      response.map((item) => uploadedImages.push(item.data.filePath));
+    }
+    createProduct({ ...data, images: uploadedImages });
     setPopupVisible(false);
   };
 

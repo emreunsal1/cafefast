@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Button,
   Modal,
@@ -7,6 +7,7 @@ import {
   Upload,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import { CDN_SERVICE } from "@/services/cdn";
 
 export const PRODUCT_MODAL_ACTIONS = {
   UPDATE: "update",
@@ -16,19 +17,21 @@ export const PRODUCT_MODAL_ACTIONS = {
 
 export default function ProductModal({ data, onAction, action }) {
   const [product, setProduct] = useState(data || { name: "", price: "", description: "" });
+  const images = useRef([]);
 
   const submitClickHandler = async () => {
     const newProduct = { ...product, price: Number(product.price), images: ["https://http.cat/102"] };
     setProduct(newProduct);
     if (action === PRODUCT_MODAL_ACTIONS.UPDATE) {
-      onAction({ action: PRODUCT_MODAL_ACTIONS.UPDATE, data: newProduct });
+      onAction({ action: PRODUCT_MODAL_ACTIONS.UPDATE, data: newProduct, images: images.current });
       return;
     }
-    onAction({ action: PRODUCT_MODAL_ACTIONS.CREATE, data: newProduct });
+    onAction({ action: PRODUCT_MODAL_ACTIONS.CREATE, data: newProduct, images: images.current });
   };
 
-  const selectImageHandler = (e) => {
-    console.log(e);
+  const selectImageHandler = async (e) => {
+    const { fileList } = e;
+    images.current = fileList;
   };
 
   return (
