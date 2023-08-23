@@ -40,7 +40,7 @@ export default function Product() {
     if (images.length) {
       const promises = images.map((image) => CDN_SERVICE.uploadImage(image.originFileObj));
       const response = await Promise.all(promises);
-      response.map((item) => uploadedImages.push(item.data.filePath));
+      response.map((item) => uploadedImages.push(item.data.fileName));
     }
     createProduct({ ...data, images: uploadedImages });
     setPopupVisible(false);
