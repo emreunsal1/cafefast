@@ -2,6 +2,7 @@
 import AWS from "aws-sdk";
 import { config } from "dotenv";
 import logger from "../utils/logger";
+import { DEFAULT_IMAGE_UPLOAD_MIME_TYPE } from "../constants";
 
 config();
 AWS.config.update({ region: "eu-central-1" });
@@ -28,6 +29,7 @@ export const uploadPhotoToS3 = (filename, contentAsBase64, bucket = "cafefast") 
   Bucket: bucket,
   Key: filename,
   Body: contentAsBase64,
+  ContentType: DEFAULT_IMAGE_UPLOAD_MIME_TYPE,
 }).promise();
 
 export const getImageFromS3 = (filename, bucket = "cafefast") => s3.getObject({ Bucket: bucket, Key: filename }).promise();
