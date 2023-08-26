@@ -1,16 +1,25 @@
 import React from "react";
 import { Space, Checkbox, Table } from "antd";
+import { ORDER_STATUSES } from "@/constants";
+import COMPANY_SERVICE from "@/services/company";
+import { copyText } from "@/utils/copy";
 
-export default function OrderList({ data }) {
+export default function OrderList({ data, onUpdate }) {
   const approvedUpdateHandler = (event) => [
     console.log("event", event),
   ];
 
+  const statusOnChangeHandler = async (orderId, status) => {
+    const updated = await COMPANY_SERVICE.updateOrder(orderId, { status });
+    onUpdate(orderId, updated.data);
+  };
+
   const columns = [
     {
-      title: "Number",
-      dataIndex: "number",
-      key: "number",
+      title: "Sipariş Numarası",
+      dataIndex: "_id",
+      key: "_id",
+      render: (id) => (<span onClick={() => copyText(id)}>Kopyala</span>),
     },
     {
       title: "Total Price",
@@ -32,19 +41,14 @@ export default function OrderList({ data }) {
       title: "Status",
       dataIndex: "status",
       key: "status",
-    },
-    {
-      title: "Approved",
-      dataIndex: "approved",
-      render: (isApproved, _record) => (
+      render: (statusValue, _record) => (
         <Space>
-          <Checkbox onChange={() => approvedUpdateHandler(_record)} />
-          {String(isApproved)}
+          <select value={statusValue} onChange={(e) => statusOnChangeHandler(_record._id, e.target.value)}>
+            {ORDER_STATUSES.map((status) => (<option value={status}>{status}</option>))}
+          </select>
         </Space>
       ),
-      key: "approved",
     },
-
   ];
   return (
     <div>

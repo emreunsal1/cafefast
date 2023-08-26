@@ -32,6 +32,22 @@ export const getOrders = async (companyId, sortOptions: { createdAt: ORDER_BY } 
   }
 };
 
+export const findAndUpdateCompanyOrder = async ({ companyId, orderId, data }) => {
+  try {
+    const result = await orderModel.findOneAndUpdate({ _id: orderId, company: companyId }, data, { new: true })
+      .populate("shopper")
+      .exec();
+
+    return {
+      data: result,
+    };
+  } catch (error) {
+    return {
+      error: (error as any).message || error,
+    };
+  }
+};
+
 export const updateOrder = async (orderId, orderData) => {
   try {
     const result = await orderModel.findOneAndUpdate({ _id: orderId }, orderData, { new: true });

@@ -1,19 +1,26 @@
 import z from "zod";
 import mongoose, { Schema } from "mongoose";
 
+export enum OrderStatus {
+  WAITING_APPROVE = "waiting_approve",
+  IN_PROGRESS = "in_progress",
+  READY = "ready",
+  DELIVERED = "delivered",
+  CANCELED = "canceled"
+}
+
 export const createOrderValidator = z.object({
   shopper: z.string(),
   company: z.string(),
   desk: z.string(),
   products: z.array(z.object({ product: z.string(), count: z.number() })),
   campaigns: z.array(z.object({ campaign: z.string(), count: z.number() })),
-  approved: z.boolean(),
   cardId: z.string(),
-  status: z.enum(["created", "ready", "delivered", "canceled"]),
+  status: z.nativeEnum(OrderStatus),
   isDeleted: z.boolean(),
 });
 
-export const updateOrderValidator = createOrderValidator.partial();
+export const updateOrderValidator = createOrderValidator.pick({ approved: true, status: true });
 
 export type IOrder = z.infer<typeof createOrderValidator>;
 
@@ -30,8 +37,7 @@ const orderSchema = new Schema<IOrder>(
       type: [Object],
       default: [],
     },
-    approved: { type: Boolean, default: false },
-    status: { type: String, default: "created" },
+    status: { type: String, default: OrderStatus.WAITING_APPROVE },
     cardId: String,
     isDeleted: { type: Boolean, default: false },
   },

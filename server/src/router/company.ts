@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   updateCompanyDesksController,
   clearCompanyDesksController,
-  getCompanyController, getCompanyDesksController, getCompanyOrdersController, updateCompanyController,
+  getCompanyController, getCompanyDesksController, getCompanyOrdersController, updateCompanyController, updateCompanyOrderController,
 } from "../controllers/company";
 import { ADMIN_PERMISSON_MIDDLEWARE } from "../middleware/permission";
 
@@ -12,6 +12,7 @@ router.get("/", getCompanyController);
 router.put("/", ADMIN_PERMISSON_MIDDLEWARE, updateCompanyController);
 
 router.get("/orders", getCompanyOrdersController);
+router.put("/orders/:orderId", updateCompanyOrderController);
 
 router.get("/desks", getCompanyDesksController);
 router.put("/desks", updateCompanyDesksController);

@@ -12,3 +12,10 @@ export const CDN_URL = "/image";
 // LOCAL STORAGE KEYS
 
 export const LOCAL_COMPANY_ID_KEY = "companyID";
+export const ORDER_STATUSES = [
+  "waiting_approve",
+  "in_progress",
+  "ready",
+  "delivered",
+  "canceled",
+];

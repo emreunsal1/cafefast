@@ -16,6 +16,8 @@ const getOrders = async () => {
   return response.data;
 };
 
+const updateOrder = async (orderId, data) => instance.put(`${COMPANY_ROUTE}/orders/${orderId}`, data);
+
 const getQr = async () => {
   const response = await instance.get(`${COMPANY_ROUTE}/desks`);
   return response.data;
@@ -36,6 +38,7 @@ const COMPANY_SERVICE = {
   getQr,
   updateQr,
   deleteQr,
+  updateOrder,
 };
 
 export default COMPANY_SERVICE;

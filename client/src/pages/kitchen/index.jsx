@@ -16,6 +16,10 @@ export default function Index() {
     getOrders();
   }, []);
 
+  const onUpdate = () => {
+    getOrders();
+  };
+
   useEffect(() => {
     if (socket !== null) {
       listener("refresh:kitchen", () => getOrders());
@@ -25,7 +29,7 @@ export default function Index() {
   return (
     <div>
       <div className="orders-table">
-        {orders.length !== 0 && <OrderList data={orders} />}
+        {orders.length !== 0 && <OrderList data={orders} onUpdate={onUpdate} />}
         {orders.length === 0 && <div> hiç siparişiniz blulunmamaktadır</div>}
       </div>
     </div>

@@ -4,8 +4,9 @@ import {
   getCompany, getDesks, updateCompany, updateCompanyDesks,
 } from "../services/company";
 import { getMenu } from "../services/menu";
-import { getOrders } from "../services/order";
+import { findAndUpdateCompanyOrder, getOrders } from "../services/order";
 import { mapOrders } from "../utils/mappers";
+import { updateOrderValidator } from "../models/order";
 
 export const getCompanyController = async (req: Request, res: Response) => {
   const { company } = req.user;
@@ -29,6 +30,26 @@ export const getCompanyOrdersController = async (req: Request, res: Response) =>
     const orders = mapOrders(ordersData);
 
     res.send(orders);
+  } catch (error: any) {
+    res.send({
+      error: error?.message || error,
+    });
+  }
+};
+
+export const updateCompanyOrderController = async (req: Request, res: Response) => {
+  try {
+    const { orderId } = req.params;
+    const { company } = req.user;
+
+    const data = await updateOrderValidator.parseAsync(req.body);
+    const { data: orderData, error: orderError } = await findAndUpdateCompanyOrder({ companyId: company, orderId, data });
+
+    if (orderError || !orderData) {
+      return res.status(400).send(orderError);
+    }
+
+    res.send(orderData);
   } catch (error: any) {
     res.send({
       error: error?.message || error,
