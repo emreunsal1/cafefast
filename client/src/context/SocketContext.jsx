@@ -2,13 +2,21 @@ import React, {
   createContext, useContext, useEffect, useState,
 } from "react";
 import { io } from "socket.io-client";
+import { useRouter } from "next/router";
 
 const Context = createContext({});
 
 export function SocketContext({ children }) {
   const [socket, setSocket] = useState(null);
+  const unsafeRoutes = ["/auth/login", "/auth/register", "/auth/onboarding"];
+
+  const router = useRouter();
 
   const connectSocket = () => {
+    const isInUnsafeRoute = unsafeRoutes.some((route) => route === router.asPath);
+    if (isInUnsafeRoute) {
+      return;
+    }
     const companyId = localStorage.getItem("companyId");
     const socketInstance = io("http://localhost:4000/");
     setSocket(socketInstance);

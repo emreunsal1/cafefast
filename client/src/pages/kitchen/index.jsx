@@ -26,6 +26,7 @@ export default function Index() {
     <div>
       <div className="orders-table">
         {orders.length !== 0 && <OrderList data={orders} />}
+        {orders.length === 0 && <div> hiç siparişiniz blulunmamaktadır</div>}
       </div>
     </div>
   );
