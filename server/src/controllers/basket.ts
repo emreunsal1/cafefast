@@ -301,26 +301,15 @@ export const approveBasketController = async (req: Request, res: Response) => {
         });
       }
     }
-    if (alreadyHaveCard) {
-      return res.status(400).send({
-        message: "sent a cardId for saved card",
-        errorCode: "CARD_ALREADY_SAVED_TO_SHOPPER",
-      });
-    }
 
+    const objectShopperData = (shopperData.data as any).toObject();
     const newOrder = {
       company: companyId,
       shopper: shopperData.data._id,
       desk,
-      campaigns: shopperData.data.basket?.campaigns.map((campaign) => ({
-        campaign: (campaign as any).campaign._id,
-        count: (campaign as any).count,
-      })),
-      products: shopperData.data.basket?.products.map((product) => ({
-        product: (product as any).product._id,
-        count: (product as any).count,
-      })),
-      cardId: (newCard.data as any)._id,
+      campaigns: objectShopperData.basket.campaigns,
+      products: objectShopperData.basket.products,
+      cardId: (alreadyHaveCard as any)?._id || (newCard.data as any)._id,
     };
 
     const { data: createdOrder, error: createdOrderError } = await createOrder(newOrder);

@@ -20,14 +20,6 @@ export const getOrders = async (companyId, sortOptions: { createdAt: ORDER_BY } 
     const result = await orderModel.find({ company: companyId })
       .sort(sortObject)
       .populate("shopper")
-      .populate("products.product")
-      .populate({
-        path: "campaigns.campaign",
-        populate: {
-          path: "products",
-          model: "product",
-        },
-      })
       .exec();
 
     return {

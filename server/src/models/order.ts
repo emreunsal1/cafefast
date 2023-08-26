@@ -23,11 +23,11 @@ const orderSchema = new Schema<IOrder>(
     company: String,
     desk: String,
     products: {
-      type: [{ product: { type: String, ref: "product" }, count: Number }],
+      type: [Object],
       default: [],
     },
     campaigns: {
-      type: [{ campaign: { type: String, ref: "campaign" }, count: Number }],
+      type: [Object],
       default: [],
     },
     approved: { type: Boolean, default: false },

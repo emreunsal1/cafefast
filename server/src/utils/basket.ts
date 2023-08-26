@@ -29,12 +29,12 @@ export const mapBasket = (shopperData) => {
 
   products.forEach((product) => {
     totalPrice += (product.product.price * product.count);
-    allProducts.push({ ...product.product.toObject(), count: product.count });
+    allProducts.push({ ...product.product, count: product.count });
   });
 
   campaigns.forEach((campaign) => {
     totalPrice += (campaign.campaign.price * campaign.count);
-    allCampaigns.push({ ...campaign.campaign.toObject(), count: campaign.count });
+    allCampaigns.push({ ...campaign.campaign, count: campaign.count });
   });
 
   return {
