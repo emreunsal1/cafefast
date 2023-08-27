@@ -5,7 +5,7 @@ export default function Layout({ children }) {
   const router = useRouter();
 
   const basketClickHandler = async () => {
-    router.push("/basket");
+    router.push(`/${router.query.companyId}/basket`);
   };
 
   return (

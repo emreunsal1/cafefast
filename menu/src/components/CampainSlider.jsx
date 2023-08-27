@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { Carousel, Button } from "antd";
+import { useRouter } from "next/router";
 import { useMenu } from "@/context/Menu";
 import BASKET_SERVICE from "@/services/basket";
 
 export default function CampainSlider() {
   const { campaigns } = useMenu();
+  const { query } = useRouter();
   const addToBasket = (campaignId) => {
-    BASKET_SERVICE.addToBasket({ companyId: "64208d2c890cdcf8376c87a5", campaignId });
+    BASKET_SERVICE.addToBasket({ companyId: query.companyId, campaignId });
   };
   useEffect(() => {
     console.log("campan", campaigns);

@@ -1,28 +1,33 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import Header from "@/components/Header";
 import ProductList from "@/components/ProductList";
 import Layout from "@/components/Layout";
-import { useBasket } from "../context/Basket";
-import { useMenu } from "../context/Menu";
-import rollGif from "../assets/rooll.gif";
 import CampainSlider from "@/components/CampainSlider";
+import { useBasket } from "../../context/Basket";
+import { useMenu } from "../../context/Menu";
+import rollGif from "../../assets/rooll.gif";
 
 export default function Index() {
   const [isFetchedData, setIsFetchedData] = useState(false);
+  const { query, isReady } = useRouter();
 
   const { getMenu } = useMenu();
   const { getBasketItems } = useBasket();
+  const fetchData = async () => {
+    await getMenu(query.companyId);
+    await getBasketItems({ companyId: query.companyId });
+    setTimeout(() => {
+      setIsFetchedData(true);
+    }, 2000);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      await getMenu("64208d2c890cdcf8376c87a5");
-      await getBasketItems({ companyId: "64208d2c890cdcf8376c87a5" });
-      setTimeout(() => {
-        setIsFetchedData(true);
-      }, 2000);
-    };
-    fetchData();
-  }, []);
+    if (isReady) {
+      fetchData();
+    }
+  }, [isReady]);
 
   return (
     <div>

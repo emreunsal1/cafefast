@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Button, Space } from "antd";
+import { Button } from "antd";
 import { useRouter } from "next/router";
-import BASKET_SERVICE from "@/services/basket";
+
 import BasketList from "@/components/BasketList";
 import { useBasket } from "@/context/Basket";
 
@@ -12,13 +12,12 @@ export default function Basket() {
   const router = useRouter();
 
   const getBasketData = async () => {
-    const response = await getBasketItems({ companyId: "64208d2c890cdcf8376c87a5" });
-    console.log("basket in reponze ", response);
+    const response = await getBasketItems({ companyId: router.query.companyId });
     setBasketData(response);
   };
 
   const confirmBasket = () => {
-    router.push("./payment");
+    router.push(`/${router.query.companyId}/payment`);
   };
 
   useEffect(() => {

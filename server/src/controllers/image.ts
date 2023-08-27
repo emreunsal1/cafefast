@@ -3,7 +3,10 @@ import sharp from "sharp";
 import { v4 as uuid } from "uuid";
 
 import { getImageFromS3, uploadPhotoToS3 } from "../services/aws";
-import { DEFAULT_IMAGE_EXTENSION, DEFAULT_IMAGE_UPLOAD_MIME_TYPE, DEFAULT_IMAGE_UPLOAD_TYPE } from "../constants";
+import {
+  DEFAULT_IMAGE_EXTENSION, DEFAULT_IMAGE_UPLOAD_MIME_TYPE,
+  DEFAULT_IMAGE_UPLOAD_TYPE, FILE_UPLOAD_NAME_CHARACTER_LIMIT,
+} from "../constants";
 
 export const uploadImageController = async (req: Request, res: Response) => {
   try {
@@ -15,7 +18,9 @@ export const uploadImageController = async (req: Request, res: Response) => {
       quality: 80, lossless: true, compression: "hevc",
     }).toBuffer();
 
-    const fileNameWithoutExtension = req.file.originalname.split(".")[0];
+    const fileNameWithoutExtension = req.file.originalname
+      .split(".")[0]
+      .substring(0, FILE_UPLOAD_NAME_CHARACTER_LIMIT);
     const fileName = `${uuid()}-${fileNameWithoutExtension}${DEFAULT_IMAGE_EXTENSION}`;
     const uploadResult = await uploadPhotoToS3(fileName, result);
 

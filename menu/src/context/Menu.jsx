@@ -23,8 +23,8 @@ export function MenuContext({ children }) {
   };
 
   const getMenu = async (menuId) => {
-    const response = await MENU_SERVICE.getMenu(menuId);
-    const { data } = response;
+    const { data } = await MENU_SERVICE.getMenu(menuId);
+
     setMenu(data);
     setCampaigns(data.campaigns);
     const resultCategories = data.categories.map((category) => ({ name: category.name, _id: category._id }));

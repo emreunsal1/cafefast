@@ -13,12 +13,12 @@ export default function Payment() {
     name: "",
     number: "",
   });
-  const rouuter = useRouter();
+  const router = useRouter();
 
   const { getBasketItems, basketItems } = useBasket();
 
   useEffect(() => {
-    getBasketItems({ companyId: "64208d2c890cdcf8376c87a5" });
+    getBasketItems({ companyId: router.query.companyId });
   }, []);
 
   const handleInputFocus = (key) => {
@@ -40,10 +40,10 @@ export default function Payment() {
       name: card.name,
     };
     const response = await BASKET_SERVICE.approveBasket({
-      companyId: "64208d2c890cdcf8376c87a5", card: cardData, price: basketItems.totalPrice, desk: "A1",
+      companyId: router.query.companyId, card: cardData, price: basketItems.totalPrice, desk: "A1",
     });
     if (response) {
-      rouuter.push("/");
+      router.push(`/${router.query.companyId}`);
     }
   };
 

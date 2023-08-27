@@ -1,6 +1,7 @@
 /* eslint-disable react/button-has-type */
 import React, { useState } from "react";
 import { Card, Button } from "antd";
+import { useRouter } from "next/router";
 import BASKET_SERVICE from "../services/basket";
 
 const { Meta } = Card;
@@ -15,20 +16,21 @@ export default function ProductCard({
   count,
 }) {
   const [quantity, setQuantity] = useState(count || 0);
+  const { query } = useRouter();
 
   const addBasketClickHandler = async () => {
-    BASKET_SERVICE.addToBasket({ companyId: "64208d2c890cdcf8376c87a5", productId: id });
+    BASKET_SERVICE.addToBasket({ companyId: query.companyId, productId: id });
     setQuantity((prev) => prev + 1);
   };
 
   const updateQuantityHandler = async (type) => {
     if (type === "decrease") {
       if (quantity === 1) {
-        await BASKET_SERVICE.deleteProduct({ companyId: "64208d2c890cdcf8376c87a5", productId: id });
+        await BASKET_SERVICE.deleteProduct({ companyId: query.companyId, productId: id });
       } else {
         await BASKET_SERVICE.updateItemQuantity({
           productId: id,
-          companyId: "64208d2c890cdcf8376c87a5",
+          companyId: query.companyId,
           quantity: quantity - 1,
         });
       }
@@ -37,7 +39,7 @@ export default function ProductCard({
     if (type === "increase") {
       await BASKET_SERVICE.updateItemQuantity({
         productId: id,
-        companyId: "64208d2c890cdcf8376c87a5",
+        companyId: query.companyId,
         quantity: quantity + 1,
       });
       setQuantity((prev) => prev + 1);
