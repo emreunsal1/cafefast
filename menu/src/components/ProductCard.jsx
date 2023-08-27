@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { Card, Button } from "antd";
 import { useRouter } from "next/router";
 import BASKET_SERVICE from "../services/basket";
+import { API_URl, ROUTES } from "../../constants";
+import { createCloudfrontImageUrl } from "../../utils/images";
 
 const { Meta } = Card;
 
@@ -14,6 +16,7 @@ export default function ProductCard({
   inStock,
   menuPrices,
   count,
+  image,
 }) {
   const [quantity, setQuantity] = useState(count || 0);
   const { query } = useRouter();
@@ -54,7 +57,7 @@ export default function ProductCard({
           style={{
             width: 240,
           }}
-          cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
+          cover={<img alt="example" src={createCloudfrontImageUrl(image)} />}
         >
           <Meta title={name} description={price} />
           {quantity === 0 && <Button type="primary" onClick={() => addBasketClickHandler()}>Sepete EKle</Button>}

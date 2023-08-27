@@ -20,6 +20,7 @@ export default function BasketList({ data }) {
             name={product.name}
             price={product.price}
             key={product._id}
+            image={product.images[0]}
           />
         ))}
         <h1>Kampanyalar</h1>

@@ -20,6 +20,7 @@ export default function ProductList() {
             menuPrices={product.menuPrices}
             key={product._id}
             count={productCounts[product._id]}
+            image={product.images[0]}
           />
         ))}
       </div>
