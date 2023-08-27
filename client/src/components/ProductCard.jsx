@@ -41,7 +41,7 @@ export default function ProductCard({ product, onAction }) {
         style={{
           width: 240,
         }}
-        cover={<img alt="example" src={createCloudfrontImageUrl(product.images[0])} />}
+        cover={<img alt="example" src={product.images[0]} />}
         actions={[
           <EditOutlined onClick={editHandler} key="edit" />,
           <DeleteOutlined key="delete" onClick={deleteHandler} />,

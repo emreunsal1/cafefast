@@ -6,6 +6,7 @@ import {
 import {
   createMenu, deleteMenu, getMenus, updateMenu, getMenu,
 } from "../services/menu";
+import { mapMenu } from "../utils/mappers";
 
 export const getMenusController = async (req: Request, res: Response) => {
   const { company: companyId } = req.user;
@@ -30,7 +31,7 @@ export const getMenuDetailController = async (req: Request, res: Response) => {
 
   const menuData = await getMenu(menuId);
 
-  res.send(menuData.data);
+  res.send(mapMenu(menuData.data?.toObject()));
 };
 
 export const createMenuController = async (req: Request, res: Response) => {

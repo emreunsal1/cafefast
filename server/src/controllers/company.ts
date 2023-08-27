@@ -5,7 +5,7 @@ import {
 } from "../services/company";
 import { getMenu } from "../services/menu";
 import { findAndUpdateCompanyOrder, getOrders } from "../services/order";
-import { mapOrders } from "../utils/mappers";
+import { mapMenu, mapOrders } from "../utils/mappers";
 import { updateOrderValidator } from "../models/order";
 
 export const getCompanyController = async (req: Request, res: Response) => {
@@ -124,7 +124,7 @@ export const getActiveMenuController = async (req: Request, res: Response) => {
     return res.status(404).send({ message: "active menu not found", error });
   }
 
-  res.send(data);
+  res.send(mapMenu(data.toObject()));
 };
 
 export const updateCompanyController = async (req: Request, res: Response) => {

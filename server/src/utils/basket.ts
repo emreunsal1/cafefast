@@ -1,3 +1,5 @@
+import { mapCampaign, mapProduct } from "./mappers";
+
 export const createBasketObject = ({ product, campaign, companyId }) => {
   const newBasketObject: any = {
     company: companyId,
@@ -29,12 +31,12 @@ export const mapBasket = (shopperData) => {
 
   products.forEach((product) => {
     totalPrice += (product.product.price * product.count);
-    allProducts.push({ ...product.product, count: product.count });
+    allProducts.push({ ...mapProduct(product.product), count: product.count });
   });
 
   campaigns.forEach((campaign) => {
     totalPrice += (campaign.campaign.price * campaign.count);
-    allCampaigns.push({ ...campaign.campaign, count: campaign.count });
+    allCampaigns.push({ ...mapCampaign(campaign.campaign), count: campaign.count });
   });
 
   return {

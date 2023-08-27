@@ -1,4 +1,7 @@
+import { config } from "dotenv";
 import { mapBasket } from "./basket";
+
+config();
 
 export const mapUserForJWT = (userData) => ({
   _id: userData._id,
@@ -47,4 +50,28 @@ export const mapOrders = (orders: Array<any>) => {
   });
 
   return mappedOrders;
+};
+
+export const mapProduct = (_product) => ({
+  ..._product,
+  images: _product.images.map((image) => `${process.env.AWS_CLOUDFRONT_URL}/${image}`),
+});
+
+export const mapCampaign = (campaign) => ({
+  ...campaign,
+  products: campaign.products.map((product) => mapProduct(product)),
+});
+export const mapCategory = (category) => ({
+  ...category,
+  products: category.products.map((product) => mapProduct(product)),
+});
+
+export const mapMenu = (menu) => {
+  const mappedMenu = menu;
+
+  mappedMenu.categories = mappedMenu.categories.map(mapCategory);
+
+  mappedMenu.campaigns = mappedMenu.campaigns.map(mapCampaign);
+
+  return mappedMenu;
 };

@@ -141,7 +141,7 @@ export const getBasketController = async (req: Request, res: Response) => {
     });
   }
 
-  res.send(mapBasket(data));
+  res.send(mapBasket(data.toObject()));
 };
 
 export const updateQuantityController = async (req: Request, res: Response) => {

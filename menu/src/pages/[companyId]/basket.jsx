@@ -21,8 +21,10 @@ export default function Basket() {
   };
 
   useEffect(() => {
-    getBasketData();
-  }, []);
+    if (router.isReady) {
+      getBasketData();
+    }
+  }, [router.isReady]);
 
   return (
     <div>

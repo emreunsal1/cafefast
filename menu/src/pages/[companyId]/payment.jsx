@@ -32,6 +32,7 @@ export default function Payment() {
 
   const formSubmitHandler = async (e) => {
     e.preventDefault();
+    // TODO: get savedCards from backend, and render saved cards
     const cardData = {
       cardNo: card.number,
       cvv: card.cvc,

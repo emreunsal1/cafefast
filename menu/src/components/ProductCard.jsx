@@ -57,7 +57,7 @@ export default function ProductCard({
           style={{
             width: 240,
           }}
-          cover={<img alt="example" src={createCloudfrontImageUrl(image)} />}
+          cover={<img alt="example" src={image} />}
         >
           <Meta title={name} description={price} />
           {quantity === 0 && <Button type="primary" onClick={() => addBasketClickHandler()}>Sepete EKle</Button>}
