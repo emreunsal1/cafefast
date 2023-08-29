@@ -4,6 +4,7 @@ import { AUTH_TOKEN_COOKIE_NAME, SIX_DAYS_AS_MS } from "../constants";
 import { checkUserFieldIsExists, createUser, getUser } from "../services/user";
 import { registerUserVerifier } from "../models/user";
 import { mapUserForJWT } from "../utils/mappers";
+import { createPasswordHash, verifyPasswordHash } from "../utils/company";
 
 export const login = async (req:Request, res:Response) => {
   try {
@@ -15,12 +16,17 @@ export const login = async (req:Request, res:Response) => {
     }
 
     const findedUser = await getUser({
-      query: { email, password },
+      query: { email },
     });
 
     if (findedUser.error || !findedUser.data) {
       res.status(401).send({ error: findedUser.error });
       return;
+    }
+
+    const isHashSuccessfull = await verifyPasswordHash(password, findedUser.data.password);
+    if (!isHashSuccessfull) {
+      return res.status(401).send("Unauthorized");
     }
 
     const createdJWT = await generateJwt(mapUserForJWT(findedUser.data));
@@ -51,8 +57,14 @@ export const register = async (req:Request, res:Response) => {
       });
       return;
     }
-    // TODO: hash the password before creating user
-    const createdUser = await createUser(parsedUser);
+
+    const hashedPassword = await createPasswordHash(parsedUser.password);
+    const newUser = {
+      email: parsedUser.email,
+      password: hashedPassword,
+    };
+
+    const createdUser = await createUser(newUser);
     if (createdUser.error) {
       res.status(401).json(createdUser.error);
       return;

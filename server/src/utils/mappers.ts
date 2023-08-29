@@ -80,6 +80,6 @@ export const mapMenu = (menu) => {
 export const mapSavedCards = (cards) => cards.map((card) => ({
   _id: card._id,
   cardNo: `**** **** **** ${card.cardNo.slice(-4)}`,
-  name: `${card.name.substring(0, 3)}*****`,
+  name: `${card.name.substring(0, 3)}***`,
   type: creditCardType(card.cardNo)[0]?.niceType || null,
 }));
