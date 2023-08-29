@@ -75,3 +75,9 @@ export const mapMenu = (menu) => {
 
   return mappedMenu;
 };
+
+export const mapSavedCards = (cards) => cards.map((card) => ({
+  _id: card._id,
+  cardNo: `**** **** **** ${card.cardNo.slice(-4)}`,
+  name: `${card.name.substring(0, 3)}*****`,
+}));

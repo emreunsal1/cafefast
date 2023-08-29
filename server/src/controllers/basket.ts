@@ -19,7 +19,7 @@ import {
 import { checkCompanyHasDesk, getCompanyActiveMenu } from "../services/company";
 import { checkMenuHasCampaign, checkMenuHasProduct } from "../utils/menu";
 import { generateJwt } from "../utils/jwt";
-import { mapShopperForJWT } from "../utils/mappers";
+import { mapSavedCards, mapShopperForJWT } from "../utils/mappers";
 import { SHOPPER_AUTH_TOKEN_NAME, SHOPPER_NOT_FOUND_IN_DATABASE } from "../constants";
 import { createBasketObject, mapBasket } from "../utils/basket";
 import { createOrder } from "../services/order";
@@ -245,6 +245,20 @@ export const deleteCampaignInBasketController = async (req: Request, res: Respon
   } catch (error) {
     res.status(404).send({ message: "delete error", error });
   }
+};
+
+export const getShopperSavedCardController = async (req: Request, res: Response) => {
+  const { shopper } = req;
+
+  const shopperData = await getShopper(shopper._id, true);
+  if (shopperData.error || !shopperData.data?.phone) {
+    return res.status(401).send({
+      error: shopperData.error,
+      code: SHOPPER_NOT_FOUND_IN_DATABASE,
+    });
+  }
+
+  res.send(mapSavedCards(shopperData.data?.cards));
 };
 
 export const approveBasketController = async (req: Request, res: Response) => {
