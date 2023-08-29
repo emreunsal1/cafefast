@@ -1,38 +1,23 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
+import { useBasket } from "@/context/Basket";
 
-export default function BasketList({ data }) {
-  const [basketData, setBasketData] = useState(data);
+export default function BasketList() {
+  const { basketItems } = useBasket();
   useEffect(() => {
-    if (data.length) {
-      setBasketData(data);
-    }
-  }, [data]);
+    console.log("selam", basketItems.product);
+  }, [basketItems]);
 
   return (
     <div>
       <div className="list-wrapper">
         <h1>Ürünler</h1>
-        {basketData.products.map((product) => (
-          <ProductCard
-            id={product._id}
-            count={product.count}
-            name={product.name}
-            price={product.price}
-            key={product._id}
-            image={product.images[0]}
-          />
+        {basketItems.products.map((product) => (
+          <ProductCard data={product} />
         ))}
         <h1>Kampanyalar</h1>
-        {basketData.campaigns.map((campaign) => (
-          <ProductCard
-            id={campaign._id}
-            count={campaign.count}
-            name={campaign.name}
-            price={campaign.price}
-            key={campaign._id}
-            image={campaign.products[0].images[0]}
-          />
+        {basketItems.campaigns.map((campaign) => (
+          <ProductCard data={campaign} />
         ))}
       </div>
     </div>

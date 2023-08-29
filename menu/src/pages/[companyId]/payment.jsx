@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Cards from "react-credit-cards";
 import { useBasket } from "@/context/Basket";
 import BASKET_SERVICE from "@/services/basket";
@@ -13,6 +13,7 @@ export default function Payment() {
     name: "",
     number: "",
   });
+  const phoneNumber = useRef("");
   const router = useRouter();
 
   const { getBasketItems, basketItems } = useBasket();
@@ -27,6 +28,10 @@ export default function Payment() {
   const inputOnChangeHandler = (event) => {
     event.preventDefault();
     const { name, value } = event.target;
+    if (name === "phoneNumber") {
+      phoneNumber.current = value;
+      return;
+    }
     setCard((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -41,7 +46,11 @@ export default function Payment() {
       name: card.name,
     };
     const response = await BASKET_SERVICE.approveBasket({
-      companyId: router.query.companyId, card: cardData, price: basketItems.totalPrice, desk: "A1",
+      companyId: router.query.companyId,
+      card: cardData,
+      price: basketItems.totalPrice,
+      desk: "A1",
+      phoneNumber: phoneNumber.current,
     });
     if (response) {
       router.push(`/${router.query.companyId}`);
@@ -62,6 +71,7 @@ export default function Payment() {
         <input placeholder="card number" name="number" onChange={(e) => inputOnChangeHandler(e)} onFocus={() => handleInputFocus("number")} />
         <input placeholder="cvc" name="cvc" onChange={(e) => inputOnChangeHandler(e)} onFocus={() => handleInputFocus("cvc")} />
         <input placeholder="expiry" name="expiry" onChange={(e) => inputOnChangeHandler(e)} onFocus={() => handleInputFocus("expiry")} />
+        <input placeholder="phone Number" name="phoneNumber" onChange={(e) => inputOnChangeHandler(e)} />
         <button type="submit">Ödemeyi Tamamla</button>
       </form>
     </div>
