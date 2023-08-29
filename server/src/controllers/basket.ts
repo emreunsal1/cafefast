@@ -20,7 +20,7 @@ import { checkCompanyHasDesk, getCompanyActiveMenu } from "../services/company";
 import { checkMenuHasCampaign, checkMenuHasProduct } from "../utils/menu";
 import { generateJwt } from "../utils/jwt";
 import { mapSavedCards, mapShopperForJWT } from "../utils/mappers";
-import { SHOPPER_AUTH_TOKEN_NAME, SHOPPER_NOT_FOUND_IN_DATABASE } from "../constants";
+import { SAVED_CARD_NOT_FOUND_IN_USER, SHOPPER_AUTH_TOKEN_NAME, SHOPPER_NOT_FOUND_IN_DATABASE } from "../constants";
 import { createBasketObject, mapBasket } from "../utils/basket";
 import { createOrder } from "../services/order";
 import { getIO } from "../utils/socket";
@@ -254,7 +254,7 @@ export const getShopperSavedCardController = async (req: Request, res: Response)
   if (shopperData.error || !shopperData.data?.phone) {
     return res.status(401).send({
       error: shopperData.error,
-      code: SHOPPER_NOT_FOUND_IN_DATABASE,
+      errorCode: SHOPPER_NOT_FOUND_IN_DATABASE,
     });
   }
 
@@ -265,9 +265,8 @@ export const approveBasketController = async (req: Request, res: Response) => {
   try {
     const { shopper } = req;
     const { companyId } = req.params;
-    // TODO: get cardId from user for saved cards
     const {
-      price, card, desk, phoneNumber,
+      price, card, desk, phoneNumber, savedCardId,
     } = req.body;
 
     const shopperData = await getShopper(shopper._id, true);
@@ -306,20 +305,32 @@ export const approveBasketController = async (req: Request, res: Response) => {
       });
     }
 
-    const validatedCard = await shopperCardVerifier.parseAsync(card);
-    const alreadyHaveCard = shopperData.data.cards.find((_card) => _card.cardNo === validatedCard.cardNo);
     let newCard;
-    if (!alreadyHaveCard) {
-      newCard = await addCardToShopper(shopper._id, validatedCard);
-      if (newCard.error || !newCard.data) {
-        return res.status(400).send({
-          message: "card can not created",
-          error: newCard.error,
+    let alreadyHaveCard;
+    if (savedCardId) {
+      const hasSavedCardWithId = shopperData.data?.cards.find((_card) => (_card as any)._id === savedCardId);
+      if (!hasSavedCardWithId) {
+        res.status(400).send({
+          errorCode: SAVED_CARD_NOT_FOUND_IN_USER,
         });
       }
     }
 
-    if (phoneNumber) {
+    if (!savedCardId) {
+      const validatedCard = await shopperCardVerifier.parseAsync(card);
+      alreadyHaveCard = shopperData.data.cards.find((_card) => _card.cardNo === validatedCard.cardNo);
+      if (!alreadyHaveCard) {
+        newCard = await addCardToShopper(shopper._id, validatedCard);
+        if (newCard.error || !newCard.data) {
+          return res.status(400).send({
+            message: "card can not created",
+            error: newCard.error,
+          });
+        }
+      }
+    }
+
+    if (!savedCardId && phoneNumber) {
       const { phone } = await updateShopperVerifier.parseAsync({ phone: phoneNumber });
       const { data: phoneNumberResult, error: phoneNumberError } = await setPhoneNumberToShopper(shopper._id, phone);
       if (phoneNumberError || !phoneNumberResult) {
@@ -336,7 +347,7 @@ export const approveBasketController = async (req: Request, res: Response) => {
       desk,
       campaigns: objectShopperData.basket.campaigns,
       products: objectShopperData.basket.products,
-      cardId: (alreadyHaveCard as any)?._id || (newCard.data as any)._id,
+      cardId: savedCardId || (alreadyHaveCard as any)?._id || (newCard.data as any)._id,
     };
 
     const { data: createdOrder, error: createdOrderError } = await createOrder(newOrder);

@@ -7,6 +7,7 @@ import {
   addProductToCategory, checkCategoryHasProduct, deleteProductFromCategory, removeProductsFromAllCategories,
 } from "../services/category";
 import { addProductToCompany } from "../services/company";
+import { mapProduct } from "../utils/mappers";
 
 export const getAllProductsController = async (req: Request, res: Response) => {
   const { company } = req.user;
@@ -17,7 +18,7 @@ export const getAllProductsController = async (req: Request, res: Response) => {
         error: productsResponse.error,
       });
     }
-    res.send(productsResponse.data.products);
+    res.send(productsResponse.data.products?.map(mapProduct));
   } catch (error) {
     res.status(400).send({
       error: (error as any).message || error,
@@ -42,7 +43,7 @@ export const createProductController = async (req: Request, res: Response) => {
         error: companyResponse.error,
       });
     }
-    res.send(createdProduct.data);
+    res.send(mapProduct(createdProduct.data));
   } catch (error) {
     res.status(400).send({
       error: (error as any).message || error,
@@ -62,7 +63,7 @@ export const updateProductController = async (req: Request, res: Response) => {
         error: updatedProduct.error,
       });
     }
-    res.send(updatedProduct.data);
+    res.send(mapProduct(updatedProduct.data));
   } catch (error) {
     res.status(400).send({
       error,
