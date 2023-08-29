@@ -66,6 +66,8 @@ const deleteCampaign = async ({ companyId, campaignId }) => {
   }
 };
 
+const getSavedCards = () => instance.get(`${ROUTES.BASKET}/saved-cards`);
+
 const BASKET_SERVICE = {
   approveBasket,
   addToBasket,
@@ -73,6 +75,7 @@ const BASKET_SERVICE = {
   updateItemQuantity,
   deleteProduct,
   deleteCampaign,
+  getSavedCards,
 };
 
 export default BASKET_SERVICE;

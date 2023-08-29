@@ -308,7 +308,8 @@ export const approveBasketController = async (req: Request, res: Response) => {
     let newCard;
     let alreadyHaveCard;
     if (savedCardId) {
-      const hasSavedCardWithId = shopperData.data?.cards.find((_card) => (_card as any)._id === savedCardId);
+      const hasSavedCardWithId = shopperData.data?.cards.find((_card) => (_card as any)._id.toString() === savedCardId);
+
       if (!hasSavedCardWithId) {
         res.status(400).send({
           errorCode: SAVED_CARD_NOT_FOUND_IN_USER,
