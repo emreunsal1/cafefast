@@ -18,7 +18,7 @@ export const getAllProductsController = async (req: Request, res: Response) => {
         error: productsResponse.error,
       });
     }
-    res.send(productsResponse.data.products?.map(mapProduct));
+    res.send(productsResponse.data.toObject().products?.map(mapProduct));
   } catch (error) {
     res.status(400).send({
       error: (error as any).message || error,
@@ -43,7 +43,7 @@ export const createProductController = async (req: Request, res: Response) => {
         error: companyResponse.error,
       });
     }
-    res.send(mapProduct(createdProduct.data));
+    res.send(mapProduct(createdProduct.data.toObject()));
   } catch (error) {
     res.status(400).send({
       error: (error as any).message || error,
@@ -63,7 +63,7 @@ export const updateProductController = async (req: Request, res: Response) => {
         error: updatedProduct.error,
       });
     }
-    res.send(mapProduct(updatedProduct.data));
+    res.send(mapProduct(updatedProduct.data.toObject()));
   } catch (error) {
     res.status(400).send({
       error,
