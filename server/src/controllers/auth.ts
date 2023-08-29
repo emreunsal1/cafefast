@@ -17,6 +17,7 @@ export const login = async (req:Request, res:Response) => {
 
     const findedUser = await getUser({
       query: { email },
+      withPassword: true,
     });
 
     if (findedUser.error || !findedUser.data) {
@@ -49,13 +50,12 @@ export const register = async (req:Request, res:Response) => {
     const isExists = await checkUserFieldIsExists({ email: parsedUser.email });
 
     if (Array.isArray(isExists)) {
-      res.status(401).json({
+      return res.status(401).json({
         error: {
           message: "exists",
           fields: isExists,
         },
       });
-      return;
     }
 
     const hashedPassword = await createPasswordHash(parsedUser.password);
@@ -66,12 +66,13 @@ export const register = async (req:Request, res:Response) => {
 
     const createdUser = await createUser(newUser);
     if (createdUser.error) {
-      res.status(401).json(createdUser.error);
-      return;
+      return res.status(401).json(createdUser.error);
     }
     const createdJWT = await generateJwt(mapUserForJWT(createdUser.data));
-    res.cookie(AUTH_TOKEN_COOKIE_NAME, createdJWT, { httpOnly: !!process.env.ENVIRONMENT, maxAge: SIX_DAYS_AS_MS }).send();
-    res.status(201).json(createdUser.data);
+    res
+      .cookie(AUTH_TOKEN_COOKIE_NAME, createdJWT, { httpOnly: !!process.env.ENVIRONMENT, maxAge: SIX_DAYS_AS_MS })
+      .status(201)
+      .send();
   } catch (error:any) {
     res.status(401).json({
       error,

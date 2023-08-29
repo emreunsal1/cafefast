@@ -12,6 +12,10 @@ export const validateCompanyHasProducts = async (companyData, productIds) => {
   }
 };
 
-export const createPasswordHash = async (password: string) => bcrypt.hash(password, process.env.COMPANY_USER_PASSWORD_HASH || "123123");
+export const createPasswordHash = async (password: string) => {
+  const round = process.env.SALT_ROUND || 41;
+  const salt = await bcrypt.genSalt(Number(round));
+  return bcrypt.hash(password, salt);
+};
 
 export const verifyPasswordHash = async (inputPassword, userHashedPassword) => bcrypt.compare(inputPassword, userHashedPassword);
