@@ -1,5 +1,6 @@
 {
   "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "eslint.enable": true,
   "eslint.validate": ["javascript", "javascriptreact"],
   "[scss]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -10,7 +11,7 @@
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "eslint.workingDirectories": ["./client", "./server", "./menu"],
+  "eslint.workingDirectories": ["./server", "./company", "./menu"],
   "[javascriptreact]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.codeActionsOnSave": {
