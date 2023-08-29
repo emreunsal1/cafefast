@@ -9,11 +9,12 @@ import {
   deleteProductFromShopper,
   getShopper,
   getShopperBasketItems,
+  setPhoneNumberToShopper,
   updateCampaignCount,
   updateProductCount,
 } from "../services/shopper";
 import {
-  createShopperVerifier, addNewItemVerifier, updateQuantityVerifier, shopperCardVerifier,
+  createShopperVerifier, addNewItemVerifier, updateQuantityVerifier, shopperCardVerifier, updateShopperVerifier,
 } from "../models/shopper";
 import { checkCompanyHasDesk, getCompanyActiveMenu } from "../services/company";
 import { checkMenuHasCampaign, checkMenuHasProduct } from "../utils/menu";
@@ -251,7 +252,9 @@ export const approveBasketController = async (req: Request, res: Response) => {
     const { shopper } = req;
     const { companyId } = req.params;
     // TODO: get cardId from user for saved cards
-    const { price, card, desk } = req.body;
+    const {
+      price, card, desk, phoneNumber,
+    } = req.body;
 
     const shopperData = await getShopper(shopper._id, true);
     const hasDesk = await checkCompanyHasDesk({ companyId, desk });
@@ -298,6 +301,16 @@ export const approveBasketController = async (req: Request, res: Response) => {
         return res.status(400).send({
           message: "card can not created",
           error: newCard.error,
+        });
+      }
+    }
+
+    if (phoneNumber) {
+      const { phone } = await updateShopperVerifier.parseAsync({ phone: phoneNumber });
+      const { data: phoneNumberResult, error: phoneNumberError } = await setPhoneNumberToShopper(shopper._id, phone);
+      if (phoneNumberError || !phoneNumberResult) {
+        return res.status(400).send({
+          error: phoneNumberError,
         });
       }
     }

@@ -12,7 +12,7 @@ export const shopperCardVerifier = z.object({
   thruYear: z.string().min(2).max(2),
   name: z.string().max(255),
 });
-export const updateShopperVerifier = z.object({ phone: z.string() });
+export const updateShopperVerifier = z.object({ phone: z.string().min(10).max(10) });
 export const addNewItemVerifier = createShopperVerifier.pick({ product: true, campaign: true });
 export const updateQuantityVerifier = createShopperVerifier.pick({ product: true, campaign: true }).merge(z.object({
   quantity: z.number().min(1).max(15),

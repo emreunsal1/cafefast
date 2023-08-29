@@ -59,6 +59,19 @@ export const addProductToShopper = async (shopperId, productId) => {
   }
 };
 
+export const setPhoneNumberToShopper = async (shopperId, phone) => {
+  try {
+    const newShopper = await shopperModel.findOneAndUpdate(
+      { _id: shopperId },
+      { phone },
+      { new: true },
+    );
+    return { data: newShopper };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
+
 export const addCardToShopper = async (shopperId, cardData) => {
   try {
     const newShopper = await shopperModel.findOneAndUpdate(
