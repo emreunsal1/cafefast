@@ -17,6 +17,15 @@ export const deleteCategory = async (categoryId) => {
   }
 };
 
+export const deleteCategoriesWithIds = async (categoryIds) => {
+  try {
+    const result = await categoryModel.deleteMany({ _id: { $in: categoryIds } }).exec();
+    return { data: result };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
+
 export const updateCategory = async (categoryId, data) => {
   try {
     const result = await categoryModel.findOneAndUpdate({ _id: categoryId }, data, { new: true });

@@ -4,9 +4,10 @@ import {
   addMenuToCompany, getCompany, removeMenuFromCompany,
 } from "../services/company";
 import {
-  createMenu, deleteMenu, getMenus, updateMenu, getMenu,
+  createMenu, deleteMenu, getMenus, updateMenu, getMenu, getMenuWithId,
 } from "../services/menu";
 import { mapMenu } from "../utils/mappers";
+import { deleteCategoriesWithIds } from "../services/category";
 
 export const getMenusController = async (req: Request, res: Response) => {
   const { company: companyId } = req.user;
@@ -65,17 +66,16 @@ export const deleteMenuController = async (req: Request, res: Response) => {
     if (!removeMenuData || removeMenuError) {
       return res.send({ error: removeMenuError });
     }
+    const menu = await getMenuWithId(menuId, false);
     const deletedMenu = await deleteMenu(menuId);
-    // TODO: Delete all fields of menu (like: Categories, etc.)
+    await deleteCategoriesWithIds(menu?.categories);
 
     if (deletedMenu.error || !deletedMenu.data) {
-      res.send({
+      return res.send({
         error: deletedMenu.error,
       });
-      return;
     }
     res.send(deletedMenu);
-    return;
   } catch (err) {
     res.status(400).send();
   }

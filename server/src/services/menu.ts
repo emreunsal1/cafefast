@@ -48,9 +48,17 @@ export const getMenu = async (menuId) => {
   }
 };
 
-export const getMenuWithId = async (menuId) => menuModel.findOne({
-  _id: menuId,
-}).populate("campaigns").populate("categories");
+export const getMenuWithId = async (menuId, populate = true) => {
+  const query = menuModel.findOne({
+    _id: menuId,
+  });
+
+  if (populate) {
+    query.populate("campaigns").populate("categories");
+  }
+
+  return query.exec();
+};
 
 export const addCategoryToMenu = async (query: Partial<IMenu & {_id: any}>, categoryId: any):Promise<{data?: any, error?: any}> => {
   try {
