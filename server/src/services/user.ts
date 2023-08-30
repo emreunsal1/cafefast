@@ -29,7 +29,8 @@ export const checkUserFieldIsExists = async (data: Partial<IUser>): Promise<stri
 };
 
 export const getUser = async ({
-  query, populate = false,
+  query,
+  populate = false,
   withPassword = false,
 }: {query: Partial<IUser>, populate?: boolean, withPassword?: boolean}) => {
   try {

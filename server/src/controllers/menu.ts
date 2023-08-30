@@ -103,6 +103,13 @@ export const updateMenuController = async (req: Request, res: Response) => {
 export const addCampaignToMenuController = async (req: Request, res: Response) => {
   const { menuId, campaignId } = req.params;
   try {
+    const foundMenu = await getMenuWithId(menuId, false);
+
+    const isCampaignExists = foundMenu?.campaigns.some((_campaignId) => _campaignId.toString() === campaignId);
+    if (isCampaignExists) {
+      return res.status(400).send({ error: "Campaign already exists in menu" });
+    }
+
     const menuResponse = await addCampaignToMenu({ campaignId, menuId });
     if (!menuResponse.data || menuResponse.error) {
       return res.status(400).send(menuResponse.error);

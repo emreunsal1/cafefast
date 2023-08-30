@@ -81,21 +81,41 @@ export const MENU_EXISTS_MIDDLEWARE = async (req: Request, res: Response, next: 
   }
 };
 
-export const BODY_PRODUCT_EXISTS_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
+export const COMPANY_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
   const { company } = req.user;
+  const { data: foundCompany } = await getCompany({
+    query: {
+      _id: company,
+    },
+    populate: false,
+  });
+
+  if (!foundCompany) return res.status(404).send({ message: "[COMPANY_MIDDLEWARE] error when getting company info" });
+
+  res.locals.companyInfo = foundCompany;
+  next();
+};
+
+export const REQUEST_PARAMS_CAMPAIGN_EXISTS_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
+  const { companyInfo } = res.locals;
   const { campaignId } = req.params;
 
-  try {
-    const { data: foundCompany } = await getCompany({
-      query: {
-        _id: company,
-      },
-      populate: false,
+  const foundCampaign = companyInfo.campaigns.find((_campaignId) => _campaignId.toString() === campaignId);
+  if (!foundCampaign) {
+    return res.status(404).send({
+      message: "[REQUEST_PARAMS_CAMPAIGN_EXISTS_MIDDLEWARE] campaign not found",
     });
-    if (!foundCompany) return res.send(404);
+  }
 
+  next();
+};
+
+export const BODY_PRODUCT_EXISTS_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
+  const { companyInfo } = res.locals;
+
+  try {
     if (req.body.products) {
-      const isValid = validateCompanyHasProducts(foundCompany, req.body.products);
+      const isValid = validateCompanyHasProducts(companyInfo, req.body.products);
       if (!isValid) {
         return res.status(404).send({
           message: "[BODY_PRODUCT_EXISTS_MIDDLEWARE] products invalid",
@@ -103,14 +123,6 @@ export const BODY_PRODUCT_EXISTS_MIDDLEWARE = async (req: Request, res: Response
       }
     }
 
-    if (campaignId) {
-      const foundCampaign = foundCompany.campaigns.find((_campaignId) => _campaignId.toString() === campaignId);
-      if (!foundCampaign) {
-        return res.status(404).send({
-          message: "[BODY_PRODUCT_EXISTS_MIDDLEWARE] campaign not found",
-        });
-      }
-    }
     next();
   } catch (error) {
     return res.status(404).send({

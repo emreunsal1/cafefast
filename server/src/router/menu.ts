@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE } from "../middleware/permission";
+import {
+  ADMIN_PERMISSON_MIDDLEWARE, COMPANY_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, REQUEST_PARAMS_CAMPAIGN_EXISTS_MIDDLEWARE,
+} from "../middleware/permission";
 
 import {
   createCategoryController,
@@ -41,7 +43,19 @@ router.delete(
 );
 
 // Campaign
-router.post("/:menuId/campaign/:campaignId", ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, addCampaignToMenuController);
-router.delete("/:menuId/campaign/:campaignId", ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, removeCampaignFromMenuController);
+router.post(
+  "/:menuId/campaign/:campaignId",
+  ADMIN_PERMISSON_MIDDLEWARE,
+  COMPANY_MIDDLEWARE,
+  REQUEST_PARAMS_CAMPAIGN_EXISTS_MIDDLEWARE,
+  addCampaignToMenuController,
+);
+router.delete(
+  "/:menuId/campaign/:campaignId",
+  ADMIN_PERMISSON_MIDDLEWARE,
+  COMPANY_MIDDLEWARE,
+  REQUEST_PARAMS_CAMPAIGN_EXISTS_MIDDLEWARE,
+  removeCampaignFromMenuController,
+);
 
 export default router;
