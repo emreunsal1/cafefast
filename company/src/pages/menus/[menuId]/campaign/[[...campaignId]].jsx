@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Table } from "antd";
-import CampaignDetail from "@/components/CampaignDetail";
+import CampaignDetail from "@/components/AddCapmaing";
 
 export default function CategoryProducts() {
   const router = useRouter();

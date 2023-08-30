@@ -5,6 +5,7 @@ export const AUTH_TOKEN_NAME = "auth_token";
 export const COMPANY_ROUTE = "/company";
 export const ADRESS_ROUTE = "/location";
 export const MENU_ROUTE = "/menu";
+export const CAMPAING_ROUTE = "/campaigns";
 export const AUTH_PAGE_URL = "/auth";
 export const USER_PATH = "/user";
 export const CDN_URL = "/image";

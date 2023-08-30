@@ -25,12 +25,14 @@ export function MenuContext({ children }) {
   const getMenu = async (menuId) => {
     const { data } = await MENU_SERVICE.getMenu(menuId);
 
-    setMenu(data);
-    setCampaigns(data.campaigns);
-    const resultCategories = data.categories.map((category) => ({ name: category.name, _id: category._id }));
-    setSelectedCategory(resultCategories[0]._id);
-    if (!products.length) {
-      getProductsWithCategory(resultCategories[0]._id, data);
+    if (data) {
+      setMenu(data);
+      setCampaigns(data?.campaigns || []);
+      const resultCategories = data.categories.map((category) => ({ name: category.name, _id: category._id }));
+
+      if (!products.length) {
+        getProductsWithCategory(resultCategories[0]._id, data);
+      }
     }
     return data;
   };

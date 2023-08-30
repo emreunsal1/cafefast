@@ -7,6 +7,7 @@ const MenuItems = [
   { key: "Products", route: "/products" },
   { key: "Kitchen", route: "/kitchen" },
   { key: "Table", route: "/table" },
+  { key: "Campain", route: "/campaings" },
 ];
 
 export default function MenuBar() {

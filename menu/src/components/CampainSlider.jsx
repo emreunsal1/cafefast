@@ -24,7 +24,7 @@ export default function CampainSlider() {
   return (
     <div style={{ margin: "20px" }}>
       <Carousel>
-        {campaigns.map((campaignId, index) => (
+        {campaigns.length && campaigns.map((campaignId, index) => (
           <div key={index}>
             <div className="content" style={contentStyle}>
               {campaignId.name}

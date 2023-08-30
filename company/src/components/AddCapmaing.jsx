@@ -25,7 +25,7 @@ const PRODUCT_COLUMNS = [
   },
 ];
 
-function CampaignDetail() {
+function CampaignDetail({ action }) {
   const [data, setData] = useState({ name: "", description: "", price: 0 });
   const [allProducts, setAllProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -34,7 +34,7 @@ function CampaignDetail() {
   const router = useRouter();
   const message = useMessage();
 
-  const campaignId = router.isReady && router.query.campaignId?.[0];
+  const campaing = action.key === "update" ? action.value : false;
 
   const fetchProducts = async () => {
     const response = await PRODUCT_SERVICE.get();
@@ -53,23 +53,14 @@ function CampaignDetail() {
     setApplicable(currentData.applicable);
   };
 
-  const fetchCurrentCampaign = async () => {
-    setIsLoading(true);
-    const currentMenu = await MENU_SERVICE.detail(router.query.menuId);
-    setIsLoading(false);
-    const currentCampaign = currentMenu.data.campaigns.find((campaign) => campaign._id === campaignId);
-
-    setCurrentCampaign(currentCampaign);
-  };
-
   useEffect(() => {
-    if (router.isReady) {
-      fetchProducts();
-      if (campaignId) {
-        fetchCurrentCampaign();
-      }
+    fetchProducts();
+    setData({ name: "", description: "", price: 0 });
+    setApplicable({ days: DEFAULT_DAYS_VALUE });
+    if (campaing) {
+      setCurrentCampaign(action.value);
     }
-  }, [router.isReady]);
+  }, [action]);
 
   const onSubmitSuccess = async () => {
     const submitData = {
@@ -79,19 +70,20 @@ function CampaignDetail() {
       products: selectedProducts,
     };
 
-    if (!campaignId) {
-      const response = await CAMPAIGN_SERVICE.create(router.query.menuId, submitData);
+    if (!campaing) {
+      const response = await CAMPAIGN_SERVICE.create(submitData);
       if (response) {
         message("success", "Kampanya başarıyla oluşturuldu!");
-        router.push(`/menus/${router.query.menuId}`);
+        action.updateState(false);
       }
       return;
     }
 
-    const response = await CAMPAIGN_SERVICE.update(router.query.menuId, campaignId, submitData);
+    const response = await CAMPAIGN_SERVICE.update(campaing._id, submitData);
     if (response) {
       setCurrentCampaign(response.data);
       message("success", "Güncelleme başarılı!");
+      action.updateState(false);
     }
   };
 
@@ -219,7 +211,7 @@ function CampaignDetail() {
         wrapperCol={{ offset: 8, span: 16 }}
       >
         <Button type="primary" htmlType="submit">
-          {campaignId ? "Kaydet" : "Oluştur"}
+          {campaing ? "Kaydet" : "Oluştur"}
         </Button>
       </Form.Item>
     </Form>
