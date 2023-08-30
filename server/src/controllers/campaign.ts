@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import { createCampaign, deleteCampaign, updateCampaign } from "../services/campaign";
 import { createCampaignVerifier, updateCampaignVerifier } from "../models/campaign";
 import { removeCampaignFromMenu } from "../services/menu";
-import { addCampaignToCompany, getCompanyCampaigns } from "../services/company";
+import { addCampaignToCompany, getCompanyCampaigns, removeCampaignFromCompany } from "../services/company";
+import { mapCampaigns } from "../utils/mappers";
 
 export const getCompanyCampaignsController = async (req: Request, res: Response) => {
   try {
@@ -13,7 +14,7 @@ export const getCompanyCampaignsController = async (req: Request, res: Response)
       return res.send(campaignResponse.error);
     }
 
-    res.status(200).send(campaignResponse.data);
+    res.status(200).send(mapCampaigns(campaignResponse.data));
   } catch (error) {
     res.status(400).send({
       error,
@@ -67,15 +68,20 @@ export const deleteCampaignController = async (req: Request, res: Response) => {
   try {
     const campaignResponse = await deleteCampaign(campaignId);
     if (!campaignResponse.data || campaignResponse.error) {
-      return res.status(400).send(campaignResponse.error);
+      return res.status(400).send({ message: "error when deleting campaign", error: campaignResponse.error });
+    }
+
+    const companyResponse = await removeCampaignFromCompany(campaignId);
+    if (!companyResponse.data || companyResponse.error) {
+      return res.status(400).send({ message: "error when removing campaign from company", error: companyResponse.error });
     }
 
     const menuResponse = await removeCampaignFromMenu(campaignId);
     if (!menuResponse.data || menuResponse.error) {
-      return res.status(400).send(menuResponse.error);
+      return res.status(400).send({ message: "error when removing campaign from menu", error: menuResponse.error });
     }
 
-    res.status(200).send(campaignResponse.data);
+    res.status(200).send({ success: campaignResponse.data });
   } catch (error) {
     res.status(400).send({
       error,

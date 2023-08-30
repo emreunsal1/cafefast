@@ -22,8 +22,8 @@ export const updateCampaign = async (campaignId, data) => {
 
 export const deleteCampaign = async (campaignId) => {
   try {
-    await campaignModel.deleteOne({ _id: campaignId });
-    return { data: true };
+    const deleteCampaignResult = await campaignModel.deleteOne({ _id: campaignId });
+    return { data: deleteCampaignResult.deletedCount > 0 };
   } catch (error) {
     console.log("[deleteCampaign] error :>> ", error);
     return { error: (error as any).message || error };

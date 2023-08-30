@@ -124,8 +124,8 @@ export const removeCategoryFromMenu = async (categoryId) => {
 
 export const removeCampaignFromMenu = async (campaignId) => {
   try {
-    await menuModel.findOneAndUpdate({ campaigns: campaignId }, { $pull: { campaigns: campaignId } });
-    return { data: true };
+    const response = await menuModel.updateMany({ campaigns: campaignId }, { $pull: { campaigns: campaignId } });
+    return { data: response.modifiedCount > 0, error: response.modifiedCount < 0 && "menus are not updated" };
   } catch (error) {
     return { error: (error as any).message || error };
   }

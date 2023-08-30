@@ -129,10 +129,16 @@ export const addProductToCompany = async (companyId, productId) => {
 
 export const getCompanyCampaigns = async (companyId) => {
   try {
-    const result = await companyModel.findOne({ company: companyId }).populate("campaigns").select("campaigns");
+    const result = await companyModel.findOne({ company: companyId }).populate({
+      path: "campaigns",
+      populate: {
+        path: "products",
+        model: "product",
+      },
+    }).select("campaigns");
 
     return {
-      data: result?.campaigns,
+      data: result?.toObject()?.campaigns,
     };
   } catch (error) {
     return {
@@ -148,6 +154,16 @@ export const addCampaignToCompany = async (companyId, campaignId) => {
       { $push: { campaigns: campaignId } },
       { new: true },
     );
+
+    return { data: newCompany };
+  } catch (error) {
+    return { error };
+  }
+};
+
+export const removeCampaignFromCompany = async (campaignId: any):Promise<{data?: any, error?: any}> => {
+  try {
+    const newCompany = await companyModel.findOneAndUpdate({ campaigns: campaignId }, { $pull: { campaigns: campaignId } }, { new: true });
 
     return { data: newCompany };
   } catch (error) {

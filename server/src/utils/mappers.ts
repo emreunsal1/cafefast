@@ -77,6 +77,8 @@ export const mapMenu = (menu) => {
   return mappedMenu;
 };
 
+export const mapCampaigns = (campaigns) => campaigns.map((campaign) => mapCampaign(campaign));
+
 export const mapSavedCards = (cards) => cards.map((card) => ({
   _id: card._id,
   cardNo: `**** **** **** ${card.cardNo.slice(-4)}`,
