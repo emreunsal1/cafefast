@@ -1,6 +1,12 @@
 import { mapCampaign, mapProduct } from "./mappers";
 
-export const createBasketObject = ({ product, campaign, companyId }) => {
+type BasketObject = {
+  product?: any;
+  campaign?: any;
+  companyId: string;
+}
+
+export const createBasketObject = ({ product, campaign, companyId }: BasketObject) => {
   const newBasketObject: any = {
     company: companyId,
     products: [],

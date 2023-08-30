@@ -25,7 +25,6 @@ import { createBasketObject, mapBasket } from "../utils/basket";
 import { createOrder } from "../services/order";
 import { getIO } from "../utils/socket";
 
-// TODO: Seperate add campaign and add product controllers.
 export const addToBasketController = async (req: Request, res: Response) => {
   let { shopper } = req;
   const { companyId } = req.params;
@@ -129,6 +128,64 @@ export const addToBasketController = async (req: Request, res: Response) => {
   }
 
   return res.status(201).send({ message: "items added" });
+};
+
+export const addProductToBasketController = async (req: Request, res: Response) => {
+  const { shopper } = req;
+  const { productId } = req.params;
+  const { shopperData } = res.locals;
+
+  const isProductExistsOnMenu = checkMenuHasProduct(res.locals.companyActiveMenu, productId);
+  if (!isProductExistsOnMenu) {
+    return res.status(400).json({
+      error: "Product not found in company active menu",
+    });
+  }
+
+  const shopperHasProductAlready = shopperData.basket.products.some((_product) => String(_product.product) === productId);
+  if (shopperHasProductAlready) {
+    return res.status(400).send({
+      message: "You can not add same product again",
+    });
+  }
+
+  const newShopper = await addProductToShopper(shopper._id, productId);
+  if (newShopper.error || !newShopper.data) {
+    return res.status(400).send({
+      error: newShopper.error,
+    });
+  }
+
+  res.status(201).send(newShopper.data);
+};
+
+export const addCampaignToBasketController = async (req: Request, res: Response) => {
+  const { shopper } = req;
+  const { campaignId } = req.params;
+  const { shopperData } = res.locals;
+
+  const isCampaignExistsInActiveMenu = checkMenuHasCampaign(res.locals.companyActiveMenu, campaignId);
+  if (!isCampaignExistsInActiveMenu) {
+    return res.status(400).json({
+      error: "Campaign not found in company active menu",
+    });
+  }
+
+  const shopperHasCampaignAlready = shopperData.basket.campaigns.some((_campaign) => String(_campaign.campaign) === campaignId);
+  if (shopperHasCampaignAlready) {
+    return res.status(400).send({
+      message: "You can not add same campaign again",
+    });
+  }
+
+  const newShopper = await addCampaignToShopper(shopper._id, campaignId);
+  if (newShopper.error || !newShopper.data) {
+    return res.status(400).send({
+      error: newShopper.error,
+    });
+  }
+
+  res.status(201).send(newShopper.data);
 };
 
 export const getBasketController = async (req: Request, res: Response) => {

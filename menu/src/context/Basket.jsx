@@ -6,11 +6,6 @@ const Context = createContext({});
 export function BasketContext({ children }) {
   const [basketItems, setBasketItems] = useState(null);
 
-  const productCounts = basketItems?.products.reduce((prev, curr) => {
-    prev[curr._id] = curr.count;
-    return prev;
-  }, {}) || {};
-
   const getBasketItems = async ({ companyId }) => {
     const response = await BASKET_SERVICE.getBasket({ companyId });
     const { data } = response;
@@ -22,7 +17,6 @@ export function BasketContext({ children }) {
     <Context.Provider value={{
       getBasketItems,
       basketItems,
-      productCounts,
     }}
     >
       {children}

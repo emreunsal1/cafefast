@@ -1,21 +1,19 @@
 /* eslint-disable react/button-has-type */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Button } from "antd";
 import { useRouter } from "next/router";
 import BASKET_SERVICE from "../services/basket";
-import { API_URl, ROUTES } from "../../constants";
-import { createCloudfrontImageUrl } from "../../utils/images";
 import { useBasket } from "@/context/Basket";
 
 const { Meta } = Card;
 
 export default function ProductCard({ data }) {
-  const [quantity, setQuantity] = useState(data.count || 0);
   const { query } = useRouter();
-  const { getBasketItems } = useBasket();
+  const { getBasketItems, basketItems } = useBasket();
+  const [quantity, setQuantity] = useState(data.count || 0);
 
   const addBasketClickHandler = async () => {
-    BASKET_SERVICE.addToBasket({ companyId: query.companyId, productId: data._id });
+    BASKET_SERVICE.addProductToBasket({ companyId: query.companyId, productId: data._id });
     setQuantity((prev) => prev + 1);
   };
 
@@ -44,6 +42,15 @@ export default function ProductCard({ data }) {
       setQuantity((prev) => prev - 1);
     }
   };
+
+  useEffect(() => {
+    if (!data.count) {
+      const itemInBasket = basketItems.products.find((_product) => _product._id === data._id);
+      if (itemInBasket) {
+        setQuantity(itemInBasket.count);
+      }
+    }
+  }, [data]);
 
   return (
     <div id="productCard">

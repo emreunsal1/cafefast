@@ -57,7 +57,6 @@ export default function Payment() {
       return;
     }
     e.preventDefault();
-    // TODO: get savedCards from backend, and render saved cards
     const cardData = {
       cardNo: card.number,
       cvv: card.cvc,

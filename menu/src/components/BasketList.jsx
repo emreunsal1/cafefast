@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ProductCard from "./ProductCard";
 import { useBasket } from "@/context/Basket";
 
 export default function BasketList() {
   const { basketItems } = useBasket();
-  useEffect(() => {
-    console.log("selam", basketItems.product);
-  }, [basketItems]);
 
   return (
     <div>

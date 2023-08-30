@@ -23,6 +23,14 @@ const addToBasket = async ({ companyId, productId, campaignId }) => {
   }
 };
 
+const addProductToBasket = async ({ companyId, productId }) => {
+  try {
+    return instance.post(`${ROUTES.BASKET}/${companyId}/product/${productId}`);
+  } catch (error) {
+    return false;
+  }
+};
+
 const getBasket = async ({ companyId }) => {
   try {
     const response = await instance.get(`${ROUTES.BASKET}/${companyId}`);
@@ -71,6 +79,7 @@ const getSavedCards = () => instance.get(`${ROUTES.BASKET}/saved-cards`);
 const BASKET_SERVICE = {
   approveBasket,
   addToBasket,
+  addProductToBasket,
   getBasket,
   updateItemQuantity,
   deleteProduct,
