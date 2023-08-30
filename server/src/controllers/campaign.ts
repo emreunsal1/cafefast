@@ -1,11 +1,29 @@
 import { Request, Response } from "express";
 import { createCampaign, deleteCampaign, updateCampaign } from "../services/campaign";
 import { createCampaignVerifier, updateCampaignVerifier } from "../models/campaign";
-import { addCampaignToMenu, removeCampaignFromMenu } from "../services/menu";
+import { removeCampaignFromMenu } from "../services/menu";
+import { addCampaignToCompany, getCompanyCampaigns } from "../services/company";
+
+export const getCompanyCampaignsController = async (req: Request, res: Response) => {
+  try {
+    const { company } = req.user;
+    const campaignResponse = await getCompanyCampaigns(company);
+
+    if (!campaignResponse.data || campaignResponse.error) {
+      return res.send(campaignResponse.error);
+    }
+
+    res.status(200).send(campaignResponse.data);
+  } catch (error) {
+    res.status(400).send({
+      error,
+    });
+  }
+};
 
 export const createCampaignController = async (req: Request, res: Response) => {
-  const { menuId } = req.params;
   try {
+    const { company } = req.user;
     const verifiedCampaign = await createCampaignVerifier.parseAsync(req.body);
 
     const campaignResponse = await createCampaign(verifiedCampaign);
@@ -13,9 +31,9 @@ export const createCampaignController = async (req: Request, res: Response) => {
       return res.send(campaignResponse.error);
     }
 
-    const menuResponse = await addCampaignToMenu({ campaignId: campaignResponse.data._id, menuId });
-    if (!menuResponse.data || menuResponse.error) {
-      return res.status(400).send(menuResponse.error);
+    const { data: companyData, error: companyError } = await addCampaignToCompany(company, campaignResponse.data._id);
+    if (!companyData || companyError) {
+      return res.status(400).send(companyError);
     }
 
     res.status(201).send(campaignResponse.data);

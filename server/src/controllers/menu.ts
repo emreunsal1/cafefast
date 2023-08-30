@@ -4,7 +4,7 @@ import {
   addMenuToCompany, getCompany, removeMenuFromCompany,
 } from "../services/company";
 import {
-  createMenu, deleteMenu, getMenus, updateMenu, getMenu, getMenuWithId,
+  createMenu, deleteMenu, getMenus, updateMenu, getMenu, getMenuWithId, addCampaignToMenu, removeCampaignFromMenu,
 } from "../services/menu";
 import { mapMenu } from "../utils/mappers";
 import { deleteCategoriesWithIds } from "../services/category";
@@ -97,5 +97,37 @@ export const updateMenuController = async (req: Request, res: Response) => {
     return;
   } catch (err) {
     res.status(400).send();
+  }
+};
+
+export const addCampaignToMenuController = async (req: Request, res: Response) => {
+  const { menuId, campaignId } = req.params;
+  try {
+    const menuResponse = await addCampaignToMenu({ campaignId, menuId });
+    if (!menuResponse.data || menuResponse.error) {
+      return res.status(400).send(menuResponse.error);
+    }
+
+    res.status(201).send(menuResponse.data);
+  } catch (error) {
+    res.status(400).send({
+      error,
+    });
+  }
+};
+
+export const removeCampaignFromMenuController = async (req: Request, res: Response) => {
+  const { campaignId } = req.params;
+  try {
+    const menuResponse = await removeCampaignFromMenu(campaignId);
+    if (!menuResponse.data || menuResponse.error) {
+      return res.status(400).send(menuResponse.error);
+    }
+
+    res.status(200).send(menuResponse.data);
+  } catch (error) {
+    res.status(400).send({
+      error,
+    });
   }
 };

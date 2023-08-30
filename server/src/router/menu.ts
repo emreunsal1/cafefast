@@ -7,17 +7,15 @@ import {
   updateCategoryController,
 } from "../controllers/category";
 import {
+  addCampaignToMenuController,
   createMenuController,
   deleteMenuController,
   getMenuDetailController,
   getMenusController,
+  removeCampaignFromMenuController,
   updateMenuController,
 } from "../controllers/menu";
-import {
-  createCampaignController,
-  deleteCampaignController,
-  updateCampaignController,
-} from "../controllers/campaign";
+
 import { addProductToCategoryController, removeProductFromCategoryController } from "../controllers/product";
 
 const router = Router();
@@ -43,8 +41,7 @@ router.delete(
 );
 
 // Campaign
-router.post("/:menuId/campaign", ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, createCampaignController);
-router.put("/:menuId/campaign/:campaignId", ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, updateCampaignController);
-router.delete("/:menuId/campaign/:campaignId", ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, deleteCampaignController);
+router.post("/:menuId/campaign/:campaignId", ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, addCampaignToMenuController);
+router.delete("/:menuId/campaign/:campaignId", ADMIN_PERMISSON_MIDDLEWARE, MENU_EXISTS_MIDDLEWARE, removeCampaignFromMenuController);
 
 export default router;

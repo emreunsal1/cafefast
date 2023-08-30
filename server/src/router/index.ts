@@ -8,6 +8,7 @@ import menuRouter from "./menu";
 import productRouter from "./product";
 import basketRouter from "./basket";
 import imageRouter from "./image";
+import campaignRouter from "./campaign";
 
 import { AUTH_REQUIRED_MIDDLEWARE } from "../middleware/jwt";
 import { getActiveMenuController } from "../controllers/company";
@@ -21,6 +22,7 @@ router.use("/location", locationRouter);
 router.use("/me", AUTH_REQUIRED_MIDDLEWARE, meRouter);
 router.use("/company", AUTH_REQUIRED_MIDDLEWARE, companyRouter);
 router.use("/menu", AUTH_REQUIRED_MIDDLEWARE, menuRouter);
+router.use("/campaigns", AUTH_REQUIRED_MIDDLEWARE, campaignRouter);
 router.use("/product", AUTH_REQUIRED_MIDDLEWARE, productRouter);
 // ADMIN ROUTES END
 

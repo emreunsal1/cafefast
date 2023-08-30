@@ -127,6 +127,34 @@ export const addProductToCompany = async (companyId, productId) => {
   }
 };
 
+export const getCompanyCampaigns = async (companyId) => {
+  try {
+    const result = await companyModel.findOne({ company: companyId }).populate("campaigns").select("campaigns");
+
+    return {
+      data: result?.campaigns,
+    };
+  } catch (error) {
+    return {
+      error: (error as any).message || error,
+    };
+  }
+};
+
+export const addCampaignToCompany = async (companyId, campaignId) => {
+  try {
+    const newCompany = await companyModel.findOneAndUpdate(
+      { _id: companyId },
+      { $push: { campaigns: campaignId } },
+      { new: true },
+    );
+
+    return { data: newCompany };
+  } catch (error) {
+    return { error };
+  }
+};
+
 export const removeProductFromCompany = async (companyId, productId) => {
   try {
     const newCompany = await companyModel.findOneAndUpdate(

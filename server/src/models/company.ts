@@ -14,6 +14,7 @@ export type ICompany = {
   activeMenu?: string | null;
   isDeleted?: boolean;
   products?: string[];
+  campaigns?: string[];
 }
 
 const companySchema = new mongoose.Schema<ICompany>({
@@ -36,6 +37,11 @@ const companySchema = new mongoose.Schema<ICompany>({
   products: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "product",
+    default: [],
+  }],
+  campaigns: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "campaign",
     default: [],
   }],
   activeMenu: {
