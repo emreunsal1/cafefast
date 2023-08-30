@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 
 config();
 
-export const validateCompanyHasProducts = async (companyData, productIds) => {
+export const validateCompanyHasProducts = (companyData, productIds) => {
   try {
     const hasInvalid = productIds.some((id) => !companyData?.products?.includes(id));
     return !hasInvalid;

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { checkCompanyHasMenu } from "../services/company";
+import { checkCompanyHasMenu, getCompany } from "../services/company";
 import { getUser } from "../services/user";
 import { getMenuWithId } from "../services/menu";
 import { validateCompanyHasProducts } from "../utils/company";
@@ -76,6 +76,45 @@ export const MENU_EXISTS_MIDDLEWARE = async (req: Request, res: Response, next: 
   } catch (error) {
     return res.status(404).send({
       message: "[MENU_EXISTS_MIDDLEWARE] not allowed for this request",
+      error,
+    });
+  }
+};
+
+export const BODY_PRODUCT_EXISTS_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
+  const { company } = req.user;
+  const { campaignId } = req.params;
+
+  try {
+    const { data: foundCompany } = await getCompany({
+      query: {
+        _id: company,
+      },
+      populate: false,
+    });
+    if (!foundCompany) return res.send(404);
+
+    if (req.body.products) {
+      const isValid = validateCompanyHasProducts(foundCompany, req.body.products);
+      if (!isValid) {
+        return res.status(404).send({
+          message: "[BODY_PRODUCT_EXISTS_MIDDLEWARE] products invalid",
+        });
+      }
+    }
+
+    if (campaignId) {
+      const foundCampaign = foundCompany.campaigns.find((_campaignId) => _campaignId.toString() === campaignId);
+      if (!foundCampaign) {
+        return res.status(404).send({
+          message: "[BODY_PRODUCT_EXISTS_MIDDLEWARE] campaign not found",
+        });
+      }
+    }
+    next();
+  } catch (error) {
+    return res.status(404).send({
+      message: "[BODY_PRODUCT_EXISTS_MIDDLEWARE] not allowed for this request",
       error,
     });
   }

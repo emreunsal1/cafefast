@@ -48,7 +48,7 @@ export const completeOnboardingController = async (req: Request, res: Response) 
       });
     }
 
-    const { data: createdCompany } = await createCompany(parsedCompany);
+    const { data: createdCompany } = await createCompany(parsedCompany as any);
     const { data: newUser } = await updateUser({
       query: { email },
       data: {

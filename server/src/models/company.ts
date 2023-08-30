@@ -9,12 +9,12 @@ export type ICompany = {
     mailingAddress: string;
     postalCode: number;
   }
-  desks?: string[],
-  menus?: number[];
-  activeMenu?: string | null;
-  isDeleted?: boolean;
-  products?: string[];
-  campaigns?: string[];
+  desks: string[],
+  menus: number[];
+  activeMenu: string | null;
+  isDeleted: boolean;
+  products: string[];
+  campaigns: string[];
 }
 
 const companySchema = new mongoose.Schema<ICompany>({
