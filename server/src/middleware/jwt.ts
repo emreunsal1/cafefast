@@ -2,10 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import { AUTH_TOKEN_COOKIE_NAME, SHOPPER_AUTH_TOKEN_NAME } from "../constants";
 import { IUserWithoutPassword } from "../models/user";
 import { getUser } from "../services/user";
-import { generateJwt, verifyJwt } from "../utils/jwt";
+import { generateJwt, setCookie, verifyJwt } from "../utils/jwt";
 import { mapShopperForJWT, mapUserForJWT } from "../utils/mappers";
 import { createBasketObject } from "../utils/basket";
 import { clearShopperBasket, createShopper } from "../services/shopper";
+import logger from "../utils/logger";
 
 export const AUTH_REQUIRED_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
   const authToken = req.cookies[AUTH_TOKEN_COOKIE_NAME];
@@ -22,10 +23,10 @@ export const AUTH_REQUIRED_MIDDLEWARE = async (req: Request, res: Response, next
   if (!data.company) {
     const { data: userData } = await getUser({ query: { email: data.email } });
     const createdJWT = await generateJwt(mapUserForJWT(userData));
-    res.cookie(
+    setCookie(
+      res,
       AUTH_TOKEN_COOKIE_NAME,
-      createdJWT,
-      { httpOnly: !!process.env.ENVIRONMENT },
+      createdJWT as string,
     );
   }
   req.user = data as IUserWithoutPassword;
@@ -67,7 +68,13 @@ export const SHOPPER_RESOLVE_OR_CREATE_MIDDLEWARE = async (req: Request, res: Re
     });
     verifiedUser = newShopper.data;
     const newShopperJWT = await generateJwt(mapShopperForJWT(verifiedUser));
-    res.cookie(SHOPPER_AUTH_TOKEN_NAME, newShopperJWT, { httpOnly: !!process.env.ENVIRONMENT }).send({ token: newShopperJWT });
+    setCookie(res, SHOPPER_AUTH_TOKEN_NAME, newShopperJWT as string);
+    logger.error({
+      action: "SHOPPER_DATA_MIDDLEWARE_CREATE_USER",
+      messsage: "user not found new user created",
+      newUser: (verifiedUser as any)?._id,
+    });
+    res.set("x-shopper-resolve-or-create", "true");
   }
 
   req.shopper = verifiedUser;
@@ -79,7 +86,7 @@ export const SHOPPER_COMPANY_CHANGE_MIDDLEWARE = async (req: Request, res: Respo
   const { companyId } = req.params;
   const { shopperData } = res.locals;
 
-  if (companyId !== shopperData.basket.companyId) {
+  if (companyId !== shopperData.basket.company) {
     const { error: clearShopperError } = await clearShopperBasket(shopper._id, companyId);
     if (clearShopperError) {
       return res.status(500).send({

@@ -7,6 +7,7 @@ export const createProductValidator = z.object({
   price: z.number(),
   images: z.array(z.string()),
   attributes: z.array(z.object({ name: z.string(), price: z.number() })).optional(),
+  // Add attribute category for make radio button for attributes
   requiredAttributeCount: z.number().default(0).optional(),
   menuPrices: z.array(z.object({ menuId: z.string(), price: z.number().positive() })).optional(),
   inStock: z.boolean().optional(),

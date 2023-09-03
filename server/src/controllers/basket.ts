@@ -18,7 +18,7 @@ import {
 } from "../models/shopper";
 import { checkCompanyHasDesk, getCompanyActiveMenu } from "../services/company";
 import { checkMenuHasCampaign, checkMenuHasProduct } from "../utils/menu";
-import { generateJwt } from "../utils/jwt";
+import { generateJwt, setCookie } from "../utils/jwt";
 import { mapSavedCards, mapShopperForJWT } from "../utils/mappers";
 import { SAVED_CARD_NOT_FOUND_IN_USER, SHOPPER_AUTH_TOKEN_NAME, SHOPPER_NOT_FOUND_IN_DATABASE } from "../constants";
 import { createBasketObject, mapBasket } from "../utils/basket";
@@ -69,7 +69,8 @@ export const addToBasketController = async (req: Request, res: Response) => {
       });
 
       const newShopperJWT = await generateJwt(mapShopperForJWT(newShopper.data));
-      return res.cookie(SHOPPER_AUTH_TOKEN_NAME, newShopperJWT, { httpOnly: !!process.env.ENVIRONMENT }).send({ token: newShopperJWT });
+      setCookie(res, SHOPPER_AUTH_TOKEN_NAME, newShopperJWT as string);
+      res.send();
     }
 
     const newItemObject = await addNewItemVerifier.parseAsync(req.body);
@@ -84,7 +85,7 @@ export const addToBasketController = async (req: Request, res: Response) => {
       const newShopperJWT = await generateJwt(mappedDataForJwt);
 
       shopper = JSON.parse(JSON.stringify(mappedDataForJwt));
-      res.cookie(SHOPPER_AUTH_TOKEN_NAME, newShopperJWT, { httpOnly: !!process.env.ENVIRONMENT });
+      setCookie(res, SHOPPER_AUTH_TOKEN_NAME, newShopperJWT as string);
     } else if (shopperItemsError || !shopperItemsData) {
       return res.status(500).send({
         message: "error when fetching user basket items",

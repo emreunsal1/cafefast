@@ -7,14 +7,14 @@ import { checkS3Connection } from "./services/aws";
 
 import router from "./router";
 import connectDB from "./database/connect";
-import logger, { clearLogs } from "./utils/logger";
+import logger from "./utils/logger";
 import { createSocketServer } from "./utils/socket";
 
 const app = express();
 
 const init = async () => {
   dotenv.config();
-  await clearLogs();
+  // await clearLogs();
   await connectDB();
   await checkS3Connection();
   app.use(express.json());

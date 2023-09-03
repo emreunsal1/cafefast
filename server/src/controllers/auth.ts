@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { generateJwt } from "../utils/jwt";
-import { AUTH_TOKEN_COOKIE_NAME, SIX_DAYS_AS_MS } from "../constants";
+import { generateJwt, setCookie } from "../utils/jwt";
+import { AUTH_TOKEN_COOKIE_NAME } from "../constants";
 import { checkUserFieldIsExists, createUser, getUser } from "../services/user";
 import { registerUserVerifier } from "../models/user";
 import { mapUserForJWT } from "../utils/mappers";
@@ -31,7 +31,8 @@ export const login = async (req:Request, res:Response) => {
     }
 
     const createdJWT = await generateJwt(mapUserForJWT(findedUser.data));
-    res.cookie(AUTH_TOKEN_COOKIE_NAME, createdJWT, { httpOnly: !!process.env.ENVIRONMENT, maxAge: SIX_DAYS_AS_MS }).send();
+    setCookie(res, AUTH_TOKEN_COOKIE_NAME, createdJWT as string);
+    res.send();
   } catch (error:any) {
     res.status(401).send({
       error,
@@ -69,10 +70,8 @@ export const register = async (req:Request, res:Response) => {
       return res.status(401).json(createdUser.error);
     }
     const createdJWT = await generateJwt(mapUserForJWT(createdUser.data));
-    res
-      .cookie(AUTH_TOKEN_COOKIE_NAME, createdJWT, { httpOnly: !!process.env.ENVIRONMENT, maxAge: SIX_DAYS_AS_MS })
-      .status(201)
-      .send();
+    setCookie(res, AUTH_TOKEN_COOKIE_NAME, createdJWT as string);
+    res.status(201).send();
   } catch (error:any) {
     res.status(401).json({
       error,

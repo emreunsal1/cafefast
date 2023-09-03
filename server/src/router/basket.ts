@@ -21,7 +21,13 @@ import { COMPANY_ACTIVE_MENU_MIDDLEWARE, SHOPPER_DATA_MIDDLEWARE } from "../midd
 const route = Router();
 
 route.get("/saved-cards", SHOPPER_AUTH_REQUIRED_MIDDLEWARE, getShopperSavedCardController);
-route.get("/:companyId", SHOPPER_AUTH_REQUIRED_MIDDLEWARE, getBasketController);
+route.get(
+  "/:companyId",
+  SHOPPER_RESOLVE_OR_CREATE_MIDDLEWARE,
+  SHOPPER_DATA_MIDDLEWARE,
+  SHOPPER_COMPANY_CHANGE_MIDDLEWARE,
+  getBasketController,
+);
 
 route.post("/:companyId", SHOPPER_RESOLVE_MIDDLEWARE, addToBasketController);
 route.post(
