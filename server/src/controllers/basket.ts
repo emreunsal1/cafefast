@@ -4,132 +4,23 @@ import {
   addCardToShopper,
   addProductToShopper,
   clearShopperBasket,
-  createShopper,
   deleteCampaignFromShopper,
   deleteProductFromShopper,
   getShopper,
-  getShopperBasketItems,
   setPhoneNumberToShopper,
   updateCampaignCount,
   updateProductCount,
 } from "../services/shopper";
 import {
-  createShopperVerifier, addNewItemVerifier, updateQuantityVerifier, shopperCardVerifier, updateShopperVerifier,
+  updateQuantityVerifier, shopperCardVerifier, updateShopperVerifier,
 } from "../models/shopper";
 import { checkCompanyHasDesk, getCompanyActiveMenu } from "../services/company";
 import { checkMenuHasCampaign, checkMenuHasProduct } from "../utils/menu";
-import { generateJwt, setCookie } from "../utils/jwt";
-import { mapSavedCards, mapShopperForJWT } from "../utils/mappers";
-import { SAVED_CARD_NOT_FOUND_IN_USER, SHOPPER_AUTH_TOKEN_NAME, SHOPPER_NOT_FOUND_IN_DATABASE } from "../constants";
-import { createBasketObject, mapBasket } from "../utils/basket";
+import { mapSavedCards } from "../utils/mappers";
+import { SAVED_CARD_NOT_FOUND_IN_USER, SHOPPER_NOT_FOUND_IN_DATABASE } from "../constants";
+import { mapBasket } from "../utils/basket";
 import { createOrder } from "../services/order";
 import { getIO } from "../utils/socket";
-
-export const addToBasketController = async (req: Request, res: Response) => {
-  let { shopper } = req;
-  const { companyId } = req.params;
-  const { product, campaign } = req.body;
-  const companyActiveMenu = await getCompanyActiveMenu(companyId);
-
-  if (!companyActiveMenu.data || companyActiveMenu.error) {
-    return res.status(404).json({
-      error: "Company active menu not found",
-      stack: companyActiveMenu.error,
-    });
-  }
-
-  if (product) {
-    const isProductExists = checkMenuHasProduct(companyActiveMenu.data, product);
-    if (!isProductExists) {
-      return res.status(400).json({
-        error: "Product not found in menu",
-      });
-    }
-  }
-
-  if (campaign) {
-    const isCampaignExists = checkMenuHasCampaign(companyActiveMenu.data, campaign);
-    if (!isCampaignExists) {
-      return res.status(404).json({
-        error: "Campaign not found in menu",
-      });
-    }
-  }
-
-  try {
-    if (!shopper) {
-      const verifiedShopper = await createShopperVerifier.parseAsync({ product, campaign });
-      if (!verifiedShopper.campaign && !verifiedShopper.product) {
-        return res.status(400).send({ message: "at least one product or campaign should be in body" });
-      }
-      const newBasketObject = createBasketObject({ product: verifiedShopper.product, campaign: verifiedShopper.campaign, companyId });
-
-      const newShopper = await createShopper({
-        basket: newBasketObject,
-      });
-
-      const newShopperJWT = await generateJwt(mapShopperForJWT(newShopper.data));
-      setCookie(res, SHOPPER_AUTH_TOKEN_NAME, newShopperJWT as string);
-      res.send();
-    }
-
-    const newItemObject = await addNewItemVerifier.parseAsync(req.body);
-    if (!newItemObject.campaign && !newItemObject.product) {
-      return res.status(400).send({ message: "at least one product or campaign should be in body" });
-    }
-    const { data: shopperItemsData, error: shopperItemsError, errorCode: shopperItemsErrorCode } = await getShopperBasketItems(shopper._id);
-
-    if (shopperItemsErrorCode === SHOPPER_NOT_FOUND_IN_DATABASE) {
-      const newShopper = await createShopper();
-      const mappedDataForJwt = mapShopperForJWT(newShopper.data);
-      const newShopperJWT = await generateJwt(mappedDataForJwt);
-
-      shopper = JSON.parse(JSON.stringify(mappedDataForJwt));
-      setCookie(res, SHOPPER_AUTH_TOKEN_NAME, newShopperJWT as string);
-    } else if (shopperItemsError || !shopperItemsData) {
-      return res.status(500).send({
-        message: "error when fetching user basket items",
-        stack: shopperItemsError,
-      });
-    }
-
-    if (companyId !== shopperItemsData?.companyId) {
-      const { error: clearShopperError } = await clearShopperBasket(shopper._id, companyId);
-      if (clearShopperError) {
-        return res.status(500).send({
-          message: "something wrong when clear shopper basket",
-          stack: clearShopperError,
-        });
-      }
-    }
-
-    if (newItemObject.product) {
-      if (shopperItemsData?.products?.includes(newItemObject.product)) {
-        return res.status(400).send({
-          message: "You can not add same items again",
-          field: "product",
-        });
-      }
-      await addProductToShopper(shopper._id, newItemObject.product);
-    }
-    if (newItemObject.campaign) {
-      if (shopperItemsData?.campaigns?.includes(newItemObject.campaign)) {
-        return res.status(400).send({
-          message: "You can not add same items again",
-          field: "campaign",
-        });
-      }
-      await addCampaignToShopper(shopper._id, newItemObject.campaign);
-    }
-  } catch (err) {
-    res.status(500).send({
-      message: "error occured",
-      stack: err,
-    });
-  }
-
-  return res.status(201).send({ message: "items added" });
-};
 
 export const addProductToBasketController = async (req: Request, res: Response) => {
   const { shopper } = req;
