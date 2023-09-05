@@ -4,7 +4,8 @@ import {
   addMenuToCompany, getCompany, removeMenuFromCompany,
 } from "../services/company";
 import {
-  createMenu, deleteMenu, getMenus, updateMenu, getMenu, getMenuWithId, addCampaignToMenu, removeCampaignFromMenu,
+  createMenu, deleteMenu, getMenus, updateMenu, getMenu, getMenuWithId, 
+  addCampaignToMenu, removeCampaignFromMenus, removeCampaignFromMenu,
 } from "../services/menu";
 import { mapMenu } from "../utils/mappers";
 import { deleteCategoriesWithIds } from "../services/category";
@@ -124,9 +125,9 @@ export const addCampaignToMenuController = async (req: Request, res: Response) =
 };
 
 export const removeCampaignFromMenuController = async (req: Request, res: Response) => {
-  const { campaignId } = req.params;
+  const { menuId, campaignId } = req.params;
   try {
-    const menuResponse = await removeCampaignFromMenu(campaignId);
+    const menuResponse = await removeCampaignFromMenu(menuId, campaignId);
     if (!menuResponse.data || menuResponse.error) {
       return res.status(400).send(menuResponse.error);
     }

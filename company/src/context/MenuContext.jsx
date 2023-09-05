@@ -1,18 +1,21 @@
 import React, { createContext, useContext, useState } from "react";
 import { CATEGORY_SERVICE, MENU_SERVICE } from "../services/menu";
 import { useMessage } from "./GlobalMessage";
+import CAMPAIGN_SERVICE from "@/services/campaign";
 
 const Context = createContext({});
 
-export function MenuContext({ children }) {
+export function MenuDetailContext({ children }) {
   const [menu, setMenu] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [campaings, setCampaings] = useState([]);
   const sendGlobalMessage = useMessage();
 
   const getMenu = async (menuId) => {
     const response = await MENU_SERVICE.detail(menuId);
     setMenu(response.data);
     setCategories(response.data.categories);
+    setCampaings(response.data.campaigns);
     return response.data;
   };
 
@@ -41,9 +44,22 @@ export function MenuContext({ children }) {
     }
   };
 
+  const removeCampaings = async (menuId, data) => {
+    try {
+      console.log("context gelen data", data);
+      CAMPAIGN_SERVICE.removeCampaingFromMenu(menuId, data._id);
+
+      const filteredCampaings = campaings.filter((campain) => campain._id !== data._id);
+      setCampaings(filteredCampaings);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
   return (
     <Context.Provider value={{
-      menu, categories, setCategories, addCategory, getMenu, updateCategory,
+      menu, categories, campaings, setCategories, addCategory, getMenu, updateCategory, removeCampaings,
     }}
     >
       {children}
@@ -51,4 +67,4 @@ export function MenuContext({ children }) {
   );
 }
 
-export const useMenu = () => useContext(Context);
+export const useMenuDetail = () => useContext(Context);

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { createCampaign, deleteCampaign, updateCampaign } from "../services/campaign";
 import { createCampaignVerifier, updateCampaignVerifier } from "../models/campaign";
-import { removeCampaignFromMenu } from "../services/menu";
+import { removeCampaignFromMenus } from "../services/menu";
 import { addCampaignToCompany, getCompanyCampaigns, removeCampaignFromCompany } from "../services/company";
 import { mapCampaigns } from "../utils/mappers";
 
@@ -76,7 +76,7 @@ export const deleteCampaignController = async (req: Request, res: Response) => {
       return res.status(400).send({ message: "error when removing campaign from company", error: companyResponse.error });
     }
 
-    const menuResponse = await removeCampaignFromMenu(campaignId);
+    const menuResponse = await removeCampaignFromMenus(campaignId);
     if (!menuResponse.data || menuResponse.error) {
       return res.status(400).send({ message: "error when removing campaign from menu", error: menuResponse.error });
     }

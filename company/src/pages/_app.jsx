@@ -1,5 +1,4 @@
 import React from "react";
-import { MenuContext } from "../context/MenuContext";
 import { ProductContext } from "../context/ProductContext";
 import { GlobalMessageContext } from "../context/GlobalMessage";
 import { SocketContext } from "../context/SocketContext";
@@ -12,9 +11,7 @@ export default function App({ Component, pageProps }) {
     <GlobalMessageContext>
       <SocketContext>
         <ProductContext>
-          <MenuContext>
-            <Component {...pageProps} />
-          </MenuContext>
+          <Component {...pageProps} />
         </ProductContext>
       </SocketContext>
     </GlobalMessageContext>,

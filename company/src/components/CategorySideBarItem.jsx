@@ -4,13 +4,13 @@ import {
 } from "antd";
 import { EditOutlined, SaveOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
-import { useMenu } from "../context/MenuContext";
+import { useMenuDetail } from "../context/MenuContext";
 import { CATEGORY_SERVICE } from "../services/menu";
 
 export default function CategorySideBarItem({ data, selectedCategoryId, onClick }) {
   const [isEdit, setIsEdit] = useState(false);
   const [editData, setEditData] = useState({ _id: data._id, order: data.order, name: data.name });
-  const { categories, updateCategory, setCategories } = useMenu();
+  const { categories, updateCategory, setCategories } = useMenuDetail();
   const router = useRouter();
   const inputRef = useRef(null);
 

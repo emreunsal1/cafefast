@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, FloatButton } from "antd";
+import { Row, FloatButton, Col } from "antd";
 import CAMPAIGN_SERVICE from "@/services/campaign";
 import CampainCard from "./CampainCard";
 import AddCampain from "./AddCapmaing";
@@ -25,15 +25,24 @@ export default function CampainList() {
   };
 
   const deleteCampain = async (id) => {
+    setIsCreate(false);
+    setIsUpdate(false);
     await CAMPAIGN_SERVICE.deleteCampain(id);
     const filteredCampaings = campaings.filter((campain) => campain._id !== id);
     setCampaings(filteredCampaings);
   };
   return (
     <div className="list-wrapper">
-
       <Row gutter={16}>
-        {campaings.length && campaings.map((campain) => <CampainCard deleteCampain={deleteCampain} setIsUpdate={setIsUpdate} data={campain} />)}
+        {campaings.length && campaings.map((campain) => (
+          <Col key={campain._id} span={8}>
+            <CampainCard
+              deleteCampain={deleteCampain}
+              setIsUpdate={setIsUpdate}
+              data={campain}
+            />
+          </Col>
+        ))}
       </Row>
       {(isCreate || isUpdate) && (
       <AddCampain action={{

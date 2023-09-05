@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Button, Input } from "antd";
 import { useRouter } from "next/router";
-import { useMenu } from "../context/MenuContext";
+import { useMenuDetail } from "../context/MenuContext";
 import CategorySideBarItem from "./CategorySideBarItem";
 
 export default function CategorySideBar({ selectedCategoryId, setSelectedCategoryId }) {
-  const { categories, addCategory } = useMenu();
+  const { categories, addCategory } = useMenuDetail();
 
   const [newCategory, setNewCategory] = useState({ name: "", order: categories.length + 1 });
   const [isCreateCategory, setIsCreateCategory] = useState(false);

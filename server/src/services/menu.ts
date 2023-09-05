@@ -122,10 +122,19 @@ export const removeCategoryFromMenu = async (categoryId) => {
   }
 };
 
-export const removeCampaignFromMenu = async (campaignId) => {
+export const removeCampaignFromMenus = async (campaignId) => {
   try {
     const response = await menuModel.updateMany({ campaigns: campaignId }, { $pull: { campaigns: campaignId } });
     return { data: response.modifiedCount > 0, error: response.modifiedCount < 0 && "menus are not updated" };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
+
+export const removeCampaignFromMenu = async (menuId, campaignId) => {
+  try {
+    const response = await menuModel.findOneAndUpdate({ _id: menuId, campaigns: campaignId }, { $pull: { campaigns: campaignId } });
+    return { data: response };
   } catch (error) {
     return { error: (error as any).message || error };
   }

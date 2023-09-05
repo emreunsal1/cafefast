@@ -29,5 +29,5 @@ export async function middleware(request) {
 
 // Add authentication required paths here
 export const config = {
-  matcher: ["/menus", "/products", "/profile", "/"],
+  matcher: ["/menu", "/products", "/profile", "/"],
 };
