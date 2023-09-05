@@ -12,7 +12,6 @@ export const mapUserForJWT = (userData) => ({
 
 export const mapShopperForJWT = (shopperData) => ({
   _id: shopperData._id,
-  phone: shopperData.phone,
 });
 
 const mapShopperInfoForOrders = (shopper, cardId) => {

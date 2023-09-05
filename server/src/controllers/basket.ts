@@ -204,10 +204,11 @@ export const getShopperSavedCardController = async (req: Request, res: Response)
   const { shopper } = req;
 
   const shopperData = await getShopper(shopper._id, true);
-  if (shopperData.error || !shopperData.data?.phone) {
-    return res.status(401).send({
-      error: shopperData.error,
-      errorCode: SHOPPER_NOT_FOUND_IN_DATABASE,
+
+  if (shopperData.data?.phone) {
+    return res.status(400).send({
+      message: "Should save phone number for getting saved cards",
+      error: SAVED_CARD_NOT_FOUND_IN_USER,
     });
   }
 
