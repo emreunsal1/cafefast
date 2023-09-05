@@ -8,6 +8,7 @@ import {
   getShopperSavedCardController,
   addProductToBasketController,
   addCampaignToBasketController,
+  sendOtpController,
 } from "../controllers/basket";
 import {
   SHOPPER_AUTH_REQUIRED_MIDDLEWARE,
@@ -48,6 +49,7 @@ route.post(
 route.put("/:companyId/quantity", SHOPPER_AUTH_REQUIRED_MIDDLEWARE, updateQuantityController);
 route.delete("/:companyId/product/:productId", SHOPPER_AUTH_REQUIRED_MIDDLEWARE, deleteProductInBasketController);
 route.delete("/:companyId/campaign/:campaignId", SHOPPER_AUTH_REQUIRED_MIDDLEWARE, deleteCampaignInBasketController);
+route.post("/:companyId/otp", SHOPPER_AUTH_REQUIRED_MIDDLEWARE, SHOPPER_DATA_MIDDLEWARE, sendOtpController);
 route.post("/:companyId/approve", SHOPPER_AUTH_REQUIRED_MIDDLEWARE, approveBasketController);
 
 export default route;

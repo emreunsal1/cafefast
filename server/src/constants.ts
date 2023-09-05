@@ -3,6 +3,8 @@ export const SHOPPER_AUTH_TOKEN_NAME = "shopper_token";
 export const ONE_YEAR_AS_MS = 31536000000;
 export const SHOPPER_NOT_FOUND_IN_DATABASE = "SHOPPER_NOT_FOUND_IN_DATABASE";
 export const SAVED_CARD_NOT_FOUND_IN_USER = "SAVED_CARD_NOT_FOUND_IN_USER";
+export const OTP_EXPIRE_IN_SECONDS = 180;
+export const HOUR_AS_MS = 3600000;
 
 export const UPLOAD_LIMIT = 15000000;
 export const DEFAULT_IMAGE_UPLOAD_TYPE = "jpeg";

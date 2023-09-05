@@ -7,15 +7,17 @@ import { checkS3Connection } from "./services/aws";
 
 import router from "./router";
 import connectDB from "./database/connect";
-import logger from "./utils/logger";
+import logger, { clearLogs } from "./utils/logger";
 import { createSocketServer } from "./utils/socket";
+import { connectToRedis } from "./services/redis";
 
 const app = express();
 
 const init = async () => {
   dotenv.config();
-  // await clearLogs();
+  await clearLogs();
   await connectDB();
+  await connectToRedis();
   await checkS3Connection();
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));

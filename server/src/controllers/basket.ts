@@ -7,6 +7,7 @@ import {
   deleteCampaignFromShopper,
   deleteProductFromShopper,
   getShopper,
+  setLastOtpDateToShopper,
   setPhoneNumberToShopper,
   updateCampaignCount,
   updateProductCount,
@@ -17,10 +18,13 @@ import {
 import { checkCompanyHasDesk, getCompanyActiveMenu } from "../services/company";
 import { checkMenuHasCampaign, checkMenuHasProduct } from "../utils/menu";
 import { mapSavedCards } from "../utils/mappers";
-import { SAVED_CARD_NOT_FOUND_IN_USER, SHOPPER_NOT_FOUND_IN_DATABASE } from "../constants";
+import {
+  HOUR_AS_MS, OTP_EXPIRE_IN_SECONDS, SAVED_CARD_NOT_FOUND_IN_USER, SHOPPER_NOT_FOUND_IN_DATABASE,
+} from "../constants";
 import { mapBasket } from "../utils/basket";
 import { createOrder } from "../services/order";
 import { getIO } from "../utils/socket";
+import { getRedis } from "../services/redis";
 
 export const addProductToBasketController = async (req: Request, res: Response) => {
   const { shopper } = req;
@@ -210,12 +214,33 @@ export const getShopperSavedCardController = async (req: Request, res: Response)
   res.send(mapSavedCards(shopperData.data?.cards));
 };
 
+export const sendOtpController = async (req: Request, res: Response) => {
+  const { phoneNumber } = req.body;
+  const { shopperData } = res.locals;
+
+  try {
+    const { phone } = await updateShopperVerifier.parseAsync({ phone: phoneNumber });
+
+    const redis = getRedis();
+    const redisKey = `${shopperData._id}-${phone}`;
+    await redis.set(redisKey, "00000");
+    await redis.expire(redisKey, OTP_EXPIRE_IN_SECONDS);
+    res.send({ success: true });
+  } catch (error) {
+    res.send({
+      error: (error as any).message || error,
+      message: "otp not sent",
+    });
+  }
+};
+
 export const approveBasketController = async (req: Request, res: Response) => {
   try {
     const { shopper } = req;
     const { companyId } = req.params;
     const {
-      price, card, desk, phoneNumber, savedCardId,
+      price, card, desk,
+      phoneNumber, otp, savedCardId,
     } = req.body;
 
     const shopperData = await getShopper(shopper._id, true);
@@ -239,6 +264,33 @@ export const approveBasketController = async (req: Request, res: Response) => {
         message: "i have got a one pencil",
         code: "CAN_NOT_APPROVE_OTHER_COMPANY",
       });
+    }
+
+    // If user should verify OTP
+    if (!shopperData.data.lastOtpDate || (Date.now() - shopperData.data.lastOtpDate) > (12 * HOUR_AS_MS)) {
+      let shopperCurrentPhone = shopperData.data.phone;
+      if (!shopperCurrentPhone) {
+        const { phone } = await updateShopperVerifier.parseAsync({ phone: phoneNumber });
+        shopperCurrentPhone = phone;
+      }
+
+      const redis = getRedis();
+      const foundOtpOnRedis = await redis.get(`${shopper._id}-${shopperCurrentPhone}`);
+      if (foundOtpOnRedis !== otp) {
+        return res.status(400).send({
+          message: "otp not found",
+        });
+      }
+
+      await setLastOtpDateToShopper(shopperData.data._id);
+      if (!shopperData.data.phone) {
+        const { data: phoneNumberResult, error: phoneNumberError } = await setPhoneNumberToShopper(shopper._id, shopperCurrentPhone);
+        if (phoneNumberError || !phoneNumberResult) {
+          return res.status(400).send({
+            error: phoneNumberError,
+          });
+        }
+      }
     }
 
     const { totalPrice, totalPriceText, totalPriceSymbolText } = mapBasket(shopperData.data);
@@ -277,16 +329,6 @@ export const approveBasketController = async (req: Request, res: Response) => {
             error: newCard.error,
           });
         }
-      }
-    }
-
-    if (!savedCardId && phoneNumber) {
-      const { phone } = await updateShopperVerifier.parseAsync({ phone: phoneNumber });
-      const { data: phoneNumberResult, error: phoneNumberError } = await setPhoneNumberToShopper(shopper._id, phone);
-      if (phoneNumberError || !phoneNumberResult) {
-        return res.status(400).send({
-          error: phoneNumberError,
-        });
       }
     }
 
