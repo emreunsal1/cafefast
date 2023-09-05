@@ -19,7 +19,7 @@ import { checkCompanyHasDesk, getCompanyActiveMenu } from "../services/company";
 import { checkMenuHasCampaign, checkMenuHasProduct } from "../utils/menu";
 import { mapSavedCards } from "../utils/mappers";
 import {
-  HOUR_AS_MS, OTP_EXPIRE_IN_SECONDS, SAVED_CARD_NOT_FOUND_IN_USER, SHOPPER_NOT_FOUND_IN_DATABASE,
+  HOUR_AS_MS, OTP_EXPIRE_IN_SECONDS, SAVED_CARD_NOT_FOUND_IN_USER,
 } from "../constants";
 import { mapBasket } from "../utils/basket";
 import { createOrder } from "../services/order";
@@ -205,7 +205,7 @@ export const getShopperSavedCardController = async (req: Request, res: Response)
 
   const shopperData = await getShopper(shopper._id, true);
 
-  if (shopperData.error || shopperData.data?.phone) {
+  if (shopperData.error || !shopperData.data?.phone) {
     return res.status(400).send({
       message: "Should save phone number for getting saved cards",
       error: SAVED_CARD_NOT_FOUND_IN_USER,
@@ -233,6 +233,14 @@ export const sendOtpController = async (req: Request, res: Response) => {
       message: "otp not sent",
     });
   }
+};
+
+export const needOtpController = async (_req: Request, res: Response) => {
+  const { shopperData } = res.locals;
+
+  const isUserNeedOtp = (Date.now() - shopperData.lastOtpDate) > (12 * HOUR_AS_MS);
+
+  res.send({ otpRequired: isUserNeedOtp });
 };
 
 export const approveBasketController = async (req: Request, res: Response) => {
@@ -267,14 +275,42 @@ export const approveBasketController = async (req: Request, res: Response) => {
       });
     }
 
+    let newCard;
+    let alreadyHaveCard;
+    if (savedCardId) {
+      const hasSavedCardWithId = shopperData.data?.cards.find((_card) => (_card as any)._id.toString() === savedCardId);
+
+      if (!hasSavedCardWithId) {
+        res.status(400).send({
+          errorCode: SAVED_CARD_NOT_FOUND_IN_USER,
+        });
+      }
+    }
+
+    if (!savedCardId) {
+      const validatedCard = await shopperCardVerifier.parseAsync(card);
+      alreadyHaveCard = shopperData.data.cards.find((_card) => JSON.stringify(_card) === JSON.stringify(validatedCard));
+      if (!alreadyHaveCard) {
+        newCard = await addCardToShopper(shopper._id, validatedCard);
+        if (newCard.error || !newCard.data) {
+          return res.status(400).send({
+            message: "card can not created",
+            error: newCard.error,
+          });
+        }
+      }
+    }
+
     // If user should verify OTP
-    if (!shopperData.data.lastOtpDate || (Date.now() - shopperData.data.lastOtpDate) > (12 * HOUR_AS_MS)) {
+    // TODO: User'ın zaten telefonu kayıtlıysa ve yeni bir kart gönderdiyse OTP'yi kontrol etmemeliyiz.
+    // Aynı zamanda lastOtp date de güncellemememiz gerek.
+    const isOtpRequired = !shopperData.data.lastOtpDate || (Date.now() - shopperData.data.lastOtpDate) > (12 * HOUR_AS_MS);
+    if (isOtpRequired) {
       let shopperCurrentPhone = shopperData.data.phone;
       if (!shopperCurrentPhone) {
         const { phone } = await updateShopperVerifier.parseAsync({ phone: phoneNumber });
         shopperCurrentPhone = phone;
       }
-
       const redis = getRedis();
       const foundOtpOnRedis = await redis.get(`${shopper._id}-${shopperCurrentPhone}`);
       if (foundOtpOnRedis !== otp) {
@@ -305,32 +341,6 @@ export const approveBasketController = async (req: Request, res: Response) => {
           totalPriceSymbolText,
         },
       });
-    }
-
-    let newCard;
-    let alreadyHaveCard;
-    if (savedCardId) {
-      const hasSavedCardWithId = shopperData.data?.cards.find((_card) => (_card as any)._id.toString() === savedCardId);
-
-      if (!hasSavedCardWithId) {
-        res.status(400).send({
-          errorCode: SAVED_CARD_NOT_FOUND_IN_USER,
-        });
-      }
-    }
-
-    if (!savedCardId) {
-      const validatedCard = await shopperCardVerifier.parseAsync(card);
-      alreadyHaveCard = shopperData.data.cards.find((_card) => _card.cardNo === validatedCard.cardNo);
-      if (!alreadyHaveCard) {
-        newCard = await addCardToShopper(shopper._id, validatedCard);
-        if (newCard.error || !newCard.data) {
-          return res.status(400).send({
-            message: "card can not created",
-            error: newCard.error,
-          });
-        }
-      }
     }
 
     const objectShopperData = (shopperData.data as any).toObject();
