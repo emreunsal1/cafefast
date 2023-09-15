@@ -28,16 +28,42 @@ export const getCompany = async ({
   }
 };
 
-export const getCompanyActiveMenu = async (companyId) => {
-  const { data: companyData, error: companyError } = await getCompany({ query: { _id: companyId } });
-  if (companyError) {
-    return { error: companyError };
+export const getCompanyActiveMenu = async (companyId, populate = false) => {
+  try {
+    const query = companyModel.findOne({ _id: companyId });
+
+    if (populate) {
+      query
+        .populate({
+          path: "activeMenu",
+          populate: {
+            path: "categories",
+            options: {
+              populate: {
+                path: "products",
+              },
+            },
+          },
+        })
+        .populate({
+          path: "activeMenu",
+          populate: {
+            path: "campaigns",
+            options: {
+              populate: {
+                path: "products",
+              },
+            },
+          },
+        });
+    }
+
+    const result = await query.exec();
+    return { data: result?.activeMenu };
+  } catch (err) {
+    console.log("error :>> ", err);
+    return { error: err };
   }
-  const { data, error } = await getMenu(companyData?.activeMenu);
-  if (error) {
-    return { error };
-  }
-  return { data };
 };
 
 export const updateCompany = async (query, data) => {

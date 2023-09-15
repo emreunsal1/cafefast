@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import { companyDesksValidator, updateCompanyValidator } from "../models/company";
 import {
-  getCompany, getDesks, updateCompany, updateCompanyDesks,
+  getCompany, getCompanyActiveMenu, getDesks, updateCompany, updateCompanyDesks,
 } from "../services/company";
-import { getMenu } from "../services/menu";
 import { findAndUpdateCompanyOrder, getOrders } from "../services/order";
 import { mapMenu, mapOrders } from "../utils/mappers";
 import { updateOrderValidator } from "../models/order";
@@ -113,18 +112,13 @@ export const clearCompanyDesksController = async (req: Request, res: Response) =
 
 export const getActiveMenuController = async (req: Request, res: Response) => {
   const { companyId } = req.params;
-  const { data: companyData, error: companyError } = await getCompany({ query: { _id: companyId } });
-  if (companyError) {
-    return res.status(400).send(companyError);
+  const { data: menuData, error: menuError } = await getCompanyActiveMenu(companyId, true);
+
+  if (menuError || !menuData) {
+    return res.status(400).send(menuError);
   }
 
-  const { data, error } = await getMenu(companyData?.activeMenu);
-
-  if (error || !data) {
-    return res.status(404).send({ message: "active menu not found", error });
-  }
-
-  res.send(mapMenu(data.toObject()));
+  res.send(mapMenu((menuData as any).toObject()));
 };
 
 export const updateCompanyController = async (req: Request, res: Response) => {

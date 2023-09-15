@@ -9,7 +9,7 @@ import logger from "../utils/logger";
 
 export const COMPANY_ACTIVE_MENU_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
   const { companyId } = req.params;
-  const companyActiveMenu = await getCompanyActiveMenu(companyId);
+  const companyActiveMenu = await getCompanyActiveMenu(companyId, true);
 
   if (companyActiveMenu.error || !companyActiveMenu.data) {
     return res.status(404).send({

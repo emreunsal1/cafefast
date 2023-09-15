@@ -16,11 +16,13 @@ export default function Index() {
   const { getMenu } = useMenu();
   const { getBasketItems } = useBasket();
   const fetchData = async () => {
-    await getMenu(query.companyId);
-    await getBasketItems({ companyId: query.companyId });
-    setTimeout(() => {
-      setIsFetchedData(true);
-    }, 2000);
+    try {
+      await getMenu(query.companyId);
+      await getBasketItems({ companyId: query.companyId });
+    } catch (err) {
+      console.log("err :>> ", err);
+    }
+    setIsFetchedData(true);
   };
 
   useEffect(() => {

@@ -36,6 +36,7 @@ export const mapOrders = (orders: Array<any>) => {
       _id: order._id,
       shopper: foundInfo,
       desk: order.desk,
+      cardId: order.cardId,
       products: order.products,
       campaigns: order.campaigns,
       status: order.status,
@@ -69,6 +70,7 @@ export const mapCategory = (category) => ({
 export const mapMenu = (menu) => {
   const mappedMenu = menu;
 
+  console.log("categories :>> ", menu.categories);
   mappedMenu.categories = mappedMenu.categories.map(mapCategory);
 
   mappedMenu.campaigns = mappedMenu.campaigns.map(mapCampaign);

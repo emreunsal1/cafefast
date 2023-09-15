@@ -61,7 +61,6 @@ const shopperSchema = new Schema({
   },
   lastOtpDate: {
     type: Number,
-    default: null,
   },
 });
 

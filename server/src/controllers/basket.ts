@@ -25,13 +25,14 @@ import { mapBasket } from "../utils/basket";
 import { createOrder } from "../services/order";
 import { getIO } from "../utils/socket";
 import { getRedis } from "../services/redis";
+import { checkOtpIsValid } from "../utils/otp";
 
 export const addProductToBasketController = async (req: Request, res: Response) => {
   const { shopper } = req;
   const { productId } = req.params;
-  const { shopperData } = res.locals;
+  const { shopperData, companyActiveMenu } = res.locals;
 
-  const isProductExistsOnMenu = checkMenuHasProduct(res.locals.companyActiveMenu, productId);
+  const isProductExistsOnMenu = checkMenuHasProduct(companyActiveMenu, productId);
   if (!isProductExistsOnMenu) {
     return res.status(400).json({
       error: "Product not found in company active menu",
@@ -58,9 +59,9 @@ export const addProductToBasketController = async (req: Request, res: Response) 
 export const addCampaignToBasketController = async (req: Request, res: Response) => {
   const { shopper } = req;
   const { campaignId } = req.params;
-  const { shopperData } = res.locals;
+  const { shopperData, companyActiveMenu } = res.locals;
 
-  const isCampaignExistsInActiveMenu = checkMenuHasCampaign(res.locals.companyActiveMenu, campaignId);
+  const isCampaignExistsInActiveMenu = checkMenuHasCampaign(companyActiveMenu, campaignId);
   if (!isCampaignExistsInActiveMenu) {
     return res.status(400).json({
       error: "Campaign not found in company active menu",
@@ -154,7 +155,7 @@ export const deleteProductInBasketController = async (req: Request, res: Respons
     const { shopper } = req;
     const { companyId, productId } = req.params;
 
-    const companyActiveMenu = await getCompanyActiveMenu(companyId);
+    const companyActiveMenu = await getCompanyActiveMenu(companyId, true);
 
     const isProductExists = checkMenuHasProduct(companyActiveMenu.data, productId);
     if (!isProductExists) {
@@ -179,7 +180,7 @@ export const deleteCampaignInBasketController = async (req: Request, res: Respon
     const { shopper } = req;
     const { companyId, campaignId } = req.params;
 
-    const companyActiveMenu = await getCompanyActiveMenu(companyId);
+    const companyActiveMenu = await getCompanyActiveMenu(companyId, true);
 
     const isCampaignExists = checkMenuHasCampaign(companyActiveMenu.data, campaignId);
     if (!isCampaignExists) {
@@ -252,15 +253,20 @@ export const approveBasketController = async (req: Request, res: Response) => {
       phoneNumber, otp, savedCardId,
     } = req.body;
 
-    const shopperData = await getShopper(shopper._id, true);
-    const hasDesk = await checkCompanyHasDesk({ companyId, desk });
+    if (savedCardId && card) {
+      return res.status(400).send({
+        message: "you can not send savedCardId and card same time",
+      });
+    }
 
+    const hasDesk = await checkCompanyHasDesk({ companyId, desk });
     if (!hasDesk) {
       return res.status(404).send({
         message: "sent desk not found",
       });
     }
 
+    const shopperData = await getShopper(shopper._id, true);
     if (shopperData.error || !shopperData.data) {
       return res.status(404).send({
         message: "shopper not found",
@@ -275,58 +281,83 @@ export const approveBasketController = async (req: Request, res: Response) => {
       });
     }
 
-    let newCard;
-    let alreadyHaveCard;
-    if (savedCardId) {
-      const hasSavedCardWithId = shopperData.data?.cards.find((_card) => (_card as any)._id.toString() === savedCardId);
+    const isNewUser = !shopperData.data.phone;
+    let shopperCurrentCard;
 
-      if (!hasSavedCardWithId) {
-        res.status(400).send({
-          errorCode: SAVED_CARD_NOT_FOUND_IN_USER,
+    // new user cases
+    if (isNewUser) {
+      const { phone } = await updateShopperVerifier.parseAsync({ phone: phoneNumber });
+      const isOtpValid = await checkOtpIsValid({
+        otp,
+        shopperId: shopperData.data._id,
+        shopperLastOtpDate: shopperData.data.lastOtpDate,
+        shopperPhone: phone,
+      });
+      if (!isOtpValid) {
+        return res.status(400).send({
+          message: "Sent OTP is not valid",
         });
       }
+
+      const { data: phoneNumberResult, error: phoneNumberError } = await setPhoneNumberToShopper(shopper._id, phone);
+      if (phoneNumberError || !phoneNumberResult?.phone) {
+        return res.status(400).send({
+          error: phoneNumberError,
+          message: "error when saving phone to user",
+        });
+      }
+
+      const validatedCard = await shopperCardVerifier.parseAsync(card);
+      const newCard = await addCardToShopper(shopper._id, validatedCard);
+      if (newCard.error || !newCard.data) {
+        return res.status(400).send({
+          message: "card can not created",
+          error: newCard.error,
+        });
+      }
+      shopperCurrentCard = newCard.data;
+      // Update OTP Date
+      await setLastOtpDateToShopper(shopper._id);
     }
 
-    if (!savedCardId) {
-      const validatedCard = await shopperCardVerifier.parseAsync(card);
-      alreadyHaveCard = shopperData.data.cards.find((_card) => JSON.stringify(_card) === JSON.stringify(validatedCard));
-      if (!alreadyHaveCard) {
-        newCard = await addCardToShopper(shopper._id, validatedCard);
+    // saved user cases
+    if (!isNewUser) {
+      if (card && !savedCardId) {
+        const validatedCard = await shopperCardVerifier.parseAsync(card);
+        const newCard = await addCardToShopper(shopper._id, validatedCard);
         if (newCard.error || !newCard.data) {
           return res.status(400).send({
             message: "card can not created",
             error: newCard.error,
           });
         }
-      }
-    }
-
-    // If user should verify OTP
-    // TODO: User'ın zaten telefonu kayıtlıysa ve yeni bir kart gönderdiyse OTP'yi kontrol etmemeliyiz.
-    // Aynı zamanda lastOtp date de güncellemememiz gerek.
-    const isOtpRequired = !shopperData.data.lastOtpDate || (Date.now() - shopperData.data.lastOtpDate) > (12 * HOUR_AS_MS);
-    if (isOtpRequired) {
-      let shopperCurrentPhone = shopperData.data.phone;
-      if (!shopperCurrentPhone) {
-        const { phone } = await updateShopperVerifier.parseAsync({ phone: phoneNumber });
-        shopperCurrentPhone = phone;
-      }
-      const redis = getRedis();
-      const foundOtpOnRedis = await redis.get(`${shopper._id}-${shopperCurrentPhone}`);
-      if (foundOtpOnRedis !== otp) {
-        return res.status(400).send({
-          message: "otp not found",
-        });
+        shopperCurrentCard = newCard.data;
+        // Update OTP Date
+        await setLastOtpDateToShopper(shopper._id);
       }
 
-      await setLastOtpDateToShopper(shopperData.data._id);
-      if (!shopperData.data.phone) {
-        const { data: phoneNumberResult, error: phoneNumberError } = await setPhoneNumberToShopper(shopper._id, shopperCurrentPhone);
-        if (phoneNumberError || !phoneNumberResult) {
-          return res.status(400).send({
-            error: phoneNumberError,
+      if (savedCardId && !card) {
+        const hasSavedCardWithId = shopperData.data?.cards.find((_card) => (_card as any)._id.toString() === savedCardId);
+
+        if (!hasSavedCardWithId) {
+          res.status(400).send({
+            errorCode: SAVED_CARD_NOT_FOUND_IN_USER,
           });
         }
+        shopperCurrentCard = hasSavedCardWithId;
+        const isOtpValid = await checkOtpIsValid({
+          otp,
+          shopperId: shopper._id,
+          shopperLastOtpDate: shopperData.data.lastOtpDate,
+          shopperPhone: shopperData.data.phone,
+        });
+        if (!isOtpValid) {
+          return res.status(400).send({
+            message: "Sent OTP is not valid",
+          });
+        }
+        // Update OTP Date
+        await setLastOtpDateToShopper(shopper._id);
       }
     }
 
@@ -350,7 +381,7 @@ export const approveBasketController = async (req: Request, res: Response) => {
       desk,
       campaigns: objectShopperData.basket.campaigns,
       products: objectShopperData.basket.products,
-      cardId: savedCardId || (alreadyHaveCard as any)?._id || (newCard.data as any)._id,
+      cardId: shopperCurrentCard._id,
     };
 
     const { data: createdOrder, error: createdOrderError } = await createOrder(newOrder);

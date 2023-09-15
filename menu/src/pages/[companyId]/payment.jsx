@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 import React, { useEffect, useRef, useState } from "react";
 import Cards from "react-credit-cards";
 import { useBasket } from "@/context/Basket";
@@ -14,17 +15,19 @@ export default function Payment() {
     number: "",
   });
   const [savedCards, setSavedCards] = useState([]);
-  const [savedCardId, setSavedCardId] = useState(savedCards[0] | null);
+  const [savedCardId, setSavedCardId] = useState(savedCards[0] || null);
   const phoneNumber = useRef("");
   const router = useRouter();
 
   const { getBasketItems, basketItems } = useBasket();
 
   const getSavedCards = async () => {
-    const response = await BASKET_SERVICE.getSavedCards();
-    setSavedCards(response.data);
-    if (response) {
+    try {
+      const response = await BASKET_SERVICE.getSavedCards();
+      setSavedCards(response.data);
       setSavedCardId(response.data[0]._id);
+    } catch (err) {
+      console.log("err :>> ", err);
     }
   };
 
@@ -42,37 +45,35 @@ export default function Payment() {
   };
 
   const formSubmitHandler = async (e = null) => {
-    if (savedCardId) {
-      const response = await BASKET_SERVICE.approveBasket({
+    try {
+      if (savedCardId) {
+        await BASKET_SERVICE.approveBasket({
+          companyId: router.query.companyId,
+          savedCardId,
+          price: basketItems.totalPrice,
+          desk: "A1",
+        });
+        router.push(`/${router.query.companyId}`);
+        return;
+      }
+      e.preventDefault();
+      const cardData = {
+        cardNo: card.number,
+        cvv: card.cvc,
+        thruMonth: card.expiry.slice(0, 2),
+        thruYear: card.expiry.slice(2, 4),
+        name: card.name,
+      };
+      await BASKET_SERVICE.approveBasket({
         companyId: router.query.companyId,
-        savedCardId,
+        card: cardData,
         price: basketItems.totalPrice,
         desk: "A1",
+        phoneNumber: phoneNumber.current,
       });
-      console.log("response status", response);
-
-      if (response) {
-        router.push(`/${router.query.companyId}`);
-      }
-      return;
-    }
-    e.preventDefault();
-    const cardData = {
-      cardNo: card.number,
-      cvv: card.cvc,
-      thruMonth: card.expiry.slice(0, 2),
-      thruYear: card.expiry.slice(2, 4),
-      name: card.name,
-    };
-    const response = await BASKET_SERVICE.approveBasket({
-      companyId: router.query.companyId,
-      card: cardData,
-      price: basketItems.totalPrice,
-      desk: "A1",
-      phoneNumber: phoneNumber.current,
-    });
-    if (response) {
       router.push(`/${router.query.companyId}`);
+    } catch (err) {
+      console.log("approve basket error :>> ", err);
     }
   };
 
@@ -115,10 +116,10 @@ export default function Payment() {
       <div className="saved-cards">
         {savedCardId && (
         <select>
-          {savedCards.map((card) => (
-            <option value={card._id}>
-              {card.cardNo}
-              { card.type || card.name}
+          {savedCards.map((_card) => (
+            <option value={_card._id}>
+              {_card.cardNo}
+              { _card.type || _card.name}
             </option>
           ))}
         </select>
