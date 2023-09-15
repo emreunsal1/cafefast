@@ -308,22 +308,9 @@ export const approveBasketController = async (req: Request, res: Response) => {
       }
 
       const validatedCard = await shopperCardVerifier.parseAsync(card);
-      const newCard = await addCardToShopper(shopper._id, validatedCard);
-      if (newCard.error || !newCard.data) {
-        return res.status(400).send({
-          message: "card can not created",
-          error: newCard.error,
-        });
-      }
-      shopperCurrentCard = newCard.data;
-      // Update OTP Date
-      await setLastOtpDateToShopper(shopper._id);
-    }
-
-    // saved user cases
-    if (!isNewUser) {
-      if (card && !savedCardId) {
-        const validatedCard = await shopperCardVerifier.parseAsync(card);
+      const alreadyHaveCard = shopperData.data.cards.find((_card) => JSON.stringify(_card) === JSON.stringify(validatedCard));
+      shopperCurrentCard = alreadyHaveCard;
+      if (!alreadyHaveCard) {
         const newCard = await addCardToShopper(shopper._id, validatedCard);
         if (newCard.error || !newCard.data) {
           return res.status(400).send({
@@ -332,6 +319,29 @@ export const approveBasketController = async (req: Request, res: Response) => {
           });
         }
         shopperCurrentCard = newCard.data;
+      }
+
+      // Update OTP Date
+      await setLastOtpDateToShopper(shopper._id);
+    }
+
+    // saved user cases
+    if (!isNewUser) {
+      if (card && !savedCardId) {
+        const validatedCard = await shopperCardVerifier.parseAsync(card);
+        const alreadyHaveCard = shopperData.data.cards.find((_card) => JSON.stringify(_card) === JSON.stringify(validatedCard));
+        shopperCurrentCard = alreadyHaveCard;
+        if (!alreadyHaveCard) {
+          const newCard = await addCardToShopper(shopper._id, validatedCard);
+          if (newCard.error || !newCard.data) {
+            return res.status(400).send({
+              message: "card can not created",
+              error: newCard.error,
+            });
+          }
+          shopperCurrentCard = newCard.data;
+        }
+
         // Update OTP Date
         await setLastOtpDateToShopper(shopper._id);
       }

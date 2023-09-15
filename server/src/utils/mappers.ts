@@ -70,7 +70,6 @@ export const mapCategory = (category) => ({
 export const mapMenu = (menu) => {
   const mappedMenu = menu;
 
-  console.log("categories :>> ", menu.categories);
   mappedMenu.categories = mappedMenu.categories.map(mapCategory);
 
   mappedMenu.campaigns = mappedMenu.campaigns.map(mapCampaign);
