@@ -56,6 +56,7 @@ export const mapOrders = (orders: Array<any>) => {
 export const mapProduct = (_product) => ({
   ..._product,
   images: _product.images.map((image) => `${process.env.AWS_CLOUDFRONT_URL}/${image}`),
+  priceAsText: `${_product.price} TL`,
 });
 
 export const mapCampaign = (campaign) => ({
@@ -71,7 +72,6 @@ export const mapMenu = (menu) => {
   const mappedMenu = menu;
 
   mappedMenu.categories = mappedMenu.categories.map(mapCategory);
-
   mappedMenu.campaigns = mappedMenu.campaigns.map(mapCampaign);
 
   return mappedMenu;

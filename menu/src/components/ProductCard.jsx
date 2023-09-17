@@ -62,7 +62,7 @@ export default function ProductCard({ data }) {
           }}
           cover={<img alt="example" src={data.images[0]} />}
         >
-          <Meta title={data.name} description={data.price} />
+          <Meta title={data.name} description={data.priceAsText} />
           {quantity === 0 && <Button type="primary" onClick={() => addBasketClickHandler()}>Sepete EKle</Button>}
           {quantity > 0 && (
           <>
