@@ -7,7 +7,6 @@ import {
   Upload,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { CDN_SERVICE } from "@/services/cdn";
 
 export const PRODUCT_MODAL_ACTIONS = {
   UPDATE: "update",
