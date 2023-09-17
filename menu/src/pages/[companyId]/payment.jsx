@@ -5,8 +5,16 @@ import { useBasket } from "@/context/Basket";
 import BASKET_SERVICE from "@/services/basket";
 import "react-credit-cards/es/styles-compiled.css";
 import { useRouter } from "next/router";
+import { OTP_SERVICE } from "@/services/otp";
+import OtpModal from "@/components/OtpModal";
 
 export default function Payment() {
+  const router = useRouter();
+  const [savedCards, setSavedCards] = useState([]);
+  const [savedCardId, setSavedCardId] = useState(savedCards[0] || null);
+  const [needOtp, setNeedOtp] = useState(false);
+  const phoneNumber = useRef("");
+  const otpCode = useRef("null");
   const [card, setCard] = useState({
     cvc: "",
     expiry: "",
@@ -14,12 +22,55 @@ export default function Payment() {
     name: "",
     number: "",
   });
-  const [savedCards, setSavedCards] = useState([]);
-  const [savedCardId, setSavedCardId] = useState(savedCards[0] || null);
-  const phoneNumber = useRef("");
-  const router = useRouter();
 
   const { getBasketItems, basketItems } = useBasket();
+
+  const formSubmitHandler = async () => {
+    try {
+      if (savedCardId) {
+        await BASKET_SERVICE.approveBasket({
+          companyId: router.query.companyId,
+          savedCardId,
+          price: basketItems.totalPrice,
+          desk: "A1",
+        });
+        router.push(`/${router.query.companyId}`);
+        return;
+      }
+
+      const cardData = {
+        cardNo: card.number,
+        cvv: card.cvc,
+        thruMonth: card.expiry.slice(0, 2),
+        thruYear: card.expiry.slice(2, 4),
+        name: card.name,
+      };
+      await BASKET_SERVICE.approveBasket({
+        companyId: router.query.companyId,
+        card: cardData,
+        price: basketItems.totalPrice,
+        desk: "A1",
+        phoneNumber: phoneNumber.current,
+        otp: otpCode.current,
+      });
+      router.push(`/${router.query.companyId}`);
+    } catch (err) {
+      console.log("approve basket error :>> ", err);
+    }
+  };
+
+  const otpController = async (eventOtp = null) => {
+    if (eventOtp) {
+      otpCode.current = eventOtp;
+      formSubmitHandler();
+      return;
+    }
+    const response = await OTP_SERVICE.needOtp();
+    if (response.otpRequired) {
+      OTP_SERVICE.sendOtp({ phoneNumber: phoneNumber.current });
+      setNeedOtp(true);
+    }
+  };
 
   const getSavedCards = async () => {
     try {
@@ -44,39 +95,6 @@ export default function Payment() {
     setCard((prev) => ({ ...prev, [name]: value }));
   };
 
-  const formSubmitHandler = async (e = null) => {
-    try {
-      if (savedCardId) {
-        await BASKET_SERVICE.approveBasket({
-          companyId: router.query.companyId,
-          savedCardId,
-          price: basketItems.totalPrice,
-          desk: "A1",
-        });
-        router.push(`/${router.query.companyId}`);
-        return;
-      }
-      e.preventDefault();
-      const cardData = {
-        cardNo: card.number,
-        cvv: card.cvc,
-        thruMonth: card.expiry.slice(0, 2),
-        thruYear: card.expiry.slice(2, 4),
-        name: card.name,
-      };
-      await BASKET_SERVICE.approveBasket({
-        companyId: router.query.companyId,
-        card: cardData,
-        price: basketItems.totalPrice,
-        desk: "A1",
-        phoneNumber: phoneNumber.current,
-      });
-      router.push(`/${router.query.companyId}`);
-    } catch (err) {
-      console.log("approve basket error :>> ", err);
-    }
-  };
-
   const changePaymentMethod = () => {
     if (savedCardId) {
       setSavedCardId(null);
@@ -86,15 +104,16 @@ export default function Payment() {
   };
 
   useEffect(() => {
-    getBasketItems({ companyId: router.query.companyId });
-    getSavedCards();
-  }, []);
+    if (router.isReady) {
+      getBasketItems({ companyId: router.query.companyId });
+      getSavedCards();
+    }
+  }, [router.isReady]);
 
   return (
     <div id="payment">
       {savedCardId == null && (
       <>
-        {" "}
         <Cards
           cvc={card.cvc}
           expiry={card.expiry}
@@ -108,7 +127,7 @@ export default function Payment() {
           <input placeholder="cvc" name="cvc" onChange={(e) => inputOnChangeHandler(e)} onFocus={() => handleInputFocus("cvc")} />
           <input placeholder="expiry" name="expiry" onChange={(e) => inputOnChangeHandler(e)} onFocus={() => handleInputFocus("expiry")} />
           {!savedCards.length && <input placeholder="phone Number" name="phoneNumber" onChange={(e) => inputOnChangeHandler(e)} />}
-          <button type="submit">Ödemeyi Tamamla</button>
+          <button type="button" onClick={() => otpController()}>Ödemeyi Tamamla</button>
         </form>
       </>
       )}
@@ -127,10 +146,11 @@ export default function Payment() {
         <button onClick={changePaymentMethod}>
           {savedCardId == null ? "Kayıtlı Kart ile öde" : "Başka Kart İle Öde"}
         </button>
-        {savedCardId !== null && <button onClick={formSubmitHandler}>Ödemeyi Tamamla</button>}
+        {savedCardId !== null && <button type="button" onClick={otpController}>Yeni kart ile Ödemeyi Tamamla</button>}
       </div>
 
       )}
+      {needOtp && <OtpModal setModalIsOpen={setNeedOtp} submitClickHandler={otpController} />}
     </div>
   );
 }
