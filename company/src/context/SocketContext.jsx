@@ -3,6 +3,7 @@ import React, {
 } from "react";
 import { io } from "socket.io-client";
 import { useRouter } from "next/router";
+import { API_URl, LOCAL_COMPANY_ID_KEY } from "@/constants";
 
 const Context = createContext({});
 
@@ -17,13 +18,10 @@ export function SocketContext({ children }) {
     if (isInUnsafeRoute) {
       return;
     }
-    const companyId = localStorage.getItem("companyId");
-    const socketInstance = io("http://localhost:4000/");
+    const companyId = localStorage.getItem(LOCAL_COMPANY_ID_KEY);
+    const socketInstance = io(API_URl);
     setSocket(socketInstance);
-    socketInstance.on("connect", () => console.log("connected socket"));
-    socketInstance.emit("join:company", {
-      companyId,
-    });
+    socketInstance.emit("join:company", { companyId });
   };
 
   const listener = (key, func) => {

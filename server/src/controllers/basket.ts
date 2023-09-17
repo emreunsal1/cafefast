@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   addCampaignToShopper,
   addCardToShopper,
+  addOrderToShopper,
   addProductToShopper,
   clearShopperBasket,
   deleteCampaignFromShopper,
@@ -19,7 +20,7 @@ import { checkCompanyHasDesk, getCompanyActiveMenu } from "../services/company";
 import { checkMenuHasCampaign, checkMenuHasProduct } from "../utils/menu";
 import { mapSavedCards } from "../utils/mappers";
 import {
-  HOUR_AS_MS, OTP_EXPIRE_IN_SECONDS, SAVED_CARD_NOT_FOUND_IN_USER,
+  OTP_EXPIRE_IN_SECONDS, SAVED_CARD_NOT_FOUND_IN_USER,
 } from "../constants";
 import { mapBasket } from "../utils/basket";
 import { createOrder } from "../services/order";
@@ -407,6 +408,14 @@ export const approveBasketController = async (req: Request, res: Response) => {
       return res.status(400).send({
         message: "shopper basket can not be cleared",
         stack: clearShopperError,
+      });
+    }
+
+    const { data: addOrderData, error: addOrderError } = await addOrderToShopper(shopper._id, createdOrder._id);
+    if (addOrderError || !addOrderData) {
+      return res.status(400).send({
+        message: "order can not added to shopper",
+        stack: addOrderError,
       });
     }
 
