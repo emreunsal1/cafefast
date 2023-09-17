@@ -1,10 +1,12 @@
 export const AUTH_TOKEN_COOKIE_NAME = "auth_token";
 export const SHOPPER_AUTH_TOKEN_NAME = "shopper_token";
+export const MINUTE_AS_MS = 60000;
+export const HOUR_AS_MS = MINUTE_AS_MS * 60;
 export const ONE_YEAR_AS_MS = 31536000000;
 export const SHOPPER_NOT_FOUND_IN_DATABASE = "SHOPPER_NOT_FOUND_IN_DATABASE";
 export const SAVED_CARD_NOT_FOUND_IN_USER = "SAVED_CARD_NOT_FOUND_IN_USER";
 export const OTP_EXPIRE_IN_SECONDS = 180;
-export const HOUR_AS_MS = 3600000;
+export const OTP_REQUIRED_TIMEOUT_AS_MS = 2 * MINUTE_AS_MS;
 
 export const UPLOAD_LIMIT = 15000000;
 export const DEFAULT_IMAGE_UPLOAD_TYPE = "jpeg";

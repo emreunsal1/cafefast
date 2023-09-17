@@ -20,13 +20,12 @@ import { checkCompanyHasDesk, getCompanyActiveMenu } from "../services/company";
 import { checkMenuHasCampaign, checkMenuHasProduct } from "../utils/menu";
 import { mapSavedCards } from "../utils/mappers";
 import {
-  OTP_EXPIRE_IN_SECONDS, SAVED_CARD_NOT_FOUND_IN_USER,
+  SAVED_CARD_NOT_FOUND_IN_USER,
 } from "../constants";
 import { mapBasket } from "../utils/basket";
 import { createOrder } from "../services/order";
 import { getIO } from "../utils/socket";
-import { getRedis } from "../services/redis";
-import { checkOtpIsValid, checkUserNeedOtp } from "../utils/otp";
+import { checkOtpIsValid, checkUserNeedOtp, setOTPToPhone } from "../utils/otp";
 
 export const addProductToBasketController = async (req: Request, res: Response) => {
   const { shopper } = req;
@@ -224,10 +223,7 @@ export const sendOtpController = async (req: Request, res: Response) => {
   try {
     const { phone } = await updateShopperVerifier.parseAsync({ phone: phoneNumber });
 
-    const redis = getRedis();
-    const redisKey = `${shopperData._id}-${phone}`;
-    await redis.set(redisKey, "00000");
-    await redis.expire(redisKey, OTP_EXPIRE_IN_SECONDS);
+    await setOTPToPhone(shopperData._id, phone);
     res.send({ success: true });
   } catch (error) {
     res.send({
