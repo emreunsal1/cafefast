@@ -11,6 +11,19 @@ const uploadImage = async (file) => {
   });
 };
 
+const uploadMultipleImages = async (files) => {
+  const formData = new FormData();
+  files.forEach((file) => {
+    formData.append("images", file);
+  });
+  return instance.post(`${CDN_URL}/multi`, formData, {
+    headers: {
+      "content-type": "multipart/form-data",
+    },
+  });
+};
+
 export const CDN_SERVICE = {
   uploadImage,
+  uploadMultipleImages,
 };

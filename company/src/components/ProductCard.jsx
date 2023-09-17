@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Card } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import ProductModal, { PRODUCT_MODAL_ACTIONS } from "./ProductModal";
-import { createCloudfrontImageUrl } from "@/utils/image";
 
 const { Meta } = Card;
 

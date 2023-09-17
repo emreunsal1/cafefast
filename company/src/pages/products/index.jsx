@@ -36,11 +36,11 @@ export default function Product() {
       setPopupVisible(false);
       return;
     }
-    const uploadedImages = [];
+    let uploadedImages = [];
     if (images.length) {
-      const promises = images.map((image) => CDN_SERVICE.uploadImage(image.originFileObj));
-      const response = await Promise.all(promises);
-      response.map((item) => uploadedImages.push(item.data.fileName));
+      const originalFiles = images.map((image) => image.originFileObj);
+      const response = await CDN_SERVICE.uploadMultipleImages(originalFiles);
+      uploadedImages = response.data;
     }
     createProduct({ ...data, images: uploadedImages });
     setPopupVisible(false);
