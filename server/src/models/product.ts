@@ -1,14 +1,28 @@
 import mongoose, { Schema } from "mongoose";
 import z from "zod";
 
+export enum ProductAttributeType {
+  SINGLE = "single",
+  MULTI = "multi",
+}
+
+export const productAttributeValidator = z.object({
+  title: z.string().max(255),
+  description: z.string().max(255),
+  type: z.nativeEnum(ProductAttributeType),
+  required: z.boolean(),
+  options: z.array(z.object({
+    name: z.string().max(255),
+    price: z.number(),
+  })),
+});
+
 export const createProductValidator = z.object({
   name: z.string(),
   description: z.string(),
   price: z.number(),
   images: z.array(z.string()),
-  attributes: z.array(z.object({ name: z.string(), price: z.number() })).optional(),
-  // Add attribute category for make radio button for attributes
-  requiredAttributeCount: z.number().default(0).optional(),
+  attributes: productAttributeValidator.optional(),
   menuPrices: z.array(z.object({ menuId: z.string(), price: z.number().positive() })).optional(),
   inStock: z.boolean().optional(),
 });
@@ -22,8 +36,7 @@ const productSchema = new Schema<IProduct>({
   description: String,
   price: Number,
   images: [{ type: String, default: [] }],
-  attributes: { type: [{ name: String, price: Number }], default: [] },
-  requiredAttributeCount: { type: Number, default: 0 },
+  attributes: { type: Array, default: [] },
   menuPrices: { type: [{ menuId: String, price: Number }], default: [] },
   inStock: { type: Boolean, default: true },
 });
