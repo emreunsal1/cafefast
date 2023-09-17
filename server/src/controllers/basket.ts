@@ -25,7 +25,7 @@ import { mapBasket } from "../utils/basket";
 import { createOrder } from "../services/order";
 import { getIO } from "../utils/socket";
 import { getRedis } from "../services/redis";
-import { checkOtpIsValid } from "../utils/otp";
+import { checkOtpIsValid, checkUserNeedOtp } from "../utils/otp";
 
 export const addProductToBasketController = async (req: Request, res: Response) => {
   const { shopper } = req;
@@ -239,7 +239,7 @@ export const sendOtpController = async (req: Request, res: Response) => {
 export const needOtpController = async (_req: Request, res: Response) => {
   const { shopperData } = res.locals;
 
-  const isUserNeedOtp = (Date.now() - shopperData.lastOtpDate) > (12 * HOUR_AS_MS);
+  const isUserNeedOtp = checkUserNeedOtp(shopperData.lastOtpDate);
 
   res.send({ otpRequired: isUserNeedOtp });
 };
@@ -415,6 +415,6 @@ export const approveBasketController = async (req: Request, res: Response) => {
     io.to(companyId).emit("refresh:kitchen");
     res.send(createdOrder);
   } catch (error) {
-    res.send(error);
+    res.status(400).send(error);
   }
 };

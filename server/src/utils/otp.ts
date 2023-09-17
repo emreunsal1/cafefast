@@ -2,11 +2,16 @@ import { HOUR_AS_MS } from "../constants";
 import { getRedis } from "../services/redis";
 import logger from "./logger";
 
+export const checkUserNeedOtp = (shopperLastOtpDate) => {
+  const isOtpRequired = !shopperLastOtpDate || (Date.now() - shopperLastOtpDate) > (12 * HOUR_AS_MS);
+  return isOtpRequired;
+};
+
 export const checkOtpIsValid = async ({
   shopperId, shopperPhone, shopperLastOtpDate, otp,
 }) => {
   try {
-    const isOtpRequired = !shopperLastOtpDate || (Date.now() - shopperLastOtpDate) > (12 * HOUR_AS_MS);
+    const isOtpRequired = checkUserNeedOtp(shopperLastOtpDate);
     if (!isOtpRequired) {
       return true;
     }
