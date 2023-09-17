@@ -1,7 +1,7 @@
 import { Router } from "express";
 import multer from "multer";
 import { config } from "dotenv";
-import { uploadImageController } from "../controllers/image";
+import { uploadImageController, uploadMultiImagesController } from "../controllers/image";
 import { AUTH_REQUIRED_MIDDLEWARE } from "../middleware/jwt";
 import { UPLOAD_LIMIT } from "../constants";
 import logger from "../utils/logger";
@@ -26,5 +26,6 @@ const uploadMiddleware = multer({
 });
 
 route.post("/", AUTH_REQUIRED_MIDDLEWARE, uploadMiddleware.single("image"), uploadImageController);
+route.post("/multi", AUTH_REQUIRED_MIDDLEWARE, uploadMiddleware.array("images", 5), uploadMultiImagesController);
 
 export default route;

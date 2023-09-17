@@ -5,5 +5,6 @@ declare namespace Express {
     user: any;
     shopper: any;
     file?: any;
+    files?: any[];
   }
 }
