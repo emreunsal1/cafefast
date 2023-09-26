@@ -1,16 +1,19 @@
 import { Request, Response } from "express";
 import xl from "excel4node";
 import stream from "stream";
+import readXlsxFile from "read-excel-file/node";
 import { createProductValidator, updateProductValidator } from "../models/product";
 import {
+  bulkUpdateProducts,
   createProduct, deleteProduct, getAllProducts, updateProduct,
 } from "../services/product";
 import {
   addProductToCategory, checkCategoryHasProduct, deleteProductFromCategory, removeProductsFromAllCategories,
 } from "../services/category";
-import { addProductToCompany } from "../services/company";
+import { addProductToCompany, getCompany } from "../services/company";
 import { mapProduct } from "../utils/mappers";
-import { createSheetHeader, fillProductsToExcel } from "../utils/excel";
+import { createSheetHeader, fillProductsToExcel, getProductsFromExcel } from "../utils/excel";
+import { validateCompanyHasProducts } from "../utils/company";
 
 export const getAllProductsController = async (req: Request, res: Response) => {
   const { company } = req.user;
@@ -62,16 +65,40 @@ export const exportAllProductsController = async (req: Request, res: Response) =
   }
 };
 
-// export const importProductsController = async (req: Request, res: Response) => {
-//   const { company } = req.user;
-//   try {
+export const importProductsController = async (req: Request, res: Response) => {
+  const { company } = req.user;
+  const { file } = req;
+  try {
+    const rows = await readXlsxFile(file.buffer);
+    const products = getProductsFromExcel(rows);
 
-//   } catch (error) {
-//     res.status(400).send({
-//       error: (error as any).message || error,
-//     });
-//   }
-// };
+    if (products.productsNeedUpdate.length > 0) {
+      const companyData = await getCompany(company);
+      const isValid = validateCompanyHasProducts(
+        companyData.data,
+        products.productsNeedUpdate.map((product) => product._id),
+      );
+      if (!isValid) {
+        return res.status(400).send({
+          message: "product ids are not valid",
+        });
+      }
+
+      const result = await bulkUpdateProducts(products.productsNeedUpdate);
+      if (result.data?.nMatched !== products.productsNeedUpdate.length) {
+        return res.status(400).send({
+          message: "error when updating existing products",
+        });
+      }
+    }
+
+    res.send({ message: "Successfully updated products" });
+  } catch (error) {
+    res.status(400).send({
+      error: (error as any).message || error,
+    });
+  }
+};
 
 export const createProductController = async (req: Request, res: Response) => {
   const { company: companyId } = req.user;

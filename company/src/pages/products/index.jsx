@@ -47,10 +47,25 @@ export default function Product() {
     setPopupVisible(false);
   };
 
+  const importInputChangeHandler = async (e) => {
+    const excelFile = e.target.files[0];
+    e.target.value = null;
+    try {
+      await CDN_SERVICE.uploadProductExcel(excelFile);
+      getProducts();
+    } catch (err) {
+      console.log("error :>> ", err);
+    }
+  };
+
   return (
     <div>
-      <div className="export-products-button">
+      <div className="export-import-products-button">
         <a href={`${API_URl}${PRODUCT_ROUTE}/export`} download>Ürünleri Dışarı Aktar</a>
+        <div>
+          <span>Excel ile içe aktar</span>
+          <input type="file" onChange={importInputChangeHandler} />
+        </div>
       </div>
       <div className="product-card-wrapper">
         {products.map((product) => <ProductCard key={product._id} onAction={productCardOnActionHandler} product={product} />)}

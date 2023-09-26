@@ -10,6 +10,28 @@ export const getAllProducts = async (companyId) => {
   }
 };
 
+export const bulkUpdateProducts = async (newProducts) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const productsWithoutId = newProducts.map(({ _id, ...product }) => product);
+  const onlyIds = newProducts.map((product) => product._id);
+
+  const query = onlyIds.map((id, index) => ({
+    updateOne: {
+      filter: {
+        _id: id,
+      },
+      update: productsWithoutId[index],
+    },
+  }));
+
+  try {
+    const result = await productModel.bulkWrite(query);
+    return { data: result };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
+
 export const createProduct = async (productData: IProduct) => {
   try {
     const newProduct = await productModel.create(productData);

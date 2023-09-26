@@ -1,12 +1,30 @@
 import { Router } from "express";
+import multer from "multer";
 import {
   createProductController, deleteProductController,
   exportAllProductsController,
-  getAllProductsController, updateProductController,
+  getAllProductsController, importProductsController, updateProductController,
 } from "../controllers/product";
 import { ADMIN_PERMISSON_MIDDLEWARE } from "../middleware/permission";
+import logger from "../utils/logger";
+import { UPLOAD_LIMIT } from "../constants";
 
 const productRouter = Router();
+
+const uploadMiddleware = multer({
+  fileFilter(req, file, cb) {
+    if (/officedocument/.test(file.mimetype)) {
+      return cb(null, true);
+    }
+    logger.warn({
+      path: "UPLOAD", action: "UPLOAD_FILE_FILTER_ERROR", message: "wrong mimetype detected", completeFile: file,
+    });
+    cb(null, false);
+  },
+  limits: {
+    fileSize: process.env.UPLOAD_LIMIT || UPLOAD_LIMIT,
+  },
+});
 
 productRouter.get(
   "/",
@@ -16,6 +34,12 @@ productRouter.get(
 productRouter.get(
   "/export",
   exportAllProductsController,
+);
+
+productRouter.post(
+  "/import",
+  uploadMiddleware.single("products"),
+  importProductsController,
 );
 
 productRouter.post(

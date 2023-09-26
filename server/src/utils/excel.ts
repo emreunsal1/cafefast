@@ -28,3 +28,22 @@ export const fillProductsToExcel = (products, sheet) => {
     sheet.cell(row, 4).number(product.price);
   });
 };
+
+export const getProductsFromExcel = (rows) => {
+  const productsNeedUpdate: any = [];
+  const newProducts: any = [];
+  rows.shift();
+  rows.forEach((row: any) => {
+    const product = {
+      _id: row[0],
+      name: row[1],
+      description: row[2],
+      price: row[3],
+    };
+    if (product._id) {
+      return productsNeedUpdate.push(product);
+    }
+    newProducts.push(product);
+  });
+  return { productsNeedUpdate, newProducts };
+};
