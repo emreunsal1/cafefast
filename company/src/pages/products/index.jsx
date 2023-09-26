@@ -6,6 +6,7 @@ import ProductCard, { PRODUCT_CARD_ACTIONS } from "../../components/ProductCard"
 import ProductModal, { PRODUCT_MODAL_ACTIONS } from "../../components/ProductModal";
 import Layout from "../../components/Layout";
 import { CDN_SERVICE } from "@/services/cdn";
+import { API_URl, PRODUCT_ROUTE } from "@/constants";
 
 export default function Product() {
   const {
@@ -48,6 +49,9 @@ export default function Product() {
 
   return (
     <div>
+      <div className="export-products-button">
+        <a href={`${API_URl}${PRODUCT_ROUTE}/export`} download>Ürünleri Dışarı Aktar</a>
+      </div>
       <div className="product-card-wrapper">
         {products.map((product) => <ProductCard key={product._id} onAction={productCardOnActionHandler} product={product} />)}
         <div className="create-product-card">
