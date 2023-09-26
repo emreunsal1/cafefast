@@ -5,13 +5,16 @@
   "license": "MIT",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "ts-node-dev --respawn --no-notify ./src/index.ts",
+    "start:watch": "nodemon dist/index.js",
     "build": "tsc",
+    "build:watch": "tsc --watch",
+    "dev": "concurrently 'yarn build:watch' 'yarn start:watch'",
     "lint": "eslint"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.414.0",
     "bcrypt": "^5.1.1",
+    "concurrently": "^8.2.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "credit-card-type": "^9.1.0",
