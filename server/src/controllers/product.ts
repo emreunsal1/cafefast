@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import xl from "excel4node";
+import stream from "stream";
 import { createProductValidator, updateProductValidator } from "../models/product";
 import {
   createProduct, deleteProduct, getAllProducts, updateProduct,
@@ -8,6 +10,7 @@ import {
 } from "../services/category";
 import { addProductToCompany } from "../services/company";
 import { mapProduct } from "../utils/mappers";
+import { createSheetHeader, fillProductsToExcel } from "../utils/excel";
 
 export const getAllProductsController = async (req: Request, res: Response) => {
   const { company } = req.user;
@@ -25,6 +28,50 @@ export const getAllProductsController = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const exportAllProductsController = async (req: Request, res: Response) => {
+  const { company } = req.user;
+  try {
+    const productsResponse = await getAllProducts(company);
+    if (!productsResponse.data || productsResponse.error) {
+      return res.status(400).send({
+        error: productsResponse.error,
+      });
+    }
+
+    const workbook = new xl.Workbook({
+      defaultFont: {
+        size: 16,
+      },
+    });
+    const sheet = workbook.addWorksheet("Ürünler");
+    createSheetHeader(workbook, sheet);
+    fillProductsToExcel(productsResponse.data.products, sheet);
+
+    const buffer = await workbook.writeToBuffer();
+    const fileContents = Buffer.from(buffer, "base64");
+    const readStream = new stream.PassThrough();
+    readStream.end(fileContents);
+    res.set("Content-disposition", "attachment; filename=Ürünler.xlsx");
+    res.set("Content-Type", "text/plain");
+    readStream.pipe(res);
+  } catch (error) {
+    res.status(400).send({
+      error: (error as any).message || error,
+    });
+  }
+};
+
+// export const importProductsController = async (req: Request, res: Response) => {
+//   const { company } = req.user;
+//   try {
+
+//   } catch (error) {
+//     res.status(400).send({
+//       error: (error as any).message || error,
+//     });
+//   }
+// };
 
 export const createProductController = async (req: Request, res: Response) => {
   const { company: companyId } = req.user;
