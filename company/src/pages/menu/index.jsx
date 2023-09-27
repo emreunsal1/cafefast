@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Table, Space,
   Modal, Input,
-  Button, message,
+  Button, message, Radio,
 } from "antd";
 import { useRouter } from "next/router";
 import { MENU_SERVICE } from "../../services/menu";
@@ -10,9 +10,11 @@ import COMPANY_SERVICE from "@/services/company";
 import Layout from "../../components/Layout";
 import { STORAGE } from "@/utils/browserStorage";
 import { useProduct } from "@/context/ProductContext";
+import USER_SERVICE from "@/services/user";
 
 export default function Menu() {
   const [menus, setMenus] = useState([]);
+  const [activeMenuId, setActiveMenuId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [newMenu, setNewMenu] = useState({ name: "", description: "" });
@@ -46,6 +48,8 @@ export default function Menu() {
   const getMenu = async () => {
     setLoading(true);
     const response = await MENU_SERVICE.get();
+    const meResponse = await USER_SERVICE.me();
+    setActiveMenuId(meResponse.data.data.company.activeMenu);
     setLoading(false);
     setMenus(response.data);
   };
@@ -94,6 +98,7 @@ export default function Menu() {
 
   const activeMenuChangeHandler = async (menuId) => {
     const response = await COMPANY_SERVICE.update({ activeMenu: menuId });
+    setActiveMenuId(menuId);
     return response.data;
   };
   useEffect(() => {
@@ -108,12 +113,17 @@ export default function Menu() {
         <Table
           loading={loading}
           rowKey="_id"
-          rowSelection={{
-            type: "radio",
-            onSelect: (record) => activeMenuChangeHandler(record._id),
-          }}
           dataSource={menus}
         >
+          <Table.Column
+            width={20}
+            align="center"
+            render={(_, record) => (
+              <Space>
+                <Radio onClick={() => activeMenuChangeHandler(record._id)} checked={record._id === activeMenuId} />
+              </Space>
+            )}
+          />
           <Table.Column
             title="Name"
             key="name"
