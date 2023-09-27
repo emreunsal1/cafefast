@@ -59,6 +59,19 @@ export const mapProduct = (_product) => ({
   priceAsText: `${_product.price} TL`,
 });
 
+export const mapCompany = (company) => ({
+  ...company,
+  logo: `${process.env.AWS_CLOUDFRONT_URL}/${company.logo}`,
+});
+
+export const mapUser = (user) => {
+  const mappedUser = JSON.parse(JSON.stringify(user));
+
+  mappedUser.company = mapCompany(mappedUser.company);
+
+  return mappedUser;
+};
+
 export const mapCampaign = (campaign) => ({
   ...campaign,
   products: campaign.products.map((product) => mapProduct(product)),

@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Form, Input, Button, Select,
 } from "antd";
 import USER_SERVICE from "../services/user";
 import ADRESS_SERVICE from "../services/location";
 import COMPANY_SERVICE from "../services/company";
-import Layout from "@/components/Layout";
+import Layout from "../components/Layout";
+import { CDN_SERVICE } from "../services/cdn";
 
 export default function Profile() {
   const [isEdit, setIsEdit] = useState(false);
@@ -17,6 +18,7 @@ export default function Profile() {
   });
   const [companyData, setCompanyData] = useState({
     name: "",
+    logo: "",
   });
   const [companyAddress, setCompanyAddress] = useState({
     city: "",
@@ -26,6 +28,7 @@ export default function Profile() {
   });
   const [city, setCity] = useState([]);
   const [district, setDistrict] = useState([]);
+  const selectedImage = useRef(null);
 
   const getUserData = async () => {
     const repsonse = await USER_SERVICE.me();
@@ -37,7 +40,7 @@ export default function Profile() {
       name, email, phoneNumber, surname,
     });
 
-    setCompanyData({ name: company.name });
+    setCompanyData({ name: company.name, logo: company.logo });
     setCompanyAddress(company.address);
   };
 
@@ -66,10 +69,17 @@ export default function Profile() {
 
   const saveButtonClickHandler = async () => {
     const response = await USER_SERVICE.update(user);
-    const companyResponse = await COMPANY_SERVICE.update({ name: companyData.name, address: companyAddress });
+    const companyUpdateBody = { name: companyData.name, address: companyAddress };
+    if (selectedImage.current) {
+      const { data } = await CDN_SERVICE.uploadImage(selectedImage.current);
+      companyUpdateBody.logo = data.fileName;
+      selectedImage.current = null;
+    }
+    const companyResponse = await COMPANY_SERVICE.update(companyUpdateBody);
 
     if (response !== false && companyResponse !== false) {
       setIsEdit(false);
+      getUserData();
     }
   };
 
@@ -77,6 +87,13 @@ export default function Profile() {
     const { data } = await ADRESS_SERVICE.getCities();
     const mutateCity = data.map((item) => ({ label: item.name, value: item.id }));
     setCity(mutateCity);
+  };
+
+  const inputChangeHandler = (e) => {
+    const image = e.target.files[0];
+    setCompanyData({ ...companyData, logo: URL.createObjectURL(image) });
+    e.target.value = null;
+    selectedImage.current = image;
   };
 
   useEffect(() => {
@@ -96,6 +113,7 @@ export default function Profile() {
       <div className="container">
         <div className="profile-list">
           <div className="user-info">
+            <h2>User Info</h2>
             <div className="row">
               name:
               {user.name}
@@ -117,6 +135,11 @@ export default function Profile() {
               {user.email}
             </div>
             <div className="company-info">
+              <h2>Company Info</h2>
+              <div className="company-logo">
+                Company Logo:
+                <img src={companyData.logo} alt="Company logo" />
+              </div>
               <div className="row">
                 company name :
                 {companyData.name}
@@ -147,6 +170,7 @@ export default function Profile() {
       {isEdit
        && (
        <div className="edit-container">
+         <h2>User Info</h2>
          <Form onFinish={saveButtonClickHandler}>
            <Form.Item label="name" initialValue={user.name} name="name">
              <Input name="name" value={user.name} onChange={(e) => userUpdateHandler({ name: "name", value: e.target.value })} />
@@ -157,6 +181,11 @@ export default function Profile() {
            <Form.Item label="Phone Number" initialValue={user.phoneNumber} name="phoneNumber">
              <Input name="phoneNumber" value={user.phoneNumber} onChange={(e) => userUpdateHandler({ name: "phoneNumber", value: e.target.value })} />
            </Form.Item>
+           <h2>Company Info</h2>
+           <div className="company-logo">
+             <img src={companyData.logo} alt="Company logo" />
+             <input type="file" onChange={inputChangeHandler} />
+           </div>
            <Form.Item label="Company Name" initialValue={companyData.name} name="companyName">
              <Input name="companyName" value={companyData.name} onChange={(e) => companyUpdateHandler({ name: "name", value: e.target.value })} />
            </Form.Item>

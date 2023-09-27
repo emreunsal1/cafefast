@@ -3,6 +3,7 @@ import z from "zod";
 
 export type ICompany = {
   name: string;
+  logo: string;
   address: {
     city: string;
     district: string;
@@ -19,6 +20,7 @@ export type ICompany = {
 
 const companySchema = new mongoose.Schema<ICompany>({
   name: String,
+  logo: String,
   address: {
     city: String,
     district: String,
@@ -59,6 +61,7 @@ const companyModel = mongoose.model("company", companySchema);
 
 export const createCompanyValidator = z.object({
   name: z.string().min(3).max(255),
+  logo: z.string().min(3).max(500),
   activeMenu: z.string().min(3).max(255).optional(),
   products: z.array(z.string()).optional().default([]),
   address: z.object({
@@ -69,7 +72,7 @@ export const createCompanyValidator = z.object({
   }),
 });
 
-export const companyDesksValidator = z.array(z.string().max(255).min(1));
+export const companyDesksValidator = z.array(z.string().min(1).max(255));
 
 export const updateCompanyValidator = createCompanyValidator.partial();
 

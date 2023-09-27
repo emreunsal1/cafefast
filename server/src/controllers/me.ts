@@ -4,6 +4,7 @@ import { updateUserVerifier } from "../models/user";
 import { createCompany } from "../services/company";
 import { getUser, updateUser } from "../services/user";
 import { validateCityAndDistrict } from "../utils/address";
+import { mapUser } from "../utils/mappers";
 
 export const getMeController = async (req: Request, res: Response, next) => {
   const { email } = req.user;
@@ -14,7 +15,7 @@ export const getMeController = async (req: Request, res: Response, next) => {
       res.status(401).send({ error });
       return;
     }
-    res.send(data);
+    res.send(mapUser(data));
   } catch (error) {
     next(error);
   }
