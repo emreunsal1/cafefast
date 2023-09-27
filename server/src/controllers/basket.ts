@@ -99,7 +99,7 @@ export const getBasketController = async (req: Request, res: Response) => {
   res.send(mapBasket(data.toObject()));
 };
 
-export const updateQuantityController = async (req: Request, res: Response) => {
+export const updateQuantityController = async (req: Request, res: Response, next) => {
   const { shopper } = req;
 
   try {
@@ -143,14 +143,11 @@ export const updateQuantityController = async (req: Request, res: Response) => {
       message: "item updated successfully",
     });
   } catch (err) {
-    res.status(500).send({
-      message: "error occured",
-      stack: err,
-    });
+    next(err);
   }
 };
 
-export const deleteProductInBasketController = async (req: Request, res: Response) => {
+export const deleteProductInBasketController = async (req: Request, res: Response, next) => {
   try {
     const { shopper } = req;
     const { companyId, productId } = req.params;
@@ -171,11 +168,11 @@ export const deleteProductInBasketController = async (req: Request, res: Respons
     }
     return res.send({ message: "deleted successfully" });
   } catch (error) {
-    res.status(404).send({ message: "delete error", error });
+    next(error);
   }
 };
 
-export const deleteCampaignInBasketController = async (req: Request, res: Response) => {
+export const deleteCampaignInBasketController = async (req: Request, res: Response, next) => {
   try {
     const { shopper } = req;
     const { companyId, campaignId } = req.params;
@@ -197,7 +194,7 @@ export const deleteCampaignInBasketController = async (req: Request, res: Respon
     }
     return res.send({ message: "deleted successfully" });
   } catch (error) {
-    res.status(404).send({ message: "delete error", error });
+    next(error);
   }
 };
 
@@ -216,7 +213,7 @@ export const getShopperSavedCardController = async (req: Request, res: Response)
   res.send(mapSavedCards(shopperData.data?.cards));
 };
 
-export const sendOtpController = async (req: Request, res: Response) => {
+export const sendOtpController = async (req: Request, res: Response, next) => {
   const { phoneNumber } = req.body;
   const { shopperData } = res.locals;
 
@@ -226,10 +223,7 @@ export const sendOtpController = async (req: Request, res: Response) => {
     await setOTPToPhone(shopperData._id, phone);
     res.send({ success: true });
   } catch (error) {
-    res.send({
-      error: (error as any).message || error,
-      message: "otp not sent",
-    });
+    next(error);
   }
 };
 
@@ -241,7 +235,7 @@ export const needOtpController = async (_req: Request, res: Response) => {
   res.send({ otpRequired: isUserNeedOtp });
 };
 
-export const approveBasketController = async (req: Request, res: Response) => {
+export const approveBasketController = async (req: Request, res: Response, next) => {
   try {
     const { shopper } = req;
     const { companyId } = req.params;
@@ -420,6 +414,6 @@ export const approveBasketController = async (req: Request, res: Response) => {
     io.to(companyId).emit("refresh:kitchen");
     res.send(createdOrder);
   } catch (error) {
-    res.status(400).send(error);
+    next(error);
   }
 };

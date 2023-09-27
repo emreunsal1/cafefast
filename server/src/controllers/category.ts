@@ -5,7 +5,7 @@ import {
 } from "../services/category";
 import { addCategoryToMenu, getMenuWithId, removeCategoryFromMenu } from "../services/menu";
 
-export const createCategoryController = async (req: Request, res: Response) => {
+export const createCategoryController = async (req: Request, res: Response, next) => {
   const { menuId } = req.params;
   const { name } = req.body;
 
@@ -30,13 +30,11 @@ export const createCategoryController = async (req: Request, res: Response) => {
 
     res.status(201).send(createdCategory.data);
   } catch (error) {
-    res.status(400).send({
-      error,
-    });
+    next(error);
   }
 };
 
-export const updateCategoryController = async (req: Request, res: Response) => {
+export const updateCategoryController = async (req: Request, res: Response, next) => {
   const { categoryId, menuId } = req.params;
   const { name } = req.body;
   try {
@@ -54,13 +52,11 @@ export const updateCategoryController = async (req: Request, res: Response) => {
 
     res.send(newCategory);
   } catch (error) {
-    res.status(400).send({
-      error,
-    });
+    next(error);
   }
 };
 
-export const deleteCategoryController = async (req: Request, res: Response) => {
+export const deleteCategoryController = async (req: Request, res: Response, next) => {
   const { categoryId } = req.params;
 
   try {
@@ -83,8 +79,6 @@ export const deleteCategoryController = async (req: Request, res: Response) => {
     res.status(200).send();
     return;
   } catch (error) {
-    res.status(400).send({
-      error,
-    });
+    next(error);
   }
 };

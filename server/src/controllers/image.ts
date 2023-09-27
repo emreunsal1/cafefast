@@ -9,7 +9,7 @@ import {
 } from "../constants";
 import logger from "../utils/logger";
 
-export const uploadImageController = async (req: Request, res: Response) => {
+export const uploadImageController = async (req: Request, res: Response, next) => {
   try {
     if (!req.file) {
       return res.send("not found");
@@ -29,11 +29,11 @@ export const uploadImageController = async (req: Request, res: Response) => {
       fileName,
     });
   } catch (error: any) {
-    res.status(400).send(error);
+    next(error);
   }
 };
 
-export const uploadMultiImagesController = async (req: Request, res: Response) => {
+export const uploadMultiImagesController = async (req: Request, res: Response, next) => {
   try {
     if (!req.files?.length) {
       return res.status(400).send("files array not found");
@@ -73,7 +73,6 @@ export const uploadMultiImagesController = async (req: Request, res: Response) =
 
     return res.send(fileNameArray);
   } catch (error: any) {
-    console.log("error :>> ", error);
-    res.status(400).send(error);
+    next(error);
   }
 };

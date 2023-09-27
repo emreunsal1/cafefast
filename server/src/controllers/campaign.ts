@@ -5,7 +5,7 @@ import { removeCampaignFromMenus } from "../services/menu";
 import { addCampaignToCompany, getCompanyCampaigns, removeCampaignFromCompany } from "../services/company";
 import { mapCampaigns } from "../utils/mappers";
 
-export const getCompanyCampaignsController = async (req: Request, res: Response) => {
+export const getCompanyCampaignsController = async (req: Request, res: Response, next) => {
   try {
     const { company } = req.user;
     const campaignResponse = await getCompanyCampaigns(company);
@@ -16,13 +16,11 @@ export const getCompanyCampaignsController = async (req: Request, res: Response)
 
     res.status(200).send(mapCampaigns(campaignResponse.data));
   } catch (error) {
-    res.status(400).send({
-      error,
-    });
+    next(error);
   }
 };
 
-export const createCampaignController = async (req: Request, res: Response) => {
+export const createCampaignController = async (req: Request, res: Response, next) => {
   try {
     const { company } = req.user;
     const verifiedCampaign = await createCampaignVerifier.parseAsync(req.body);
@@ -39,13 +37,11 @@ export const createCampaignController = async (req: Request, res: Response) => {
 
     res.status(201).send(campaignResponse.data);
   } catch (error) {
-    res.status(400).send({
-      error,
-    });
+    next(error);
   }
 };
 
-export const updateCampaignController = async (req: Request, res: Response) => {
+export const updateCampaignController = async (req: Request, res: Response, next) => {
   const { campaignId } = req.params;
   try {
     const verifiedCampaign = await updateCampaignVerifier.parseAsync(req.body);
@@ -57,13 +53,11 @@ export const updateCampaignController = async (req: Request, res: Response) => {
 
     res.status(200).send(campaignResponse.data);
   } catch (error) {
-    res.status(400).send({
-      error,
-    });
+    next(error);
   }
 };
 
-export const deleteCampaignController = async (req: Request, res: Response) => {
+export const deleteCampaignController = async (req: Request, res: Response, next) => {
   const { campaignId } = req.params;
   try {
     const campaignResponse = await deleteCampaign(campaignId);
@@ -83,8 +77,6 @@ export const deleteCampaignController = async (req: Request, res: Response) => {
 
     res.status(200).send({ success: campaignResponse.data });
   } catch (error) {
-    res.status(400).send({
-      error,
-    });
+    next(error);
   }
 };

@@ -18,7 +18,7 @@ export const getCompanyController = async (req: Request, res: Response) => {
   res.send(companyData);
 };
 
-export const getCompanyOrdersController = async (req: Request, res: Response) => {
+export const getCompanyOrdersController = async (req: Request, res: Response, next) => {
   try {
     const { company } = req.user;
     const { data: ordersData, error: ordersError } = await getOrders(company);
@@ -30,13 +30,11 @@ export const getCompanyOrdersController = async (req: Request, res: Response) =>
 
     res.send(orders);
   } catch (error: any) {
-    res.send({
-      error: error?.message || error,
-    });
+    next(error);
   }
 };
 
-export const updateCompanyOrderController = async (req: Request, res: Response) => {
+export const updateCompanyOrderController = async (req: Request, res: Response, next) => {
   try {
     const { orderId } = req.params;
     const { company } = req.user;
@@ -50,13 +48,11 @@ export const updateCompanyOrderController = async (req: Request, res: Response) 
 
     res.send(orderData);
   } catch (error: any) {
-    res.send({
-      error: error?.message || error,
-    });
+    next(error);
   }
 };
 
-export const getCompanyDesksController = async (req: Request, res: Response) => {
+export const getCompanyDesksController = async (req: Request, res: Response, next) => {
   try {
     const { company } = req.user;
     const { data: desks, error: desksError } = await getDesks(company);
@@ -67,13 +63,11 @@ export const getCompanyDesksController = async (req: Request, res: Response) => 
 
     res.send(desks);
   } catch (error: any) {
-    res.send({
-      error: error?.message || error,
-    });
+    next(error);
   }
 };
 
-export const updateCompanyDesksController = async (req: Request, res: Response) => {
+export const updateCompanyDesksController = async (req: Request, res: Response, next) => {
   try {
     const { company } = req.user;
     const { desks } = req.body;
@@ -87,13 +81,11 @@ export const updateCompanyDesksController = async (req: Request, res: Response) 
 
     res.send(updatedDesksResult.desks);
   } catch (error: any) {
-    res.send({
-      error: error?.message || error,
-    });
+    next(error);
   }
 };
 
-export const clearCompanyDesksController = async (req: Request, res: Response) => {
+export const clearCompanyDesksController = async (req: Request, res: Response, next) => {
   try {
     const { company } = req.user;
     const { data: desks, error: desksError } = await updateCompanyDesks(company, []);
@@ -104,9 +96,7 @@ export const clearCompanyDesksController = async (req: Request, res: Response) =
 
     res.send(desks.desks);
   } catch (error: any) {
-    res.send({
-      error: error?.message || error,
-    });
+    next(error);
   }
 };
 
@@ -121,7 +111,7 @@ export const getActiveMenuController = async (req: Request, res: Response) => {
   res.send(mapMenu((menuData as any).toObject()));
 };
 
-export const updateCompanyController = async (req: Request, res: Response) => {
+export const updateCompanyController = async (req: Request, res: Response, next) => {
   const { company } = req.user;
   try {
     const validatedCompany = await updateCompanyValidator.parseAsync(req.body);
@@ -130,6 +120,6 @@ export const updateCompanyController = async (req: Request, res: Response) => {
     res.send(result);
     return;
   } catch (error) {
-    res.status(400).send({ error });
+    next(error);
   }
 };

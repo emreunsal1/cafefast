@@ -6,7 +6,7 @@ import { registerUserVerifier } from "../models/user";
 import { mapUserForJWT } from "../utils/mappers";
 import { createPasswordHash, verifyPasswordHash } from "../utils/company";
 
-export const login = async (req:Request, res:Response) => {
+export const login = async (req:Request, res:Response, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -34,13 +34,11 @@ export const login = async (req:Request, res:Response) => {
     setCookie(res, AUTH_TOKEN_COOKIE_NAME, createdJWT as string);
     res.send();
   } catch (error:any) {
-    res.status(401).send({
-      error,
-    });
+    next(error);
   }
 };
 
-export const register = async (req:Request, res:Response) => {
+export const register = async (req:Request, res:Response, next) => {
   try {
     const {
       email,
@@ -73,9 +71,7 @@ export const register = async (req:Request, res:Response) => {
     setCookie(res, AUTH_TOKEN_COOKIE_NAME, createdJWT as string);
     res.status(201).send();
   } catch (error:any) {
-    res.status(401).json({
-      error,
-    });
+    next(error);
   }
 };
 

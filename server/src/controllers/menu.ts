@@ -4,13 +4,13 @@ import {
   addMenuToCompany, getCompany, removeMenuFromCompany,
 } from "../services/company";
 import {
-  createMenu, deleteMenu, getMenus, updateMenu, getMenu, getMenuWithId, 
-  addCampaignToMenu, removeCampaignFromMenus, removeCampaignFromMenu,
+  createMenu, deleteMenu, getMenus, updateMenu, getMenu, getMenuWithId,
+  addCampaignToMenu, removeCampaignFromMenu,
 } from "../services/menu";
 import { mapMenu } from "../utils/mappers";
 import { deleteCategoriesWithIds } from "../services/category";
 
-export const getMenusController = async (req: Request, res: Response) => {
+export const getMenusController = async (req: Request, res: Response, next) => {
   const { company: companyId } = req.user;
 
   try {
@@ -24,7 +24,7 @@ export const getMenusController = async (req: Request, res: Response) => {
 
     res.send(menus);
   } catch (error) {
-    return res.status(400).send({ error });
+    next(error);
   }
 };
 
@@ -36,7 +36,7 @@ export const getMenuDetailController = async (req: Request, res: Response) => {
   res.send(mapMenu(menuData.data?.toObject()));
 };
 
-export const createMenuController = async (req: Request, res: Response) => {
+export const createMenuController = async (req: Request, res: Response, next) => {
   const { company } = req.user;
   try {
     const verifiedMenu = await createMenuVerifier.parseAsync(req.body);
@@ -56,11 +56,11 @@ export const createMenuController = async (req: Request, res: Response) => {
     res.send(createdMenu.data);
     return;
   } catch (err) {
-    res.status(400).send();
+    next(err);
   }
 };
 
-export const deleteMenuController = async (req: Request, res: Response) => {
+export const deleteMenuController = async (req: Request, res: Response, next) => {
   const { menuId } = req.params;
   try {
     const { data: removeMenuData, error: removeMenuError } = await removeMenuFromCompany(menuId);
@@ -78,11 +78,11 @@ export const deleteMenuController = async (req: Request, res: Response) => {
     }
     res.send(deletedMenu);
   } catch (err) {
-    res.status(400).send();
+    next(err);
   }
 };
 
-export const updateMenuController = async (req: Request, res: Response) => {
+export const updateMenuController = async (req: Request, res: Response, next) => {
   const { menuId } = req.params;
 
   try {
@@ -97,11 +97,11 @@ export const updateMenuController = async (req: Request, res: Response) => {
     res.send(updatedMenu.data);
     return;
   } catch (err) {
-    res.status(400).send();
+    next(err);
   }
 };
 
-export const addCampaignToMenuController = async (req: Request, res: Response) => {
+export const addCampaignToMenuController = async (req: Request, res: Response, next) => {
   const { menuId, campaignId } = req.params;
   try {
     const foundMenu = await getMenuWithId(menuId, false);
@@ -118,13 +118,11 @@ export const addCampaignToMenuController = async (req: Request, res: Response) =
 
     res.status(201).send(menuResponse.data);
   } catch (error) {
-    res.status(400).send({
-      error,
-    });
+    next(error);
   }
 };
 
-export const removeCampaignFromMenuController = async (req: Request, res: Response) => {
+export const removeCampaignFromMenuController = async (req: Request, res: Response, next) => {
   const { menuId, campaignId } = req.params;
   try {
     const menuResponse = await removeCampaignFromMenu(menuId, campaignId);
@@ -134,8 +132,6 @@ export const removeCampaignFromMenuController = async (req: Request, res: Respon
 
     res.status(200).send(menuResponse.data);
   } catch (error) {
-    res.status(400).send({
-      error,
-    });
+    next(error);
   }
 };

@@ -5,7 +5,7 @@ import { createCompany } from "../services/company";
 import { getUser, updateUser } from "../services/user";
 import { validateCityAndDistrict } from "../utils/address";
 
-export const getMeController = async (req: Request, res: Response) => {
+export const getMeController = async (req: Request, res: Response, next) => {
   const { email } = req.user;
   try {
     const { data, error } = await getUser({ query: { email }, populate: true });
@@ -15,11 +15,11 @@ export const getMeController = async (req: Request, res: Response) => {
     }
     res.send(data);
   } catch (error) {
-    res.status(401).send({ error });
+    next(error);
   }
 };
 
-export const updateMeController = async (req: Request, res: Response) => {
+export const updateMeController = async (req: Request, res: Response, next) => {
   const { email } = req.user;
   try {
     const data = await updateUserVerifier.parseAsync(req.body);
@@ -29,11 +29,11 @@ export const updateMeController = async (req: Request, res: Response) => {
     }
     return res.send(newUser);
   } catch (err) {
-    res.status(400).send({ error: err });
+    next(err);
   }
 };
 
-export const completeOnboardingController = async (req: Request, res: Response) => {
+export const completeOnboardingController = async (req: Request, res: Response, next) => {
   const { email } = req.user;
   const { company, user } = req.body;
   try {
@@ -62,7 +62,6 @@ export const completeOnboardingController = async (req: Request, res: Response) 
       data: newUser,
     });
   } catch (err) {
-    console.log("[completeOnboardingController] :>> ", err);
-    res.status(400).send({ error: err });
+    next(err);
   }
 };

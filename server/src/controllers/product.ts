@@ -16,7 +16,7 @@ import { mapProduct } from "../utils/mappers";
 import { createSheetHeader, fillProductsToExcel, getProductsFromExcel } from "../utils/excel";
 import { validateCompanyHasProducts } from "../utils/company";
 
-export const getAllProductsController = async (req: Request, res: Response) => {
+export const getAllProductsController = async (req: Request, res: Response, next) => {
   const { company } = req.user;
   try {
     const productsResponse = await getAllProducts(company);
@@ -27,13 +27,11 @@ export const getAllProductsController = async (req: Request, res: Response) => {
     }
     res.send(productsResponse.data.toObject().products?.map(mapProduct));
   } catch (error) {
-    res.status(400).send({
-      error: (error as any).message || error,
-    });
+    next(error);
   }
 };
 
-export const exportAllProductsController = async (req: Request, res: Response) => {
+export const exportAllProductsController = async (req: Request, res: Response, next) => {
   const { company } = req.user;
   try {
     const productsResponse = await getAllProducts(company);
@@ -60,13 +58,11 @@ export const exportAllProductsController = async (req: Request, res: Response) =
     res.set("Content-Type", "text/plain");
     readStream.pipe(res);
   } catch (error) {
-    res.status(400).send({
-      error: (error as any).message || error,
-    });
+    next(error);
   }
 };
 
-export const importProductsController = async (req: Request, res: Response) => {
+export const importProductsController = async (req: Request, res: Response, next) => {
   const { company } = req.user;
   const { file } = req;
   try {
@@ -110,13 +106,11 @@ export const importProductsController = async (req: Request, res: Response) => {
 
     res.send({ message: "Products successfully imported" });
   } catch (error) {
-    res.status(400).send({
-      error: (error as any).message || error,
-    });
+    next(error);
   }
 };
 
-export const createProductController = async (req: Request, res: Response) => {
+export const createProductController = async (req: Request, res: Response, next) => {
   const { company: companyId } = req.user;
   try {
     const validatedPoruct = await createProductValidator.parseAsync(req.body);
@@ -135,13 +129,11 @@ export const createProductController = async (req: Request, res: Response) => {
     }
     res.send(mapProduct(createdProduct.data.toObject()));
   } catch (error) {
-    res.status(400).send({
-      error: (error as any).message || error,
-    });
+    next(error);
   }
 };
 
-export const updateProductController = async (req: Request, res: Response) => {
+export const updateProductController = async (req: Request, res: Response, next) => {
   const { productId } = req.params;
 
   try {
@@ -155,13 +147,11 @@ export const updateProductController = async (req: Request, res: Response) => {
     }
     res.send(mapProduct(updatedProduct.data.toObject()));
   } catch (error) {
-    res.status(400).send({
-      error,
-    });
+    next(error);
   }
 };
 
-export const deleteProductController = async (req: Request, res: Response) => {
+export const deleteProductController = async (req: Request, res: Response, next) => {
   const { productId } = req.params;
   const { categoryId } = req.query;
 
@@ -185,13 +175,11 @@ export const deleteProductController = async (req: Request, res: Response) => {
     }
     res.send(deletedProduct.data);
   } catch (error) {
-    res.status(400).send({
-      error,
-    });
+    next(error);
   }
 };
 
-export const addProductToCategoryController = async (req: Request, res: Response) => {
+export const addProductToCategoryController = async (req: Request, res: Response, next) => {
   const { categoryId, productId } = req.params;
   try {
     const isProductExists = await checkCategoryHasProduct(categoryId, productId);
@@ -208,13 +196,11 @@ export const addProductToCategoryController = async (req: Request, res: Response
     }
     res.send(newCategory.data);
   } catch (error) {
-    res.status(400).send({
-      error: (error as any).message || error,
-    });
+    next(error);
   }
 };
 
-export const removeProductFromCategoryController = async (req: Request, res: Response) => {
+export const removeProductFromCategoryController = async (req: Request, res: Response, next) => {
   const { categoryId, productId } = req.params;
   try {
     const newCategory = await deleteProductFromCategory(categoryId, productId);
@@ -225,8 +211,6 @@ export const removeProductFromCategoryController = async (req: Request, res: Res
     }
     res.send(newCategory.data);
   } catch (error) {
-    res.status(400).send({
-      error: (error as any).message || error,
-    });
+    next(error);
   }
 };

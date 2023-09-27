@@ -1,4 +1,5 @@
-import express from "express";
+import express, { Request, Response } from "express";
+import { ZodError } from "zod";
 import authRouter from "./auth";
 import companyRouter from "./company";
 import paymentRouter from "./payment";

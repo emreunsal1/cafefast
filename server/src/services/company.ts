@@ -61,7 +61,6 @@ export const getCompanyActiveMenu = async (companyId, populate = false) => {
     const result = await query.exec();
     return { data: result?.activeMenu };
   } catch (err) {
-    console.log("error :>> ", err);
     return { error: err };
   }
 };
