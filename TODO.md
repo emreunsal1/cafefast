@@ -10,10 +10,10 @@
   # COMPANY TODO
 
   ## BUGS
-- []  Profile name surname not working
-- []  Add company image for menu website
-- []  Ürünlerin çoğu yerde fotoğrafları gelmiyor
-- []  Ürünler sayfasına çoklu silebilme özelliği uyarı popupı lazım
+- [x]  Profile name surname not working
+- [x]  Add company image for menu website
+- [x]  Ürünlerin çoğu yerde fotoğrafları gelmiyor
+- []  Ürünler sayfasına çoklu silebilme özelliği uyarı popupı lazım (Backend ekibinin geliştirme yapması bekleniyor)
 - []  Active menu should be checked on the menu page
 - []  Menu add multiple delete
 - []  Menu update description not working

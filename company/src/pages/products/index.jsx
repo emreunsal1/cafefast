@@ -17,6 +17,7 @@ export default function Product() {
     createProduct,
   } = useProduct();
   const [popupVisible, setPopupVisible] = useState(false);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -65,6 +66,10 @@ export default function Product() {
     } catch (err) {
       console.log("error :>> ", err);
     }
+  };
+
+  const multipleDeleteProducts = () => {
+    // TODO ürünlerin toplu silebilmek için backend ekibinin gelişterme yapması bekleniyor
   };
 
   return (
