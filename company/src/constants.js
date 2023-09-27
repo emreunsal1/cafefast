@@ -20,3 +20,5 @@ export const ORDER_STATUSES = [
   "delivered",
   "canceled",
 ];
+
+export const SAFE_IMAGE_TYPE = "image/png,image/jpeg, image/webp, image/heic";

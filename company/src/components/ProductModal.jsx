@@ -7,6 +7,8 @@ import {
   Upload,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import { GlobalMessageContext } from "@/context/GlobalMessage";
+import { SAFE_IMAGE_TYPE } from "@/constants";
 
 export const PRODUCT_MODAL_ACTIONS = {
   UPDATE: "update",
@@ -54,7 +56,11 @@ export default function ProductModal({ data, onAction, action }) {
             <Input placeholder="desc" value={product.description} onChange={(e) => setProduct({ ...product, description: e.target.value })} />
           </Form.Item>
           <Form.Item label="Upload" valuePropName="fileList">
-            <Upload onChange={(e) => selectImageHandler(e)} listType="picture-card">
+            <Upload
+              accept={SAFE_IMAGE_TYPE}
+              onChange={(e) => selectImageHandler(e)}
+              listType="picture-card"
+            >
               <div>
                 <PlusOutlined />
                 <div
