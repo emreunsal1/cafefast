@@ -2,15 +2,16 @@ import { Request, Response } from "express";
 import xl from "excel4node";
 import stream from "stream";
 import readXlsxFile from "read-excel-file/node";
-import { createProductValidator, updateProductValidator } from "../models/product";
+import { bulkUpdateCreateValidator, createProductValidator, updateProductValidator } from "../models/product";
 import {
+  bulkCreateProducts,
   bulkUpdateProducts,
   createProduct, deleteProduct, getAllProducts, updateProduct,
 } from "../services/product";
 import {
   addProductToCategory, checkCategoryHasProduct, deleteProductFromCategory, removeProductsFromAllCategories,
 } from "../services/category";
-import { addProductToCompany, getCompany } from "../services/company";
+import { addProductToCompany, addProductsToCompany, getCompany } from "../services/company";
 import { mapProduct } from "../utils/mappers";
 import { createSheetHeader, fillProductsToExcel, getProductsFromExcel } from "../utils/excel";
 import { validateCompanyHasProducts } from "../utils/company";
@@ -73,6 +74,7 @@ export const importProductsController = async (req: Request, res: Response) => {
     const products = getProductsFromExcel(rows);
 
     if (products.productsNeedUpdate.length > 0) {
+      await bulkUpdateCreateValidator.array().parseAsync(products.productsNeedUpdate);
       const companyData = await getCompany(company);
       const isValid = validateCompanyHasProducts(
         companyData.data,
@@ -92,7 +94,21 @@ export const importProductsController = async (req: Request, res: Response) => {
       }
     }
 
-    res.send({ message: "Successfully updated products" });
+    if (products.newProducts.length > 0) {
+      const validatedProducts = await bulkUpdateCreateValidator.array().parseAsync(products.newProducts);
+      const createProductsResult = await bulkCreateProducts(validatedProducts);
+      if (createProductsResult.error || !createProductsResult.data) {
+        return res.status(400).send(createProductsResult.error);
+      }
+
+      const newProductIds = createProductsResult.data?.map((newProduct) => newProduct._id);
+      const companyProductsResult = await addProductsToCompany(company, newProductIds);
+      if (companyProductsResult.error || !companyProductsResult.data) {
+        return res.status(400).send(companyProductsResult.error);
+      }
+    }
+
+    res.send({ message: "Products successfully imported" });
   } catch (error) {
     res.status(400).send({
       error: (error as any).message || error,

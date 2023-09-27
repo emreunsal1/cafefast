@@ -32,6 +32,15 @@ export const bulkUpdateProducts = async (newProducts) => {
   }
 };
 
+export const bulkCreateProducts = async (newProducts) => {
+  try {
+    const result = await productModel.insertMany(newProducts);
+    return { data: result };
+  } catch (error) {
+    return { error: (error as any).message || error };
+  }
+};
+
 export const createProduct = async (productData: IProduct) => {
   try {
     const newProduct = await productModel.create(productData);

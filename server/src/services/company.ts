@@ -152,6 +152,19 @@ export const addProductToCompany = async (companyId, productId) => {
     return { error };
   }
 };
+export const addProductsToCompany = async (companyId, productIds) => {
+  try {
+    const newCompany = await companyModel.findOneAndUpdate(
+      { _id: companyId },
+      { $push: { products: { $each: productIds } } },
+      { new: true },
+    );
+
+    return { data: newCompany };
+  } catch (error) {
+    return { error };
+  }
+};
 
 export const getCompanyCampaigns = async (companyId) => {
   try {

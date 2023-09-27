@@ -30,20 +30,24 @@ export const fillProductsToExcel = (products, sheet) => {
 };
 
 export const getProductsFromExcel = (rows) => {
-  const productsNeedUpdate: any = [];
-  const newProducts: any = [];
+  const productsNeedUpdate: any[] = [];
+  const newProducts: any[] = [];
   rows.shift();
   rows.forEach((row: any) => {
-    const product = {
-      _id: row[0],
+    const hasId = row[0];
+    if (hasId) {
+      return productsNeedUpdate.push({
+        _id: row[0],
+        name: row[1],
+        description: row[2],
+        price: row[3],
+      });
+    }
+    newProducts.push({
       name: row[1],
       description: row[2],
       price: row[3],
-    };
-    if (product._id) {
-      return productsNeedUpdate.push(product);
-    }
-    newProducts.push(product);
+    });
   });
   return { productsNeedUpdate, newProducts };
 };

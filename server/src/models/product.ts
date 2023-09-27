@@ -28,6 +28,7 @@ export const createProductValidator = z.object({
 });
 
 export const updateProductValidator = createProductValidator.omit({ attributes: true }).partial();
+export const bulkUpdateCreateValidator = createProductValidator.pick({ name: true, description: true, price: true });
 
 export type IProduct = z.infer<typeof createProductValidator>;
 
