@@ -9,6 +9,7 @@ export const getMeController = async (req: Request, res: Response, next) => {
   const { email } = req.user;
   try {
     const { data, error } = await getUser({ query: { email }, populate: true });
+
     if (error) {
       res.status(401).send({ error });
       return;
@@ -20,10 +21,10 @@ export const getMeController = async (req: Request, res: Response, next) => {
 };
 
 export const updateMeController = async (req: Request, res: Response, next) => {
-  const { email } = req.user;
+  const { _id } = req.user;
   try {
     const data = await updateUserVerifier.parseAsync(req.body);
-    const { data: newUser, error } = await updateUser({ query: { email }, data });
+    const { data: newUser, error } = await updateUser({ query: { _id }, data });
     if (error) {
       return res.send(400).send({ error });
     }

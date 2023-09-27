@@ -1,15 +1,27 @@
 import z from "zod";
 import mongoose from "mongoose";
 
-export type IUser = {
-  email: string;
-  password: string;
-  name: string;
-  surname: string;
-  role: number;
-  company: mongoose.Types.ObjectId
-  phoneNumber: string
-};
+enum UserRoles {
+  ADMIN = 0,
+  EMPLOYEE = 1
+}
+
+const userVerifier = z.object({
+  email: z.string().email(),
+  password: z.string().min(3).max(255),
+  name: z.string().min(3).max(255),
+  surname: z.string().min(3).max(255),
+  role: z.nativeEnum(UserRoles),
+  company: z.instanceof(mongoose.Schema.Types.ObjectId),
+  phoneNumber: z.string().transform((val) => {
+    if (Number.isNaN(Number(val)) || val.length !== 10) {
+      throw new Error("Phone Number must have 10 digits");
+    }
+    return val;
+  }),
+});
+
+type IUser = z.infer<typeof userVerifier>;
 
 export type IUserWithoutPassword = Omit<IUser, "password">
 
@@ -29,18 +41,8 @@ const userSchema = new mongoose.Schema<IUser>({
   },
 }, { timestamps: true });
 
-export const registerUserVerifier = z.object({
-  email: z.string().min(3).max(255),
-  password: z.string().min(3).max(255),
-  phoneNumber: z.string().transform((val) => {
-    if (Number.isNaN(Number(val)) || val.length !== 10) {
-      throw new Error("Phone Number must have 10 digits");
-    }
-    return val;
-  }).optional(),
-});
-
-export const updateUserVerifier = registerUserVerifier.partial();
+export const registerUserVerifier = userVerifier.pick({ email: true, password: true, phoneNumber: true });
+export const updateUserVerifier = userVerifier.pick({ name: true, surname: true });
 
 const userModel = mongoose.model("user", userSchema);
 
