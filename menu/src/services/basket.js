@@ -4,7 +4,7 @@ const { default: instance } = require("../../utils/axios");
 
 const approveBasket = async (data) => {
   try {
-    const response = await instance.post(`${ROUTES.BASKET}/${data.companyId}/approve`, data);
+    await instance.post(`${ROUTES.BASKET}/${data.companyId}/approve`, data);
     return true;
   } catch (error) {
     return false;
@@ -34,7 +34,6 @@ const addProductToBasket = async ({ companyId, productId }) => {
 const getBasket = async ({ companyId }) => {
   try {
     const response = await instance.get(`${ROUTES.BASKET}/${companyId}`);
-    console.log("get basket -->", response.data);
     return response;
   } catch (error) {
     return false;

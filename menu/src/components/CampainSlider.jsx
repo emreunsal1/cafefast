@@ -7,12 +7,10 @@ import BASKET_SERVICE from "@/services/basket";
 export default function CampainSlider() {
   const { campaigns } = useMenu();
   const { query } = useRouter();
+
   const addToBasket = (campaignId) => {
     BASKET_SERVICE.addToBasket({ companyId: query.companyId, campaignId });
   };
-  useEffect(() => {
-    console.log("campan", campaigns);
-  }, []);
 
   const contentStyle = {
     height: "160px",

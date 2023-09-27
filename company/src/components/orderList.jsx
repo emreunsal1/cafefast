@@ -6,7 +6,6 @@ import { copyText } from "@/utils/copy";
 
 export default function OrderList({ data, onUpdate }) {
   const approvedUpdateHandler = (event) => [
-    console.log("event", event),
   ];
 
   const statusOnChangeHandler = async (orderId, status) => {

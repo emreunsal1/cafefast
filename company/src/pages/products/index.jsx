@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
+import { useRouter } from "next/router";
 import { useProduct } from "../../context/ProductContext";
 import ProductCard, { PRODUCT_CARD_ACTIONS } from "../../components/ProductCard";
 import ProductModal, { PRODUCT_MODAL_ACTIONS } from "../../components/ProductModal";
 import Layout from "../../components/Layout";
 import { CDN_SERVICE } from "@/services/cdn";
 import { API_URl, PRODUCT_ROUTE } from "@/constants";
+import { STORAGE } from "@/utils/browserStorage";
 
 export default function Product() {
   const {
@@ -15,9 +17,13 @@ export default function Product() {
     createProduct,
   } = useProduct();
   const [popupVisible, setPopupVisible] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     getProducts();
+    if (STORAGE.getLocal("isCompleteMenuBoard") == "false") {
+      setPopupVisible(true);
+    }
   }, []);
 
   const productCardOnActionHandler = ({ action, data }) => {
@@ -45,6 +51,9 @@ export default function Product() {
     }
     createProduct({ ...data, images: uploadedImages });
     setPopupVisible(false);
+    if (STORAGE.getLocal("isCompleteMenuBoard") == "false") {
+      router.push("/menu");
+    }
   };
 
   const importInputChangeHandler = async (e) => {

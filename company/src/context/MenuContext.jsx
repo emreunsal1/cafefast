@@ -23,6 +23,7 @@ export function MenuDetailContext({ children }) {
     try {
       const response = await CATEGORY_SERVICE.createCategory(menuId, categoryName, order);
       setCategories([...categories, response.data]);
+      return response.data;
     } catch (error) {
       if (error.response.data.error === "CATEGORY_NAME_MUST_BE_UNIQUE") {
         sendGlobalMessage("error", "category name must be unique");
@@ -46,7 +47,6 @@ export function MenuDetailContext({ children }) {
 
   const removeCampaings = async (menuId, data) => {
     try {
-      console.log("context gelen data", data);
       CAMPAIGN_SERVICE.removeCampaingFromMenu(menuId, data._id);
 
       const filteredCampaings = campaings.filter((campain) => campain._id !== data._id);

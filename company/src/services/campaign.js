@@ -8,18 +8,15 @@ const create = async (data) => {
     const response = await instance.post(`${CAMPAING_ROUTE}/`, data);
     return response;
   } catch (error) {
-    console.log("create campaign error", { error });
     return false;
   }
 };
 
 const update = async (campaignId, data) => {
-  console.log("update data id data", { campaignId, data });
   try {
     const response = await instance.put(`${CAMPAING_ROUTE}/${campaignId}`, data);
     return response;
   } catch (error) {
-    console.log("create campaign error", { error });
     return false;
   }
 };

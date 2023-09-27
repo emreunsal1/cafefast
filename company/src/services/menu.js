@@ -8,7 +8,6 @@ const get = async () => {
     const response = await instance.get(MENU_ROUTE);
     return response;
   } catch (error) {
-    console.log("menu get request error", { error });
     return false;
   }
 };
@@ -21,7 +20,6 @@ const create = async (name, desc) => {
     });
     return response;
   } catch (error) {
-    console.log("create menu error", { error });
     return false;
   }
 };
@@ -34,7 +32,6 @@ const update = async (id, { name, description }) => {
     });
     return resposne;
   } catch (error) {
-    console.log("menu update error", { error });
     return false;
   }
 };
@@ -46,7 +43,6 @@ const deleteMenu = async (id) => {
       return true;
     }
   } catch (error) {
-    console.log("delete menu error", { error });
     return false;
   }
 };
@@ -58,7 +54,6 @@ const detail = async (menuId) => {
     const response = await instance.get(`${MENU_ROUTE}/${menuId}`);
     return response;
   } catch (error) {
-    console.log("get menu detail error", { error });
     return false;
   }
 };
@@ -75,18 +70,15 @@ const addProduct = async (menuId, categoryId, productId) => {
     const response = await instance.post(`${MENU_ROUTE}/${menuId}/category/${categoryId}/product/${productId}`);
     return response.data;
   } catch (error) {
-    console.log("add Product to category Error", { error });
     return false;
   }
 };
 
 const deleteCategory = async (menuId, categoryId) => {
   try {
-    console.log("silinecek category id", categoryId);
     const response = await instance.delete(`${MENU_ROUTE}/${menuId}/category/${categoryId}`);
     return response.data;
   } catch (error) {
-    console.log("delete Category", { error });
     return false;
   }
 };

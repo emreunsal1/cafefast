@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import { MENU_SERVICE } from "../../services/menu";
 import COMPANY_SERVICE from "@/services/company";
 import Layout from "../../components/Layout";
+import { STORAGE } from "@/utils/browserStorage";
+import { useProduct } from "@/context/ProductContext";
 
 export default function Menu() {
   const [menus, setMenus] = useState([]);
@@ -16,7 +18,7 @@ export default function Menu() {
   const [newMenu, setNewMenu] = useState({ name: "", description: "" });
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
-
+  const { getProducts } = useProduct();
   const router = useRouter();
 
   useEffect(() => {
@@ -26,6 +28,20 @@ export default function Menu() {
       setNewMenu(data);
     }
   }, [isUpdate]);
+
+  const menOnboardingController = async () => {
+    const response = await getProducts();
+    if (STORAGE.getLocal("isCompleteMenuBoard") == "false" && response.length) {
+      setIsModalOpen(true);
+    }
+    if (STORAGE.getLocal("isCompleteMenuBoard") == "false" && !response.length) {
+      router.push("/products");
+    }
+  };
+
+  useEffect(() => {
+    menOnboardingController();
+  }, [router.isReady]);
 
   const getMenu = async () => {
     setLoading(true);
@@ -70,12 +86,14 @@ export default function Menu() {
     }
     setMenus([...menus, response.data]);
     setIsModalOpen(false);
+    if (STORAGE.getLocal("isCompleteMenuBoard") == "false") {
+      const { data } = response;
+      router.push(`/menu/${data._id}`);
+    }
   };
 
   const activeMenuChangeHandler = async (menuId) => {
-    console.log("menu ıd", menuId);
     const response = await COMPANY_SERVICE.update({ activeMenu: menuId });
-    console.log("active menu update", response.data);
     return response.data;
   };
   useEffect(() => {

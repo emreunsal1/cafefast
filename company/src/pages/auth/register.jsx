@@ -19,7 +19,6 @@ function Register() {
     validationSchema: registerValidationSchema,
     onSubmit: async (values) => {
       const response = await USER_SERVICE.create(values);
-      console.log("response", response);
       if (response) {
         router.push("/auth/onboarding");
       }

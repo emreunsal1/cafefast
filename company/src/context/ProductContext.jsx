@@ -14,7 +14,6 @@ export function ProductContext({ children }) {
 
   const createProduct = async (data) => {
     const response = await PRODUCT_SERVICE.create(data);
-    console.log("response", response);
     setProducts([...products, response.data]);
     return response.data;
   };

@@ -45,7 +45,6 @@ function MenuDetail() {
         const filteredData = data.filter((campaing) => campaing._id !== item._id);
         return filteredData;
       })[0];
-      console.log("not incl", notIncludesCampaings);
       setAllCampaings(notIncludesCampaings);
       return;
     }
@@ -53,7 +52,6 @@ function MenuDetail() {
   };
 
   const addCampaingClickHandler = async (campain) => {
-    console.log("camopiamn", campain);
     const response = await CAMPAIGN_SERVICE.addCampaingToMenu(router.query.menuId, campain._id);
     if (response) {
       campaings.push(campain);

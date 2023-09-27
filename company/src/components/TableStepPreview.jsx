@@ -5,7 +5,6 @@ export default function TableStepPreview({ data }) {
   const [tabsItem, setTabsItem] = useState([]);
   const [activeTabs, setActiveTabs] = useState(data[0].key);
   useEffect(() => {
-    console.log("data type", data);
     if (typeof data === "object") {
       const newTabsItem = data.map((table, index) => ({ label: table.key, key: index }));
       setTabsItem(newTabsItem);

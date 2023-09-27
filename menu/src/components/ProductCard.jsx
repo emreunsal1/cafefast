@@ -19,7 +19,6 @@ export default function ProductCard({ data }) {
 
   const updateQuantityHandler = async (type) => {
     if (type === "increase") {
-      console.log({ id: data.id, quantity });
       await BASKET_SERVICE.updateItemQuantity({
         productId: data._id,
         companyId: query.companyId,

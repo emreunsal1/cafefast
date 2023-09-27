@@ -11,15 +11,12 @@ const create = async (data) => {
     });
     return response;
   } catch (error) {
-    console.log("register error", { error });
     return false;
   }
 };
 
 const update = async ({ name, surname, phoneNumber }) => {
   try {
-    console.log("data", { name, surname, phoneNumber });
-
     const response = await instance.put("/me", {
       name,
       surname,
@@ -27,7 +24,6 @@ const update = async ({ name, surname, phoneNumber }) => {
     });
     return response;
   } catch (error) {
-    console.log("user update error", { error });
     return false;
   }
 };
@@ -41,7 +37,7 @@ const compeleteOnboarding = async (data) => {
     });
     return response;
   } catch (error) {
-    console.log("compeleteOnboarding error", { error });
+    return false;
   }
 };
 
@@ -64,7 +60,6 @@ const me = async () => {
 
     return { data: response };
   } catch (error) {
-    console.log("get me error", error);
     return { error: error.response };
   }
 };

@@ -10,7 +10,6 @@ const verifyJWT = async (authToken) => {
     const verifiedToken = await jwtVerify(authToken, secretKeyUint8);
     return verifiedToken;
   } catch (err) {
-    console.log("middeware verifyJWT error :>> ", err);
     return false;
   }
 };

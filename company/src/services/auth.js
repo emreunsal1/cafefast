@@ -9,7 +9,6 @@ const login = async (email, password) => {
     });
     return response;
   } catch (error) {
-    console.log("login error", { error });
     return false;
   }
 };
@@ -19,7 +18,6 @@ const logout = async () => {
     const response = await instance.post(`${AUTH_PAGE_URL}/logout`);
     return response;
   } catch (error) {
-    console.log("login error", { error });
     return false;
   }
 };

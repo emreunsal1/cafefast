@@ -6,7 +6,6 @@ const create = async (data) => {
     const response = await instance.post(PRODUCT_ROUTE, data);
     return response;
   } catch (error) {
-    console.log("create product error", { error });
     return false;
   }
 };
@@ -16,7 +15,6 @@ const get = async () => {
     const response = await instance.get(PRODUCT_ROUTE);
     return response.data;
   } catch (error) {
-    console.log("get Product Error", { error });
     return false;
   }
 };
@@ -26,7 +24,6 @@ const update = async (data) => {
     const response = await instance.put(`${PRODUCT_ROUTE}/${data._id}`, data);
     return response.data;
   } catch (error) {
-    console.log("update Product Error", { error });
     return false;
   }
 };
@@ -36,7 +33,6 @@ const deleteProduct = async (id) => {
     const response = await instance.delete(`${PRODUCT_ROUTE}/${id}`);
     return response.data;
   } catch (error) {
-    console.log("get Product Error", { error });
     return false;
   }
 };

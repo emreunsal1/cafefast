@@ -6,7 +6,6 @@ const getCities = async () => {
     const response = await instance.get(ADRESS_ROUTE);
     return response;
   } catch (error) {
-    console.log("get Cities error", { error });
     return false;
   }
 };
@@ -16,7 +15,6 @@ const getDistrict = async (cityID) => {
     const response = await instance.get(`${ADRESS_ROUTE}/${cityID}/districts`);
     return response;
   } catch (error) {
-    console.log("get District error", { error });
     return false;
   }
 };

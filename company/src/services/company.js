@@ -6,7 +6,6 @@ const update = async (data) => {
     const response = await instance.put(COMPANY_ROUTE, data);
     return response;
   } catch (error) {
-    console.log("update company error", { error });
     return false;
   }
 };

@@ -4,6 +4,7 @@ import { Table } from "antd";
 import { LeftCircleFilled } from "@ant-design/icons";
 import PRODUCT_SERVICE from "@/services/product";
 import { CATEGORY_SERVICE, MENU_SERVICE } from "@/services/menu";
+import { STORAGE } from "@/utils/browserStorage";
 
 export default function CategoryProducts() {
   const router = useRouter();
@@ -38,12 +39,13 @@ export default function CategoryProducts() {
   };
 
   const addProductsToSelectedCategory = async (productData) => {
-    const result = await CATEGORY_SERVICE.addProduct(router.query.menuId, categoryData._id, productData._id);
-    console.log("result :>> ", result);
-
+    await CATEGORY_SERVICE.addProduct(router.query.menuId, categoryData._id, productData._id);
     const filteredProducts = allProducts.filter((_product) => _product._id !== productData._id);
     setCategoryProducts([...categoryProducts, productData]);
     setAllProducts(filteredProducts);
+    if (STORAGE.getLocal("isCompleteMenuBoard") == "false") {
+      router.push("/table");
+    }
   };
 
   const defaultColumns = [
@@ -70,7 +72,7 @@ export default function CategoryProducts() {
       title: "",
       dataIndex: "",
       render: (_, record) => (
-        <span>Ekle</span>
+        <span>çıkart</span>
       ),
     },
   ];
