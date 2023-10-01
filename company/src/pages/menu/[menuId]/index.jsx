@@ -11,6 +11,7 @@ import CategorySideBar from "../../../components/CategorySideBar";
 import { MenuDetailContext, useMenuDetail } from "../../../context/MenuContext";
 import ProductCard, { PRODUCT_CARD_ACTIONS } from "../../../components/ProductCard";
 import CAMPAIGN_SERVICE from "@/services/campaign";
+import MenuDetailBody from "@/components/MenuDetailBody";
 
 function MenuDetail() {
   const [selectedCategoryId, setSelectedCategoryId] = useState([]);
@@ -25,15 +26,6 @@ function MenuDetail() {
 
   const redirectToProductAddPage = () => {
     router.push(`/menu/${router.query.menuId}/category/${selectedCategory._id}`);
-  };
-
-  const productCardOnActionHandler = ({ action, data }) => {
-    if (action === PRODUCT_CARD_ACTIONS.UPDATE) {
-      // Update product data
-    }
-    if (action === PRODUCT_CARD_ACTIONS.DELETE) {
-      // Delete product data
-    }
   };
 
   const getCampaings = async () => {
@@ -91,16 +83,7 @@ function MenuDetail() {
           </div>
         </Col>
         <Col span={18}>
-          <div className="products">
-            {!selectedCategory?.products.length && <Empty />}
-            <Row>
-              {selectedCategory?.products?.map((product) => (
-                <Col span={8}>
-                  <ProductCard onAction={productCardOnActionHandler} product={product} />
-                </Col>
-              ))}
-            </Row>
-          </div>
+          <MenuDetailBody selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategoryId} />
         </Col>
       </Row>
       <h2>Campaigns</h2>

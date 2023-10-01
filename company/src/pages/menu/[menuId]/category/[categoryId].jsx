@@ -48,6 +48,15 @@ export default function CategoryProducts() {
     }
   };
 
+  const removeProductToCategory = (productData) => {
+    const response = CATEGORY_SERVICE.removeProduct(router.query.menuId, categoryData._id, productData._id);
+    if (response) {
+      const filteredCategoryProducts = categoryProducts.filter((product) => product._id !== productData._id);
+      setCategoryProducts(filteredCategoryProducts);
+      setAllProducts((prev) => [...prev, productData]);
+    }
+  };
+
   const defaultColumns = [
     {
       title: "Name",
@@ -72,7 +81,7 @@ export default function CategoryProducts() {
       title: "",
       dataIndex: "",
       render: (_, record) => (
-        <span>çıkart</span>
+        <span onClick={() => removeProductToCategory(record)}>çıkart</span>
       ),
     },
   ];

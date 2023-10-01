@@ -20,7 +20,9 @@
 - []  Menu table description not working
 - []  Menü içerisinde kategori ekleme işlemi düzeltilmeli
 - []  Kategoriler sayfasında kampanyaların ne işi var aq
-- [] kategoriye eklediğim ürün çıkartılmıyor(kategori add product sayfası)
+- []  Kategorilere tıkladığma ürünler table  şeklinde gösterilecek
+- [] kategoriler çoklu silebilme özelliği gelecek
+- [X] kategoriye eklediğim ürün çıkartılmıyor(kategori add product sayfası)
 - [] kategoriye tıkladığımda gördüğüm ürün kartında sil butonu çalışmıyor
 - [] kategoride görüntülediğim ürünleri toplu silebilmeliyim
 - [] Kampanya ekleme sistemi açıldığında birdaha kapanmıyor
