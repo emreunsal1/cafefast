@@ -23,7 +23,7 @@
 - [] Menu add multiple delete
 - [x]  Menu update description not working
 - []  Menu table description not working
-- []  Menu description update ettiğimde direkt yansımıyor refresh atmak gerekiyor
+- [x]  Menu description update ettiğimde direkt yansımıyor refresh atmak gerekiyor
 - []  Menü içerisinde kategori ekleme işlemi düzeltilmeli
 - []  Kategoriler sayfasında kampanyaların ne işi var aq
 - []  Kategorilere tıkladığma ürünler table  şeklinde gösterilecek
