@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Table, Space,
   Modal, Input,
-  Button, message, Radio,
+  Button, message, Radio, Checkbox,
 } from "antd";
 import { useRouter } from "next/router";
 import { MENU_SERVICE } from "../../services/menu";
@@ -16,6 +16,8 @@ export default function Menu() {
   const [menus, setMenus] = useState([]);
   const [activeMenuId, setActiveMenuId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectModeActive, setSelectModeActive] = useState(false);
+  const selectedMenuIds = useRef([]);
   const [isUpdate, setIsUpdate] = useState(false);
   const [newMenu, setNewMenu] = useState({ name: "", description: "" });
   const [messageApi, contextHolder] = message.useMessage();
@@ -45,7 +47,7 @@ export default function Menu() {
     menOnboardingController();
   }, [router.isReady]);
 
-  const getMenu = async () => {
+  const getCompanyMenus = async () => {
     setLoading(true);
     const response = await MENU_SERVICE.get();
     const meResponse = await USER_SERVICE.me();
@@ -54,12 +56,9 @@ export default function Menu() {
     setMenus(response.data);
   };
 
-  const deleteClickHandler = async (menuId) => {
-    const response = await MENU_SERVICE.deleteMenu(menuId);
-    if (response) {
-      const clearedMenu = menus.filter((menu) => menu._id !== menuId);
-      setMenus(clearedMenu);
-    }
+  const deleteMenu = async ({ menuId, menuIds }) => {
+    await MENU_SERVICE.deleteMenu({ menuId, menuIds });
+    getCompanyMenus();
   };
 
   const updateClickHandler = async () => {
@@ -101,20 +100,42 @@ export default function Menu() {
     setActiveMenuId(menuId);
     return response.data;
   };
+
+  const menuSelectHandler = (checked, menuId) => {
+    if (checked) {
+      selectedMenuIds.current.push(menuId);
+      return;
+    }
+    selectedMenuIds.current = selectedMenuIds.current.filter((ids) => ids !== menuId);
+  };
+
   useEffect(() => {
-    getMenu();
+    getCompanyMenus();
   }, []);
 
   return (
     <div>
       {contextHolder}
       <div className="title">Menus</div>
+      <button onClick={() => setSelectModeActive(!selectModeActive)}>Seç</button>
+      <button onClick={() => deleteMenu({ menuIds: selectedMenuIds })}>Seçili Menüleri Sil</button>
       <div>
         <Table
           loading={loading}
           rowKey="_id"
           dataSource={menus}
         >
+          {selectModeActive && (
+          <Table.Column
+            width={20}
+            align="center"
+            render={(_, record) => (
+              <Space>
+                <Checkbox onClick={(e) => menuSelectHandler(e.target.checked, record._id)} />
+              </Space>
+            )}
+          />
+          )}
           <Table.Column
             width={20}
             align="center"
@@ -148,7 +169,7 @@ export default function Menu() {
             key="action"
             render={(_, record) => (
               <Space size="middle">
-                <div onClick={() => deleteClickHandler(record._id)}>delete</div>
+                <div onClick={() => deleteMenu({ menuId: record._id })}>delete</div>
                 <div onClick={() => setIsUpdate(record._id)}>update</div>
               </Space>
             )}

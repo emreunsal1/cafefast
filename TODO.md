@@ -1,10 +1,15 @@
-# TODOS
+# SERVER TODOS
 
 - [x] Upgrade AWS SDK for JavaScript (v3)
 - [x] Add integration to upload photo in product create screen
-- [x] Add excel import and export option to product bulk create update 
+- [x] Add excel import and export option to product bulk create update
   - `excel4node` is for create excel files.
   - `read-excel-file` for reading excel files
+- [ ] Servis try catch'lerini kaldır. Global error handler halletsin.
+- [ ] MenuExist middleware'in parçalanması:
+  - [ ] CategoryExists middleware yaz
+  - [ ] CampaignExists middleware yaz
+  - [ ] MenuExist middleware sadece menu var mı diye kontrol etmeli
 
 
   # COMPANY TODO
@@ -15,8 +20,8 @@
 - [x]  Ürünlerin çoğu yerde fotoğrafları gelmiyor
 - []  Ürünler sayfasına çoklu silebilme özelliği uyarı popupı lazım
 - [x]  Active menu should be checked on the menu page
-- []  Menu add multiple delete
-- []  Menu update description not working
+- [] Menu add multiple delete
+- [x]  Menu update description not working
 - []  Menu table description not working
 - []  Menü içerisinde kategori ekleme işlemi düzeltilmeli
 - []  Kategoriler sayfasında kampanyaların ne işi var aq

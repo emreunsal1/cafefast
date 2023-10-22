@@ -24,7 +24,6 @@ export default function Index() {
       <div className="menu">
         <MenuBar />
       </div>
-      burası main page register veya login olduk yupiii!!
     </div>
   );
 }
