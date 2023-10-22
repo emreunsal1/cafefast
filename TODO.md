@@ -28,8 +28,8 @@
 - []  Kategorilere tıkladığma ürünler table  şeklinde gösterilecek
 - [] kategoriler çoklu silebilme özelliği gelecek
 - [X] kategoriye eklediğim ürün çıkartılmıyor(kategori add product sayfası)
-- [] kategoriye tıkladığımda gördüğüm ürün kartında sil butonu çalışmıyor
-- [] kategoride görüntülediğim ürünleri toplu silebilmeliyim
+- [X] kategoriye tıkladığımda gördüğüm ürün kartında sil butonu çalışmıyor
+- [] kategoride görüntülediğim ürünleri toplu silebilmeliyim (backend bekleniyor)
 - [] Kampanya ekleme sistemi açıldığında birdaha kapanmıyor
 - [] kampanya editleme işleminde hiçbirşey yapmadan kaydedersek must be unique hatası veriyor
 
