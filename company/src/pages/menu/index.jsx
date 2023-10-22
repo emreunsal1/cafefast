@@ -66,6 +66,7 @@ export default function Menu() {
     const filteredMenu = menus.filter((menu) => menu._id !== isUpdate);
     filteredMenu.push(response.data);
     setMenus(filteredMenu);
+    getCompanyMenus();
     setIsUpdate(false);
     setIsModalOpen(false);
   };
