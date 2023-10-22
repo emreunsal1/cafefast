@@ -118,6 +118,7 @@ function MenuDetail() {
             </Card>
           </Col>
         ))}
+        <Button danger className="close-add-campaing-place" onClick={() => setIsAddCampaing(false)}>Kapat</Button>
       </Row>
       )}
       {selectedCategory && (

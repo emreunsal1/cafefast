@@ -22,7 +22,7 @@
 - [x]  Active menu should be checked on the menu page
 - [] Menu add multiple delete
 - [x]  Menu update description not working
-- []  Menu table description not working
+- [x]  Menu table description not working
 - [x]  Menu description update ettiğimde direkt yansımıyor refresh atmak gerekiyor
 - []  Menü içerisinde kategori ekleme işlemi düzeltilmeli
 - []  Kategoriler sayfasında kampanyaların ne işi var aq
@@ -31,7 +31,7 @@
 - [X] kategoriye eklediğim ürün çıkartılmıyor(kategori add product sayfası)
 - [X] kategoriye tıkladığımda gördüğüm ürün kartında sil butonu çalışmıyor
 - [] kategoride görüntülediğim ürünleri toplu silebilmeliyim (backend bekleniyor)
-- [] Kampanya ekleme sistemi açıldığında birdaha kapanmıyor
+- [x] Kampanya ekleme sistemi açıldığında birdaha kapanmıyor
 - [] kampanya editleme işleminde hiçbirşey yapmadan kaydedersek must be unique hatası veriyor
 
 - [] kitchen sayfasında hiçbir bok yapmıyoruz orayı düşünmemiz lazım
