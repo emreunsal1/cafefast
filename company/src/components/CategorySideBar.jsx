@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Input } from "antd";
 import { useRouter } from "next/router";
+import { CloseCircleFilled } from "@ant-design/icons";
 import { useMenuDetail } from "../context/MenuContext";
 import CategorySideBarItem from "./CategorySideBarItem";
 import { STORAGE } from "@/utils/browserStorage";
@@ -12,8 +13,9 @@ export default function CategorySideBar({ selectedCategoryId, setSelectedCategor
   const [isCreateCategory, setIsCreateCategory] = useState(false);
   const router = useRouter();
 
-  const addCategoryInputHandler = async (id, name, order) => {
+  const addCategoryButtonHandler = async (id, name, order) => {
     const response = await addCategory(id, name, order);
+    setNewCategory({ name: "", order: categories.length + 1 });
     if (STORAGE.getLocal("isCompleteMenuBoard") == "false") {
       router.push(`/menu/${router.query.menuId}/category/${response._id}`);
     }
@@ -38,18 +40,23 @@ export default function CategorySideBar({ selectedCategoryId, setSelectedCategor
             />
           ))}
         </div>
-        <div className="add-button" onClick={() => setIsCreateCategory(true)}><Button>Add Category + </Button></div>
+        { !isCreateCategory && <div className="add-button" onClick={() => setIsCreateCategory(true)}><Button>Add Category + </Button></div> }
         {isCreateCategory && (
-        <div className="new-category">
-          <Input
-            placeholder="Category Name"
-            onPressEnter={() => {
-              addCategoryInputHandler(router.query.menuId, newCategory.name, newCategory.order);
-              setIsCreateCategory(false);
-            }}
-            onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
-          />
-        </div>
+          <>
+            <div className="new-category">
+              <Input
+                placeholder="Category Name"
+                value={newCategory.name}
+                onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
+              />
+            </div>
+            <Button
+              onClick={() => addCategoryButtonHandler(router.query.menuId, newCategory.name, newCategory.order)}
+            >
+              Ekle
+            </Button>
+            <Button shape="circle" onClick={() => setIsCreateCategory(false)} icon={<CloseCircleFilled />} />
+          </>
         )}
       </div>
 

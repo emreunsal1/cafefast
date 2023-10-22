@@ -24,10 +24,10 @@
 - [x]  Menu update description not working
 - [x]  Menu table description not working
 - [x]  Menu description update ettiğimde direkt yansımıyor refresh atmak gerekiyor
-- []  Menü içerisinde kategori ekleme işlemi düzeltilmeli
+- [x]  Menü içerisinde kategori ekleme işlemi düzeltilmeli
 - []  Kategoriler sayfasında kampanyaların ne işi var aq
 - []  Kategorilere tıkladığma ürünler table  şeklinde gösterilecek
-- [] kategoriler çoklu silebilme özelliği gelecek
+- [] kategoriler çoklu silebilme özelliği gelecek(backend geliştiriyor)
 - [X] kategoriye eklediğim ürün çıkartılmıyor(kategori add product sayfası)
 - [X] kategoriye tıkladığımda gördüğüm ürün kartında sil butonu çalışmıyor
 - [] kategoride görüntülediğim ürünleri toplu silebilmeliyim (backend bekleniyor)
