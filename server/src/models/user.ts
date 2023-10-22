@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema<IUser>({
   },
 }, { timestamps: true });
 
-export const registerUserVerifier = userVerifier.pick({ email: true, password: true, phoneNumber: true });
+export const registerUserVerifier = userVerifier.pick({ email: true, password: true });
 export const updateUserVerifier = userVerifier.pick({ name: true, surname: true });
 
 const userModel = mongoose.model("user", userSchema);

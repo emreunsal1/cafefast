@@ -67,3 +67,5 @@ export const deleteProduct = async (productId) => {
     return { error: (error as any).message || error };
   }
 };
+
+export const deleteMultipleProducts = async (productIds) => productModel.deleteMany({ _id: { $in: productIds } });

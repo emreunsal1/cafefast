@@ -17,14 +17,7 @@ export const deleteCategory = async (categoryId) => {
   }
 };
 
-export const deleteCategoriesWithIds = async (categoryIds) => {
-  try {
-    const result = await categoryModel.deleteMany({ _id: { $in: categoryIds } }).exec();
-    return { data: result };
-  } catch (error) {
-    return { error: (error as any).message || error };
-  }
-};
+export const deleteCategoriesWithIds = async (categoryIds) => categoryModel.deleteMany({ _id: { $in: categoryIds } }).exec();
 
 export const updateCategory = async (categoryId, data) => {
   try {
@@ -33,13 +26,6 @@ export const updateCategory = async (categoryId, data) => {
   } catch (error) {
     return { error: (error as any).message || error };
   }
-};
-
-export const checkCategoryHasProduct = async (categoryId, productId) => {
-  const data = await categoryModel.findOne(
-    { _id: categoryId, products: productId },
-  ).exec();
-  return !!data;
 };
 
 export const addProductToCategory = async (categoryId, productId) => {

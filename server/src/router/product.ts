@@ -5,7 +5,8 @@ import {
   exportAllProductsController,
   getAllProductsController, importProductsController, updateProductController,
 } from "../controllers/product";
-import { ADMIN_PERMISSON_MIDDLEWARE } from "../middleware/permission";
+import { ADMIN_PERMISSON_MIDDLEWARE, COMPANY_MIDDLEWARE } from "../middleware/permission";
+import { PRODUCT_EXISTS_IN_COMPANY_MIDDLEWARE } from "../middleware/menu";
 import logger from "../utils/logger";
 import { UPLOAD_LIMIT } from "../constants";
 
@@ -50,11 +51,15 @@ productRouter.post(
 productRouter.delete(
   "/:productId",
   ADMIN_PERMISSON_MIDDLEWARE,
+  COMPANY_MIDDLEWARE,
+  PRODUCT_EXISTS_IN_COMPANY_MIDDLEWARE,
   deleteProductController,
 );
 
 productRouter.put(
   "/:productId",
+  COMPANY_MIDDLEWARE,
+  PRODUCT_EXISTS_IN_COMPANY_MIDDLEWARE,
   updateProductController,
 );
 

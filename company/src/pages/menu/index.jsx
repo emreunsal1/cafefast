@@ -57,6 +57,8 @@ export default function Menu() {
   };
 
   const deleteMenu = async ({ menuId, menuIds }) => {
+    console.log("menuId :>> ", menuId);
+    console.log("menuIds :>> ", menuIds);
     await MENU_SERVICE.deleteMenu({ menuId, menuIds });
     getCompanyMenus();
   };
@@ -119,7 +121,7 @@ export default function Menu() {
       {contextHolder}
       <div className="title">Menus</div>
       <button onClick={() => setSelectModeActive(!selectModeActive)}>Seç</button>
-      <button onClick={() => deleteMenu({ menuIds: selectedMenuIds })}>Seçili Menüleri Sil</button>
+      {selectModeActive && <button onClick={() => deleteMenu({ menuIds: selectedMenuIds.current })}>Seçili Menüleri Sil</button>}
       <div>
         <Table
           loading={loading}

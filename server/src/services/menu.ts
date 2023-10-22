@@ -60,6 +60,8 @@ export const getMenuWithId = async (menuId, populate = true) => {
   return query.exec();
 };
 
+export const getMenusWithIds = async (menuIds) => menuModel.find({ _id: { $in: menuIds } }).exec();
+
 export const addCategoryToMenu = async (query: Partial<IMenu & {_id: any}>, categoryId: any):Promise<{data?: any, error?: any}> => {
   try {
     const response = await menuModel.findOneAndUpdate(
@@ -96,6 +98,8 @@ export const deleteMenu = async (menuId) => {
     return { error: (error as any).message || error };
   }
 };
+
+export const deleteMultipleMenus = (menuIds) => menuModel.deleteMany({ _id: { $in: menuIds } }).exec();
 
 type UpdateMenuParams = {
   query: {

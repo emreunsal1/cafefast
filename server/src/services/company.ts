@@ -1,5 +1,4 @@
 import companyModel, { ICompany } from "../models/company";
-import { getMenu } from "./menu";
 
 export const createCompany = async (companyData: ICompany) => {
   try {
@@ -90,8 +89,7 @@ export const addMenuToCompany = async (query, menuId) => {
 
 export const getDesks = async (companyId) => {
   try {
-    const result = await companyModel.findOne({ company: companyId }).select("desks");
-
+    const result = await companyModel.findOne({ _id: companyId }).select("desks");
     return {
       data: result?.desks,
     };
@@ -123,10 +121,6 @@ export const updateCompanyDesks = async (companyId, desks: string[]) => {
 export const checkCompanyHasDesk = async ({
   desk, companyId,
 }) => companyModel.findOne({ desks: desk, _id: companyId });
-
-export const checkCompanyHasMenu = async ({
-  menuId, companyId,
-}) => companyModel.findOne({ menus: menuId, _id: companyId });
 
 export const removeMenuFromCompany = async (menuId: any):Promise<{data?: any, error?: any}> => {
   try {

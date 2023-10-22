@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { Response } from "express";
 import { IUserWithoutPassword } from "../models/user";
 import { ONE_YEAR_AS_MS } from "../constants";
@@ -32,6 +33,13 @@ export const verifyJwt = (token: string): IUserWithoutPassword | false => {
     return false;
   }
 };
+
+export const createPasswordHash = async (password: string) => {
+  const saltRounds = 8;
+  return bcrypt.hashSync(password, saltRounds);
+};
+
+export const verifyPasswordHash = async (inputPassword, userHashedPassword) => bcrypt.compare(inputPassword, userHashedPassword);
 
 export const setCookie = (res: Response, cookieName: string, cookieValue: string, options = {
   maxAge: ONE_YEAR_AS_MS,

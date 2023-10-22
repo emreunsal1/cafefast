@@ -5,7 +5,7 @@ import {
 } from "../services/company";
 import {
   createMenu, deleteMenu, getMenus, updateMenu, getMenu, getMenuWithId,
-  addCampaignToMenu, removeCampaignFromMenu,
+  addCampaignToMenu, removeCampaignFromMenu, getMenusWithIds, deleteMultipleMenus,
 } from "../services/menu";
 import { mapMenu } from "../utils/mappers";
 import { deleteCategoriesWithIds } from "../services/category";
@@ -61,22 +61,51 @@ export const createMenuController = async (req: Request, res: Response, next) =>
 };
 
 export const deleteMenuController = async (req: Request, res: Response, next) => {
-  const { menuId } = req.params;
+  const { menuId, menuIds } = req.body;
   try {
-    const { data: removeMenuData, error: removeMenuError } = await removeMenuFromCompany(menuId);
-    if (!removeMenuData || removeMenuError) {
-      return res.send({ error: removeMenuError });
-    }
-    const menu = await getMenuWithId(menuId, false);
-    const deletedMenu = await deleteMenu(menuId);
-    await deleteCategoriesWithIds(menu?.categories);
-
-    if (deletedMenu.error || !deletedMenu.data) {
-      return res.send({
-        error: deletedMenu.error,
+    if (menuId && menuIds.length) {
+      return res.status(400).send({
+        message: "menuId and menuIds body params can not be used at the same time",
       });
     }
-    res.send(deletedMenu);
+    if (menuId) {
+      const { data: removeMenuData, error: removeMenuError } = await removeMenuFromCompany(menuId);
+      if (!removeMenuData || removeMenuError) {
+        return res.send({ error: removeMenuError });
+      }
+      const menu = await getMenuWithId(menuId, false);
+      const deletedMenu = await deleteMenu(menuId);
+      await deleteCategoriesWithIds(menu?.categories);
+
+      if (deletedMenu.error || !deletedMenu.data) {
+        return res.send({
+          error: deletedMenu.error,
+        });
+      }
+    }
+
+    if (menuIds.length) {
+      const menus = await getMenusWithIds(menuIds);
+      if (menuIds.length !== menus.length) {
+        return res.status(400).send({
+          message: "sent menus not found",
+          foundMenus: menus.map((_menu) => _menu._id),
+        });
+      }
+      const allCategoryIds = menus.map((_menu) => _menu.categories).flat();
+      const deleteMenusResult = await deleteMultipleMenus(menuIds);
+
+      if (deleteMenusResult.deletedCount !== menuIds.length) {
+        return res.status(400).send({
+          message: "sent menus can not be deleted",
+          deletedCount: deleteMenusResult.deletedCount,
+        });
+      }
+      await deleteCategoriesWithIds(allCategoryIds);
+    }
+    res.send({
+      message: "deleted successfully",
+    });
   } catch (err) {
     next(err);
   }

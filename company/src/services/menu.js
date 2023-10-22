@@ -38,9 +38,11 @@ const update = async (id, { name, description }) => {
 
 const deleteMenu = async ({ menuId, menuIds }) => {
   try {
-    const response = await instance.delete(`${MENU_ROUTE}`, {
-      menuId,
-      menuIds,
+    const response = await instance.delete(`${MENU_ROUTE}`, {
+      data: {
+        menuId,
+        menuIds,
+      },
     });
     if (response.status === 200) {
       return true;

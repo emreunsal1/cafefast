@@ -6,15 +6,16 @@ import { bulkUpdateCreateValidator, createProductValidator, updateProductValidat
 import {
   bulkCreateProducts,
   bulkUpdateProducts,
-  createProduct, deleteProduct, getAllProducts, updateProduct,
+  createProduct, deleteMultipleProducts, deleteProduct, getAllProducts, updateProduct,
 } from "../services/product";
 import {
-  addProductToCategory, checkCategoryHasProduct, deleteProductFromCategory, removeProductsFromAllCategories,
+  addProductToCategory, deleteProductFromCategory, removeProductsFromAllCategories,
 } from "../services/category";
 import { addProductToCompany, addProductsToCompany, getCompany } from "../services/company";
 import { mapProduct } from "../utils/mappers";
 import { createSheetHeader, fillProductsToExcel, getProductsFromExcel } from "../utils/excel";
 import { validateCompanyHasProducts } from "../utils/company";
+import { checkCategoryHasProduct } from "../utils/menu";
 
 export const getAllProductsController = async (req: Request, res: Response, next) => {
   const { company } = req.user;
@@ -153,27 +154,43 @@ export const updateProductController = async (req: Request, res: Response, next)
 
 export const deleteProductController = async (req: Request, res: Response, next) => {
   const { productId } = req.params;
-  const { categoryId } = req.query;
+  const { products } = req.body;
+
+  if (productId !== "multiple" && products) {
+    return res.status(400).send({
+      error: "You can't send productId and req.body.products in same time",
+    });
+  }
 
   try {
-    const categoryData = await deleteProductFromCategory(categoryId, productId);
-    if (categoryData.error) {
-      return res.status(400).send(categoryData.error);
+    if (products) {
+      const promises = products.map((_productId) => removeProductsFromAllCategories(_productId));
+      const responses = await Promise.all(promises);
+      const hasErrorOnResponses = responses.find((response) => !response.data || response.error);
+      if (hasErrorOnResponses) {
+        return res.status(400).send({
+          error: hasErrorOnResponses.error,
+        });
+      }
+      await deleteMultipleProducts(products);
     }
 
-    const deletedProduct = await deleteProduct(productId);
-    if (!deletedProduct.data || deletedProduct.error) {
-      return res.status(400).send({
-        error: deletedProduct.error,
-      });
+    if (productId !== "multiple") {
+      const allCategoriesResult = await removeProductsFromAllCategories(productId);
+      if (allCategoriesResult.error) {
+        return res.status(400).send({
+          error: allCategoriesResult.error,
+        });
+      }
+      const deletedProduct = await deleteProduct(productId);
+      if (!deletedProduct.data || deletedProduct.error) {
+        return res.status(400).send({
+          error: deletedProduct.error,
+        });
+      }
     }
-    const allCategoriesResult = await removeProductsFromAllCategories(productId);
-    if (allCategoriesResult.error) {
-      return res.status(400).send({
-        error: allCategoriesResult.error,
-      });
-    }
-    res.send(deletedProduct.data);
+
+    res.send({ message: "deleted successfully" });
   } catch (error) {
     next(error);
   }
@@ -181,11 +198,12 @@ export const deleteProductController = async (req: Request, res: Response, next)
 
 export const addProductToCategoryController = async (req: Request, res: Response, next) => {
   const { categoryId, productId } = req.params;
+  const { menuInfo } = res.locals;
   try {
-    const isProductExists = await checkCategoryHasProduct(categoryId, productId);
+    const isProductExists = await checkCategoryHasProduct(menuInfo, categoryId, productId);
     if (isProductExists) {
       return res.status(400).send({
-        error: "Product already exists",
+        error: "Product already exists in category",
       });
     }
     const newCategory = await addProductToCategory(categoryId, productId);

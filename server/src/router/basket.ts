@@ -15,8 +15,9 @@ import {
   SHOPPER_AUTH_REQUIRED_MIDDLEWARE,
   SHOPPER_RESOLVE_OR_CREATE_MIDDLEWARE,
   SHOPPER_COMPANY_CHANGE_MIDDLEWARE,
+  SHOPPER_DATA_MIDDLEWARE,
 } from "../middleware/jwt";
-import { COMPANY_ACTIVE_MENU_MIDDLEWARE, SHOPPER_DATA_MIDDLEWARE } from "../middleware/menu";
+import { COMPANY_ACTIVE_MENU_MIDDLEWARE } from "../middleware/menu";
 
 const route = Router();
 

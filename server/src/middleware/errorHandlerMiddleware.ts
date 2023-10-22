@@ -3,9 +3,11 @@ import { ZodError } from "zod";
 import logger from "../utils/logger";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const errorHandlerMiddleware = (error, req: Request, res: Response, next: NextFunction) => {
+export const errorHandlerMiddleware = (error, req: Request, res: Response, _next: NextFunction) => {
   if (error instanceof ZodError) {
-    logger.warn({ path: req.originalUrl, type: "VALIDATION_ERROR", errors: error.flatten() });
+    logger.warn({
+      path: req.originalUrl, type: "VALIDATION_ERROR", errors: error.flatten(), url: req.url,
+    });
     res.header("Content-Type", "application/json");
     return res.status(400).json({
       type: "VALIDATION_ERROR",
@@ -14,5 +16,5 @@ export const errorHandlerMiddleware = (error, req: Request, res: Response, next:
   }
 
   logger.error({ path: req.originalUrl, message: error.message });
-  res.status(500).send(error.message);
+  res.status(500).send({ stack: error, message: error.message, url: req.url });
 };

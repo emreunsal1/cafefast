@@ -1,11 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { getCompanyActiveMenu } from "../services/company";
-import { createShopper, getShopper } from "../services/shopper";
-import { createBasketObject } from "../utils/basket";
-import { generateJwt, setCookie } from "../utils/jwt";
-import { mapShopperForJWT } from "../utils/mappers";
-import { SHOPPER_AUTH_TOKEN_NAME } from "../constants";
-import logger from "../utils/logger";
+import { validateCompanyHasProducts } from "../utils/company";
+import { getMenuWithId } from "../services/menu";
 
 export const COMPANY_ACTIVE_MENU_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
   const { companyId } = req.params;
@@ -20,27 +16,130 @@ export const COMPANY_ACTIVE_MENU_MIDDLEWARE = async (req: Request, res: Response
   next();
 };
 
-export const SHOPPER_DATA_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
-  const { shopper } = req;
-  const { companyId } = req.params;
-  let shopperData = await getShopper(shopper._id, false);
+export const MENU_EXISTS_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
+  const {
+    menuId,
+  } = req.params;
+  const { companyInfo } = res.locals;
+  const {
+    menuId: menuIdFromBody,
+    menuIds: menuIdsFromBody,
+  } = req.body;
 
-  if (!shopperData.data) {
-    const newBasketObject = createBasketObject({ companyId });
-    logger.error({
-      action: "SHOPPER_DATA_MIDDLEWARE_CREATE_USER",
-      messsage: "user not found new user created",
-      oldUser: shopper?._id,
-      newUser: (shopperData.data as any)?._id,
+  const companyMenuIds = companyInfo.menus.map((_menu) => _menu._id.toString());
+  try {
+    if (menuId || menuIdFromBody) {
+      const isMenuExists = companyMenuIds.some((_menuId) => _menuId === menuId);
+      if (!isMenuExists) {
+        return res.status(404).send({
+          message: "[MENU_EXISTS_MIDDLEWARE] menu not found",
+        });
+      }
+    }
+    if (menuIdsFromBody) {
+      const isAllMenusExistsOnCompany = menuIdsFromBody.every((_menuId) => companyMenuIds.includes(_menuId));
+      if (!isAllMenusExistsOnCompany) {
+        return res.status(404).send({
+          message: "[MENU_EXISTS_MIDDLEWARE] menu not found",
+        });
+      }
+    }
+    const foundMenu = await getMenuWithId(menuId);
+
+    res.locals.menuInfo = foundMenu;
+    next();
+  } catch (error) {
+    return res.status(404).send({
+      message: "[MENU_EXISTS_MIDDLEWARE] not allowed for this request",
+      error,
     });
-    shopperData = await createShopper({
-      basket: newBasketObject,
+  }
+};
+
+export const PRODUCT_EXISTS_IN_COMPANY_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
+  const { companyInfo } = res.locals;
+
+  if (req.body.products && req.params.productId !== "multiple") {
+    return res.status(400).send({
+      message: "[BODY_PRODUCT_EXISTS_MIDDLEWARE] you can not send products and productId same time",
     });
-    const newShopperJWT = await generateJwt(mapShopperForJWT(shopperData.data));
-    res.set("x-shopper-data-middleware-create", "true");
-    setCookie(res, SHOPPER_AUTH_TOKEN_NAME, newShopperJWT as string);
   }
 
-  res.locals.shopperData = shopperData.data;
-  next();
+  try {
+    if (req.body.products || req.params.productId) {
+      const isValid = validateCompanyHasProducts(companyInfo, req.body.products || [req.params.productId]);
+      if (!isValid) {
+        return res.status(404).send({
+          message: "[BODY_PRODUCT_EXISTS_MIDDLEWARE] products invalid",
+        });
+      }
+    }
+
+    next();
+  } catch (error) {
+    return res.status(404).send({
+      message: "[BODY_PRODUCT_EXISTS_MIDDLEWARE] not allowed for this request",
+      error,
+    });
+  }
+};
+
+export const CATEGORY_EXISTS_IN_MENU_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
+  const { menuInfo } = res.locals;
+  const { categoryId } = req.params;
+
+  try {
+    const isCategoryExists = menuInfo.categories.some((category) => category._id.toString() === categoryId);
+    if (!isCategoryExists) {
+      return res.status(404).send({
+        message: "[CATEGORY_EXISTS_MIDDLEWARE] category not found",
+      });
+    }
+    next();
+  } catch (error) {
+    return res.status(404).send({
+      message: "[CATEGORY_EXISTS_MIDDLEWARE] not allowed for this request",
+      error,
+    });
+  }
+};
+
+export const CAMPAIGN_EXISTS_IN_MENU_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
+  const { menuInfo } = res.locals;
+  const { campaignId } = req.params;
+
+  try {
+    const foundCampaign = menuInfo.campaigns.some((campaign) => campaign._id.toString() === campaignId);
+    if (!foundCampaign) {
+      return res.status(404).send({
+        message: "[CAMPAIGN_EXISTS_MIDDLEWARE] campaign not found",
+      });
+    }
+    next();
+  } catch (error) {
+    return res.status(404).send({
+      message: "[BODY_PRODUCT_EXISTS_MIDDLEWARE] not allowed for this request",
+      error,
+    });
+  }
+};
+
+export const CAMPAIGN_EXISTS_IN_COMPANY_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
+  const { companyInfo } = res.locals;
+  const { campaignId } = req.params;
+
+  try {
+    const foundCampaign = companyInfo.campaigns.find((campaign) => campaign._id.toString() === campaignId);
+    if (!foundCampaign) {
+      return res.status(404).send({
+        message: "[CAMPAIGN_EXISTS_MIDDLEWARE] campaign not found",
+      });
+    }
+    next();
+  } catch (error) {
+    return res.status(404).send({
+      message: "[BODY_PRODUCT_EXISTS_MIDDLEWARE] not allowed for this request",
+      error,
+    });
+  }
 };

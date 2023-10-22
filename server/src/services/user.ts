@@ -1,16 +1,17 @@
-import userModel, { IUser } from "../models/user";
+import userModel from "../models/user";
 
-export const createUser = async (data: Pick<IUser, "email" | "password">) => {
+export const createUser = async (data) => {
   try {
     const newUser = await userModel.create(data);
-
+    console.log("newUser :>> ", newUser);
     return { data: newUser };
   } catch (error) {
+    console.log("newUserError :>> ", error);
     return { error: (error as any).message || error };
   }
 };
 
-export const checkUserFieldIsExists = async (data: Partial<IUser>): Promise<string[] | false> => {
+export const checkUserFieldIsExists = async (data): Promise<string[] | false> => {
   const query = Object.keys(data).map((key) => ({
     [key]: data[key],
   }));
@@ -32,7 +33,7 @@ export const getUser = async ({
   query,
   populate = false,
   withPassword = false,
-}: {query: Partial<IUser>, populate?: boolean, withPassword?: boolean}) => {
+}: {query, populate?: boolean, withPassword?: boolean}) => {
   try {
     const mongoQuery = userModel.findOne(query);
     if (populate) {
@@ -52,7 +53,7 @@ export const getUser = async ({
   }
 };
 
-export const updateUser = async ({ query, data }: {query: Partial<IUser>, data?: Partial<IUser>}) => {
+export const updateUser = async ({ query, data }: { query, data }) => {
   try {
     const newUser = await userModel.findOneAndUpdate(query, data, { new: true }).select("-password").exec();
     return { data: newUser };

@@ -1,10 +1,15 @@
 import { Router } from "express";
 import {
-  ADMIN_PERMISSON_MIDDLEWARE, BODY_PRODUCT_EXISTS_MIDDLEWARE, COMPANY_MIDDLEWARE, REQUEST_PARAMS_CAMPAIGN_EXISTS_MIDDLEWARE,
+  ADMIN_PERMISSON_MIDDLEWARE,
+  COMPANY_MIDDLEWARE,
 } from "../middleware/permission";
 import {
-  createCampaignController, deleteCampaignController, getCompanyCampaignsController, updateCampaignController,
+  createCampaignController,
+  deleteCampaignController,
+  getCompanyCampaignsController,
+  updateCampaignController,
 } from "../controllers/campaign";
+import { CAMPAIGN_EXISTS_IN_COMPANY_MIDDLEWARE, PRODUCT_EXISTS_IN_COMPANY_MIDDLEWARE } from "../middleware/menu";
 
 const router = Router();
 
@@ -17,22 +22,23 @@ router.post(
   "/",
   ADMIN_PERMISSON_MIDDLEWARE,
   COMPANY_MIDDLEWARE,
-  BODY_PRODUCT_EXISTS_MIDDLEWARE,
+  PRODUCT_EXISTS_IN_COMPANY_MIDDLEWARE,
   createCampaignController,
 );
+
 router.put(
   "/:campaignId",
   ADMIN_PERMISSON_MIDDLEWARE,
   COMPANY_MIDDLEWARE,
-  BODY_PRODUCT_EXISTS_MIDDLEWARE,
-  REQUEST_PARAMS_CAMPAIGN_EXISTS_MIDDLEWARE,
+  PRODUCT_EXISTS_IN_COMPANY_MIDDLEWARE,
+  CAMPAIGN_EXISTS_IN_COMPANY_MIDDLEWARE,
   updateCampaignController,
 );
 router.delete(
   "/:campaignId",
   ADMIN_PERMISSON_MIDDLEWARE,
   COMPANY_MIDDLEWARE,
-  REQUEST_PARAMS_CAMPAIGN_EXISTS_MIDDLEWARE,
+  CAMPAIGN_EXISTS_IN_COMPANY_MIDDLEWARE,
   deleteCampaignController,
 );
 

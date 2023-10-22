@@ -5,7 +5,7 @@ import { getUser } from "../services/user";
 import { generateJwt, setCookie, verifyJwt } from "../utils/jwt";
 import { mapShopperForJWT, mapUserForJWT } from "../utils/mappers";
 import { createBasketObject } from "../utils/basket";
-import { clearShopperBasket, createShopper } from "../services/shopper";
+import { clearShopperBasket, createShopper, getShopper } from "../services/shopper";
 import logger from "../utils/logger";
 
 export const AUTH_REQUIRED_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
@@ -97,5 +97,30 @@ export const SHOPPER_AUTH_REQUIRED_MIDDLEWARE = async (req: Request, res: Respon
   }
 
   req.shopper = data;
+  next();
+};
+
+export const SHOPPER_DATA_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
+  const { shopper } = req;
+  const { companyId } = req.params;
+  let shopperData = await getShopper(shopper._id, false);
+
+  if (!shopperData.data) {
+    const newBasketObject = createBasketObject({ companyId });
+    logger.error({
+      action: "SHOPPER_DATA_MIDDLEWARE_CREATE_USER",
+      messsage: "user not found new user created",
+      oldUser: shopper?._id,
+      newUser: (shopperData.data as any)?._id,
+    });
+    shopperData = await createShopper({
+      basket: newBasketObject,
+    });
+    const newShopperJWT = await generateJwt(mapShopperForJWT(shopperData.data));
+    res.set("x-shopper-data-middleware-create", "true");
+    setCookie(res, SHOPPER_AUTH_TOKEN_NAME, newShopperJWT as string);
+  }
+
+  res.locals.shopperData = shopperData.data;
   next();
 };

@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
-import { generateJwt, setCookie } from "../utils/jwt";
+import {
+  createPasswordHash, generateJwt, setCookie, verifyPasswordHash,
+} from "../utils/jwt";
 import { AUTH_TOKEN_COOKIE_NAME } from "../constants";
 import { checkUserFieldIsExists, createUser, getUser } from "../services/user";
 import { registerUserVerifier } from "../models/user";
 import { mapUserForJWT } from "../utils/mappers";
-import { createPasswordHash, verifyPasswordHash } from "../utils/company";
 
 export const login = async (req:Request, res:Response, next) => {
   try {
