@@ -135,6 +135,12 @@ export const removeCampaignFromMenus = async (campaignId) => {
   }
 };
 
+// TODO: Fix it not working
+export const removeMultipleCampaignFromMenus = async (campaignIds) => menuModel.updateMany(
+  { campaigns: { $in: campaignIds } },
+  { $pull: { campaigns: { $in: campaignIds } } },
+);
+
 export const removeCampaignFromMenu = async (menuId, campaignId) => {
   try {
     const response = await menuModel.findOneAndUpdate({ _id: menuId, campaigns: campaignId }, { $pull: { campaigns: campaignId } });

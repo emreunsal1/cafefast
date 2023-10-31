@@ -199,15 +199,12 @@ export const addCampaignToCompany = async (companyId, campaignId) => {
   }
 };
 
-export const removeCampaignFromCompany = async (campaignId: any):Promise<{data?: any, error?: any}> => {
-  try {
-    const newCompany = await companyModel.findOneAndUpdate({ campaigns: campaignId }, { $pull: { campaigns: campaignId } }, { new: true });
-
-    return { data: newCompany };
-  } catch (error) {
-    return { error };
-  }
-};
+// TODO: Not working fix it.
+export const removeCampaignsFromCompany = async (companyId, campaignIds) => companyModel.findOneAndUpdate(
+  { _id: companyId },
+  { $pull: { campaigns: campaignIds } },
+  { new: true },
+);
 
 export const removeProductFromCompany = async (companyId, productId) => {
   try {

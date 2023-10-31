@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
-import { createCampaign, deleteCampaign, updateCampaign } from "../services/campaign";
+import {
+  createCampaign, deleteCampaign, deleteMultipleCampaign, updateCampaign,
+} from "../services/campaign";
 import { createCampaignVerifier, updateCampaignVerifier } from "../models/campaign";
-import { removeCampaignFromMenus } from "../services/menu";
-import { addCampaignToCompany, getCompanyCampaigns, removeCampaignFromCompany } from "../services/company";
+import { removeMultipleCampaignFromMenus } from "../services/menu";
+import {
+  addCampaignToCompany, getCompanyCampaigns, removeCampaignsFromCompany,
+} from "../services/company";
 import { mapCampaigns } from "../utils/mappers";
 
 export const getCompanyCampaignsController = async (req: Request, res: Response, next) => {
@@ -58,24 +62,30 @@ export const updateCampaignController = async (req: Request, res: Response, next
 };
 
 export const deleteCampaignController = async (req: Request, res: Response, next) => {
+  const { company } = req.user;
   const { campaignId } = req.params;
+  const { campaigns } = req.body;
+
   try {
-    const campaignResponse = await deleteCampaign(campaignId);
-    if (!campaignResponse.data || campaignResponse.error) {
-      return res.status(400).send({ message: "error when deleting campaign", error: campaignResponse.error });
+    if (campaigns?.length && campaignId && campaignId !== "multiple") {
+      return res.status(400).send({
+        message: "you can not send campaigns and campaignId same time",
+      });
     }
 
-    const companyResponse = await removeCampaignFromCompany(campaignId);
-    if (!companyResponse.data || companyResponse.error) {
-      return res.status(400).send({ message: "error when removing campaign from company", error: companyResponse.error });
+    if (campaigns && campaignId === "multiple") {
+      await deleteMultipleCampaign(campaigns);
+    } else {
+      const campaignResponse = await deleteCampaign(campaignId);
+      if (!campaignResponse.data || campaignResponse.error) {
+        return res.status(400).send({ message: "error when deleting campaign", error: campaignResponse.error });
+      }
     }
 
-    const menuResponse = await removeCampaignFromMenus(campaignId);
-    if (!menuResponse.data || menuResponse.error) {
-      return res.status(400).send({ message: "error when removing campaign from menu", error: menuResponse.error });
-    }
+    await removeCampaignsFromCompany(company, campaigns.length ? campaigns : [campaignId]);
+    await removeMultipleCampaignFromMenus(campaigns.length ? campaigns : [campaignId]);
 
-    res.status(200).send({ success: campaignResponse.data });
+    res.status(200).send({ success: true });
   } catch (error) {
     next(error);
   }

@@ -26,3 +26,5 @@ export const deleteCampaign = async (campaignId) => {
     return { error: (error as any).message || error };
   }
 };
+
+export const deleteMultipleCampaign = async (campaignIds) => campaignModel.deleteOne({ _id: { $in: campaignIds } });
