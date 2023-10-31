@@ -9,7 +9,7 @@ import {
   createProduct, deleteMultipleProducts, deleteProduct, getAllProducts, getProductDetail, updateProduct,
 } from "../services/product";
 import {
-  addProductToCategory, deleteProductFromCategory, removeProductsFromAllCategories,
+  addProductToCategory, deleteMultipleProductsFromCategory, deleteProductFromCategory, removeProductsFromAllCategories,
 } from "../services/category";
 import { addProductToCompany, addProductsToCompany } from "../services/company";
 import { mapProduct } from "../utils/mappers";
@@ -233,14 +233,26 @@ export const addProductToCategoryController = async (req: Request, res: Response
 
 export const removeProductFromCategoryController = async (req: Request, res: Response, next) => {
   const { categoryId, productId } = req.params;
+  const { products } = req.body;
+
   try {
+    if (products?.length && productId && productId !== "multiple") {
+      res.status(400).send({
+        message: "you can not send products and productId same time",
+      });
+    }
+
+    if (Array.isArray(products) && productId === "multiple") {
+      await deleteMultipleProductsFromCategory(categoryId, products);
+      return res.send({ message: "successfully delete products", products });
+    }
     const newCategory = await deleteProductFromCategory(categoryId, productId);
     if (!newCategory.data || newCategory.error) {
       return res.status(400).send({
         error: newCategory.error,
       });
     }
-    res.send(newCategory.data);
+    return res.send(newCategory.data);
   } catch (error) {
     next(error);
   }

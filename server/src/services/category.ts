@@ -54,6 +54,12 @@ export const deleteProductFromCategory = async (categoryId, productId) => {
   }
 };
 
+export const deleteMultipleProductsFromCategory = async (categoryId, productIds: any[]) => categoryModel.findOneAndUpdate(
+  { _id: categoryId },
+  { $pull: { products: { $in: productIds } } },
+  { new: true },
+).exec();
+
 export const removeProductsFromAllCategories = async (productId) => {
   try {
     const data = await categoryModel.updateMany(

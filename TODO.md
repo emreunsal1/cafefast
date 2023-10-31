@@ -5,11 +5,11 @@
 - [x] Add excel import and export option to product bulk create update
   - `excel4node` is for create excel files.
   - `read-excel-file` for reading excel files
-- [ ] Servis try catch'lerini kaldır. Global error handler halletsin.
-- [ ] MenuExist middleware'in parçalanması:
-  - [ ] CategoryExists middleware yaz
-  - [ ] CampaignExists middleware yaz
-  - [ ] MenuExist middleware sadece menu var mı diye kontrol etmeli
+- [x] Servis try catch'lerini kaldır. Global error handler halletsin.
+- [x] MenuExist middleware'in parçalanması:
+  - [x] CategoryExists middleware yaz
+  - [x] CampaignExists middleware yaz
+  - [x] MenuExist middleware sadece menu var mı diye kontrol etmeli
 
 
   # COMPANY TODO
@@ -20,7 +20,7 @@
 - [x]  Ürünlerin çoğu yerde fotoğrafları gelmiyor
 - []  Ürünler sayfasına çoklu silebilme özelliği uyarı popupı lazım
 - [x]  Active menu should be checked on the menu page
-- [] Menu add multiple delete
+- [x] Menu add multiple delete
 - [x]  Menu update description not working
 - [x]  Menu table description not working
 - [x]  Menu description update ettiğimde direkt yansımıyor refresh atmak gerekiyor
