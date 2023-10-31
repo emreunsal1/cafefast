@@ -40,6 +40,7 @@ productRouter.get(
 productRouter.post(
   "/import",
   uploadMiddleware.single("products"),
+  COMPANY_MIDDLEWARE,
   importProductsController,
 );
 

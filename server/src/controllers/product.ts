@@ -66,15 +66,15 @@ export const exportAllProductsController = async (req: Request, res: Response, n
 export const importProductsController = async (req: Request, res: Response, next) => {
   const { company } = req.user;
   const { file } = req;
+  const { companyInfo } = res.locals;
   try {
     const rows = await readXlsxFile(file.buffer);
     const products = getProductsFromExcel(rows);
 
     if (products.productsNeedUpdate.length > 0) {
       await bulkUpdateCreateValidator.array().parseAsync(products.productsNeedUpdate);
-      const companyData = await getCompany(company);
       const isValid = validateCompanyHasProducts(
-        companyData.data,
+        companyInfo,
         products.productsNeedUpdate.map((product) => product._id),
       );
       if (!isValid) {

@@ -59,7 +59,7 @@ export const MENU_EXISTS_MIDDLEWARE = async (req: Request, res: Response, next: 
 export const PRODUCT_EXISTS_IN_COMPANY_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
   const { companyInfo } = res.locals;
 
-  if (req.body.products && req.params.productId !== "multiple") {
+  if (req.body.products && req.params.productId && req.params.productId !== "multiple") {
     return res.status(400).send({
       message: "[BODY_PRODUCT_EXISTS_MIDDLEWARE] you can not send products and productId same time",
     });

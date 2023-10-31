@@ -161,7 +161,7 @@ export const addProductsToCompany = async (companyId, productIds) => {
 
 export const getCompanyCampaigns = async (companyId) => {
   try {
-    const result = await companyModel.findOne({ company: companyId }).populate({
+    const result = await companyModel.findOne({ _id: companyId }).populate({
       path: "campaigns",
       populate: {
         path: "products",
