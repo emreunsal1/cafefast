@@ -18,48 +18,48 @@
 - [x]  Profile name surname not working
 - [x]  Add company image for menu website
 - [x]  Ürünlerin çoğu yerde fotoğrafları gelmiyor
-- []  Ürünler sayfasına çoklu silebilme özelliği uyarı popupı lazım
+- [ ]  Ürünler sayfasına çoklu silebilme özelliği uyarı popupı lazım
 - [x]  Active menu should be checked on the menu page
 - [x] Menu add multiple delete
 - [x]  Menu update description not working
 - [x]  Menu table description not working
 - [x]  Menu description update ettiğimde direkt yansımıyor refresh atmak gerekiyor
 - [x]  Menü içerisinde kategori ekleme işlemi düzeltilmeli
-- []  Kategoriler sayfasında kampanyaların ne işi var aq
-- []  Kategorilere tıkladığma ürünler table  şeklinde gösterilecek
-- [] kategoriler çoklu silebilme özelliği gelecek(backend geliştiriyor)
+- [ ] Kategoriler sayfasında kampanyaların ne işi var aq
+- [ ] Kategorilere tıkladığma ürünler table  şeklinde gösterilecek
+- [ ] kategoriler çoklu silebilme özelliği gelecek(backend geliştiriyor)
 - [X] kategoriye eklediğim ürün çıkartılmıyor(kategori add product sayfası)
 - [X] kategoriye tıkladığımda gördüğüm ürün kartında sil butonu çalışmıyor
-- [] kategoride görüntülediğim ürünleri toplu silebilmeliyim (backend bekleniyor)
+- [ ] kategoride görüntülediğim ürünleri toplu silebilmeliyim (backend bekleniyor)
 - [x] Kampanya ekleme sistemi açıldığında birdaha kapanmıyor
-- [] kampanya editleme işleminde hiçbirşey yapmadan kaydedersek must be unique hatası veriyor
+- [ ] kampanya editleme işleminde hiçbirşey yapmadan kaydedersek must be unique hatası veriyor
 
-- [] kitchen sayfasında hiçbir bok yapmıyoruz orayı düşünmemiz lazım
+- [ ] kitchen sayfasında hiçbir bok yapmıyoruz orayı düşünmemiz lazım
 
-- [] table sayfasında qr silemiyorum çıktı alamıyorum hiçbir bok yapamıyorum duruyor öyle
+- [ ] table sayfasında qr silemiyorum çıktı alamıyorum hiçbir bok yapamıyorum duruyor öyle
 
-- [] kampanyalar sayfasında edit veya create yapınca altta bir tane vazgeç butonu koyalım kapanmıyor
+- [ ] kampanyalar sayfasında edit veya create yapınca altta bir tane vazgeç butonu koyalım kapanmıyor
 
-- [] kampanyalar sayfası toplu silebilme özelliği
+- [ ] kampanyalar sayfası toplu silebilme özelliği
 
-- [] product editleme kımında fotoğrafları güncelleyemiyoruz
+- [ ] product editleme kımında fotoğrafları güncelleyemiyoruz
 
-- [] onBoarding validasyon yapmamız lazım
+- [ ] onBoarding validasyon yapmamız lazım
 
-- [] login için validasyon
+- [ ] login için validasyon
 
-- [] ürün girerken validasyon lazım özellikle ücret
+- [ ] ürün girerken validasyon lazım özellikle ücret
 
 ## TODOS
-- []  Tüm sayfayı kaplayacak bir layout sistemi geri tuşuna basmadan işlem yapabilme (buna başlandı logout yazısı oradan geliyor)
+- [ ]  Tüm sayfayı kaplayacak bir layout sistemi geri tuşuna basmadan işlem yapabilme (buna başlandı logout yazısı oradan geliyor)
 
-- [] excel kısmına bir tasarım lazım
+- [ ] excel kısmına bir tasarım lazım
 
-- [] kdv hesaplama kullanıcıya gösterme
+- [ ] kdv hesaplama kullanıcıya gösterme
 
-- [] iu çizilecek 
+- [ ] iu çizilecek 
 
-- [] ana sayfa charts
+- [ ] ana sayfa charts
 
 
 
