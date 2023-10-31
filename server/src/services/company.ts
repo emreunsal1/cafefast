@@ -103,7 +103,7 @@ export const getDesks = async (companyId) => {
 export const updateCompanyDesks = async (companyId, desks: string[]) => {
   try {
     const response = await companyModel.findOneAndUpdate(
-      companyId,
+      { _id: companyId },
       {
         $set: {
           desks,
