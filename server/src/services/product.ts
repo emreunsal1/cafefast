@@ -10,6 +10,8 @@ export const getAllProducts = async (companyId) => {
   }
 };
 
+export const getProductDetail = async (productId) => productModel.findOne({ _id: productId }).exec();
+
 export const bulkUpdateProducts = async (newProducts) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const productsWithoutId = newProducts.map(({ _id, ...product }) => product);

@@ -3,7 +3,7 @@ import multer from "multer";
 import {
   createProductController, deleteProductController,
   exportAllProductsController,
-  getAllProductsController, importProductsController, updateProductController,
+  getAllProductsController, getProductDetailController, importProductsController, updateProductController,
 } from "../controllers/product";
 import { ADMIN_PERMISSON_MIDDLEWARE, COMPANY_MIDDLEWARE } from "../middleware/permission";
 import { PRODUCT_EXISTS_IN_COMPANY_MIDDLEWARE } from "../middleware/menu";
@@ -30,6 +30,13 @@ const uploadMiddleware = multer({
 productRouter.get(
   "/",
   getAllProductsController,
+);
+
+productRouter.get(
+  "/:productId",
+  COMPANY_MIDDLEWARE,
+  PRODUCT_EXISTS_IN_COMPANY_MIDDLEWARE,
+  getProductDetailController,
 );
 
 productRouter.get(

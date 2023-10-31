@@ -6,12 +6,12 @@ import { bulkUpdateCreateValidator, createProductValidator, updateProductValidat
 import {
   bulkCreateProducts,
   bulkUpdateProducts,
-  createProduct, deleteMultipleProducts, deleteProduct, getAllProducts, updateProduct,
+  createProduct, deleteMultipleProducts, deleteProduct, getAllProducts, getProductDetail, updateProduct,
 } from "../services/product";
 import {
   addProductToCategory, deleteProductFromCategory, removeProductsFromAllCategories,
 } from "../services/category";
-import { addProductToCompany, addProductsToCompany, getCompany } from "../services/company";
+import { addProductToCompany, addProductsToCompany } from "../services/company";
 import { mapProduct } from "../utils/mappers";
 import { createSheetHeader, fillProductsToExcel, getProductsFromExcel } from "../utils/excel";
 import { validateCompanyHasProducts } from "../utils/company";
@@ -27,6 +27,19 @@ export const getAllProductsController = async (req: Request, res: Response, next
       });
     }
     res.send(productsResponse.data.toObject().products?.map(mapProduct));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getProductDetailController = async (req: Request, res: Response, next) => {
+  try {
+    const productData = await getProductDetail(req.params.productId);
+
+    if (!productData) {
+      res.status(400).send(productData);
+    }
+    res.send(mapProduct(productData?.toObject()));
   } catch (error) {
     next(error);
   }
