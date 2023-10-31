@@ -132,6 +132,12 @@ export const removeMenuFromCompany = async (menuId: any):Promise<{data?: any, er
   }
 };
 
+export const removeMultipleMenusFromCompany = async (companyId, menuIds) => companyModel.findOneAndUpdate(
+  { _id: companyId },
+  { $pull: { menus: { $in: menuIds } } },
+  { new: true },
+);
+
 export const addProductToCompany = async (companyId, productId) => {
   try {
     const newCompany = await companyModel.findOneAndUpdate(

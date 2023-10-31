@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { createMenuVerifier, updateMenuVerifier } from "../models/menu";
 import {
-  addMenuToCompany, getCompany, removeMenuFromCompany,
+  addMenuToCompany, getCompany, removeMenuFromCompany, removeMultipleMenusFromCompany,
 } from "../services/company";
 import {
   createMenu, deleteMenu, getMenus, updateMenu, getMenu, getMenuWithId,
@@ -61,6 +61,7 @@ export const createMenuController = async (req: Request, res: Response, next) =>
 };
 
 export const deleteMenuController = async (req: Request, res: Response, next) => {
+  const { company } = req.user;
   const { menuId, menuIds } = req.body;
   try {
     if (menuId && menuIds.length) {
@@ -102,6 +103,7 @@ export const deleteMenuController = async (req: Request, res: Response, next) =>
         });
       }
       await deleteCategoriesWithIds(allCategoryIds);
+      await removeMultipleMenusFromCompany(company, menuIds);
     }
     res.send({
       message: "deleted successfully",
