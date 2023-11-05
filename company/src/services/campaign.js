@@ -25,6 +25,14 @@ const deleteCampain = async (campaignId) => {
   await instance.delete(`${CAMPAING_ROUTE}/${campaignId}`);
 };
 
+const deleteMultipleCampain = async (campaignIds) => {
+  await instance.delete(`${CAMPAING_ROUTE}/multiple`, {
+    data: {
+      campaigns: campaignIds,
+    },
+  });
+};
+
 const addCampaingToMenu = async (menuID, campainID) => instance.post(`${MENU_ROUTE}/${menuID}/campaign/${campainID}`);
 
 const removeCampaingFromMenu = async (menuID, campainID) => instance.delete(`${MENU_ROUTE}/${menuID}/campaign/${campainID}`);
@@ -36,6 +44,7 @@ const CAMPAIGN_SERVICE = {
   deleteCampain,
   addCampaingToMenu,
   removeCampaingFromMenu,
+  deleteMultipleCampain,
 };
 
 export default CAMPAIGN_SERVICE;

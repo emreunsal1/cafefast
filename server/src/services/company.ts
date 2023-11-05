@@ -199,7 +199,6 @@ export const addCampaignToCompany = async (companyId, campaignId) => {
   }
 };
 
-// TODO: Not working fix it.
 export const removeCampaignsFromCompany = async (companyId, campaignIds) => companyModel.findOneAndUpdate(
   { _id: companyId },
   { $pull: { campaigns: { $in: campaignIds } } },
