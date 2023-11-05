@@ -127,13 +127,26 @@ export const CAMPAIGN_EXISTS_IN_MENU_MIDDLEWARE = async (req: Request, res: Resp
 export const CAMPAIGN_EXISTS_IN_COMPANY_MIDDLEWARE = async (req: Request, res: Response, next: NextFunction) => {
   const { companyInfo } = res.locals;
   const { campaignId } = req.params;
+  const { campaigns } = req.body;
+  const companyCampaignsAsString = companyInfo.campaigns.map((campaign) => campaign.toString());
 
   try {
-    const foundCampaign = companyInfo.campaigns.find((campaign) => campaign._id.toString() === campaignId);
-    if (!foundCampaign) {
-      return res.status(404).send({
-        message: "[CAMPAIGN_EXISTS_MIDDLEWARE] campaign not found",
-      });
+    if (campaigns) {
+      const isAllCampaignsExistsInCompany = campaigns.every((campaign) => companyCampaignsAsString.includes(campaign));
+      if (!isAllCampaignsExistsInCompany) {
+        return res.send({
+          message: "[CAMPAIGN_EXISTS_MIDDLEWARE] campaign not found",
+        });
+      }
+    }
+
+    if (campaignId !== "multiple" && !campaigns?.length) {
+      const foundCampaign = companyCampaignsAsString.find((campaign) => campaign === campaignId);
+      if (!foundCampaign) {
+        return res.status(404).send({
+          message: "[CAMPAIGN_EXISTS_MIDDLEWARE] campaign not found",
+        });
+      }
     }
     next();
   } catch (error) {

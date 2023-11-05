@@ -82,8 +82,10 @@ export const deleteCampaignController = async (req: Request, res: Response, next
       }
     }
 
-    await removeCampaignsFromCompany(company, campaigns.length ? campaigns : [campaignId]);
-    await removeMultipleCampaignFromMenus(campaigns.length ? campaigns : [campaignId]);
+    const campaingsToDelete = campaigns.length ? campaigns : [campaignId];
+
+    await removeCampaignsFromCompany(company, campaingsToDelete);
+    await removeMultipleCampaignFromMenus(campaingsToDelete);
 
     res.status(200).send({ success: true });
   } catch (error) {
