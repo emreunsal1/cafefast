@@ -8,9 +8,22 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
+import { useImmer } from "use-immer";
 import { SAFE_IMAGE_TYPE } from "@/constants";
 import PRODUCT_SERVICE from "@/services/product";
 import { CDN_SERVICE } from "@/services/cdn";
+
+const DEFAULT_PRODUCT_ATTRIBUTE_OPTION_DATA = {
+  name: "",
+  price: 0,
+};
+const DEFAULT_PRODUCT_ATTRIBUTE_DATA = {
+  title: "",
+  description: "",
+  type: "single",
+  required: false,
+  options: [DEFAULT_PRODUCT_ATTRIBUTE_OPTION_DATA],
+};
 
 export default function ProductDetail() {
   const router = useRouter();
@@ -18,14 +31,29 @@ export default function ProductDetail() {
   const [product, setProduct] = useState({
     name: "", price: "", description: "", images: [],
   });
-  const [attriburtes, setAttriburtes] = useState([]);
+  const [attributes, setAttributes] = useImmer([]);
+  const [attributeDetailData, setAttributeDetailData] = useImmer(DEFAULT_PRODUCT_ATTRIBUTE_DATA);
+  const [selectedAttributeDetailId, setSelectedAttributeDetailId] = useState(null);
+  const [isNewAttributeAddActive, setIsNewAttributeAddActive] = useState(false);
   const images = useRef([]);
   const [isUpdate, setIsUpdate] = useState(false);
+
+  const lastOption = attributeDetailData.options[attributeDetailData.options.length - 1];
+  const isLastOptionValid = lastOption?.name.length > 0 && lastOption?.price > 0;
+  const isWholeAttributeValid = isLastOptionValid;
+
+  const renderAttributeDetail = Number.isInteger(selectedAttributeDetailId) || isNewAttributeAddActive;
+
+  const setProductData = (data) => {
+    setProduct(data);
+    // eslint-disable-next-line no-unused-vars
+    setAttributes(() => data.attributes);
+  };
 
   const getProductData = async () => {
     images.current = [];
     const response = await PRODUCT_SERVICE.getDetail(router.query.productId);
-    setProduct(response);
+    setProductData(response);
   };
 
   const uploadProductImages = async () => {
@@ -38,20 +66,21 @@ export default function ProductDetail() {
 
   const submitFormHandler = async () => {
     await uploadProductImages();
-    const mockProduct = product;
+    const mockProduct = JSON.parse(JSON.stringify(product));
     mockProduct.price = Number(product.price);
+    mockProduct.attributes = attributes;
     if (isUpdate) {
       mockProduct.images = product.images.map((image) => new URL(image).pathname.slice(1));
       images.current.forEach((item) => {
         mockProduct.images.push(item);
       });
-      await PRODUCT_SERVICE.update(mockProduct);
-      getProductData();
+      const response = await PRODUCT_SERVICE.update(mockProduct);
+      setProductData(response);
       return;
     }
     mockProduct.images = images.current;
     await PRODUCT_SERVICE.create(mockProduct);
-    getProductData();
+    router.push("/products");
   };
 
   useEffect(() => {
@@ -71,10 +100,52 @@ export default function ProductDetail() {
     setProduct({ ...product, images: newData });
   };
 
+  const selectAttributeItem = (index) => {
+    setSelectedAttributeDetailId(index);
+    // eslint-disable-next-line no-unused-vars
+    setAttributeDetailData(() => attributes[index]);
+  };
+
+  const openAttributeDetail = (id = null) => {
+    if (id == null) {
+      setIsNewAttributeAddActive(true);
+      setAttributeDetailData(DEFAULT_PRODUCT_ATTRIBUTE_DATA);
+    }
+  };
+
+  const attributeDetailFieldChangeHandler = (field, data) => {
+    setAttributeDetailData((_attributeDetailData) => { _attributeDetailData[field] = data; });
+  };
+
+  const addAttributeOptionHandler = () => {
+    if (!lastOption || !isLastOptionValid) {
+      return;
+    }
+
+    setAttributeDetailData((_attributeDetailData) => { _attributeDetailData.options.push(DEFAULT_PRODUCT_ATTRIBUTE_OPTION_DATA); });
+  };
+
+  const updateAttributeOptionData = ({ index, field, data }) => {
+    setAttributeDetailData((_attributeDetailData) => { _attributeDetailData.options[index][field] = data; });
+  };
+
+  const saveAttributeHandler = () => {
+    if (isNewAttributeAddActive) {
+      setAttributes((_attributes) => { _attributes.push(attributeDetailData); });
+      setIsNewAttributeAddActive(false);
+      return;
+    }
+
+    setAttributes((_attributes) => { _attributes[selectedAttributeDetailId] = attributeDetailData; });
+    // eslint-disable-next-line no-unused-vars
+    setAttributeDetailData((_attributeDetailData) => { _attributeDetailData = DEFAULT_PRODUCT_ATTRIBUTE_DATA; });
+    setSelectedAttributeDetailId(null);
+  };
+
   return (
-    <div>
+    <div className="product-detail-page">
       <Form onFinish={submitFormHandler}>
-        { isUpdate && (
+        {isUpdate && (
         <div className="image-list" style={{ display: "flex" }}>
           {product && product.images.map((item, index) => (
             <div className="item" key={index}>
@@ -111,31 +182,110 @@ export default function ProductDetail() {
         <Form.Item>
           <Input placeholder="desc" value={product.description} onChange={(e) => setProduct({ ...product, description: e.target.value })} />
         </Form.Item>
-        <div className="attr-place">
-          <div>Ekstra Özellikler </div>
-          <Button shape="circle" icon={<PlusOutlined />} />
-          <div className="attrTable">
-            <div className="name-list" />
-            <div className="info">
-              <div className="row">
-                name:
-                <input placeholder="attr-name" />
+        <div className="product-attributes">
+          <h2>Ekstra Özellikler</h2>
+          <div className="product-attributes-body">
+            <div className="attribute-list">
+              {
+                attributes.map((attribute, index) => (
+                  <div className="attribute-list-item" onClick={() => selectAttributeItem(index)}>
+                    {attribute.title}
+                  </div>
+                ))
+              }
+              {!renderAttributeDetail && <Button shape="circle" onClick={() => openAttributeDetail(null)} icon={<PlusOutlined />} />}
+            </div>
+            {renderAttributeDetail && (
+            <div className="attribute-detail">
+              <div className="attribute-field">
+                <div className="attribute-field-label">İsim</div>
+                <div className="attribute-field-value">
+                  <input
+                    type="text"
+                    placeholder="Sos Seçimi"
+                    value={attributeDetailData.title}
+                    onChange={(e) => attributeDetailFieldChangeHandler("title", e.target.value)}
+                  />
+                </div>
               </div>
-              <div className="row">
-                çoklu seçim:
-                <input type="checkbox" />
+              <div className="attribute-field">
+                <div className="attribute-field-label">Açıklama</div>
+                <div className="attribute-field-value">
+                  <input
+                    type="text"
+                    placeholder="Sos seçiminizi yapınız"
+                    value={attributeDetailData.description}
+                    onChange={(e) => attributeDetailFieldChangeHandler("description", e.target.value)}
+                  />
+                </div>
               </div>
-              <div className="row">
-                zorulunlumu:
-                <input type="checkbox" />
+              <div className="attribute-field">
+                <div className="attribute-field-label">Çoklu Seçim</div>
+                <div className="attribute-field-value">
+                  <input
+                    type="checkbox"
+                    value={attributeDetailData.type}
+                    onChange={(e) => attributeDetailFieldChangeHandler("type", e.target.checked ? "multi" : "single")}
+                  />
+                </div>
               </div>
-              <div className="options-table">
-                <div className="row">
-                  <input placeholder="isim" />
-                  <input placeholder="fiyat" />
+              <div className="attribute-field">
+                <div className="attribute-field-label">Zorunlu Mu?</div>
+                <input
+                  type="checkbox"
+                  value={attributeDetailData.required}
+                  onChange={(e) => attributeDetailFieldChangeHandler("required", e.target.checked)}
+                />
+              </div>
+              <div className="attribute-options">
+                <h3>Seçenekler</h3>
+                <div className="attribute-options-header">
+                  <div className="name-title">İsim</div>
+                  <div className="price-title">Fiyat</div>
+                </div>
+                {attributeDetailData.options.map((option, index) => (
+                  <div className="attribute-option" key={index}>
+                    <div className="option-name">
+                      <input
+                        type="text"
+                        onChange={(e) => updateAttributeOptionData({
+                          field: "name",
+                          data: e.target.value,
+                          index,
+                        })}
+                        placeholder="Acı Sos"
+                        value={option.name}
+                      />
+
+                    </div>
+                    <div className="option-price">
+                      <input
+                        type="number"
+                        placeholder="50"
+                        onChange={(e) => updateAttributeOptionData({
+                          field: "price",
+                          data: Number(e.target.value),
+                          index,
+                        })}
+                        value={option.price}
+                      />
+                      TL
+                    </div>
+                  </div>
+                ))}
+                {isLastOptionValid && (
+                <div className="add-attribute-option-button">
+                  <Button onClick={addAttributeOptionHandler} shape="circle" icon={<PlusOutlined />} />
+                </div>
+                )}
+              </div>
+              <div className="attribute-actions">
+                <div className="save-attribute-button">
+                  <Button onClick={saveAttributeHandler} disabled={!isWholeAttributeValid}>Özelliği Kaydet</Button>
                 </div>
               </div>
             </div>
+            )}
           </div>
         </div>
         <Form.Item>

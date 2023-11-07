@@ -22,12 +22,12 @@ export const createProductValidator = z.object({
   description: z.string(),
   price: z.number(),
   images: z.array(z.string()),
-  attributes: productAttributeValidator.optional(),
+  attributes: productAttributeValidator.array(),
   menuPrices: z.array(z.object({ menuId: z.string(), price: z.number().positive() })).optional(),
   inStock: z.boolean().optional(),
 });
 
-export const updateProductValidator = createProductValidator.omit({ attributes: true }).partial();
+export const updateProductValidator = createProductValidator.partial();
 export const bulkUpdateCreateValidator = createProductValidator.pick({ name: true, description: true, price: true });
 
 export type IProduct = z.infer<typeof createProductValidator>;
@@ -37,7 +37,7 @@ const productSchema = new Schema<IProduct>({
   description: String,
   price: Number,
   images: [{ type: String, default: [] }],
-  attributes: { type: Array, default: [] },
+  attributes: { type: [], _id: false },
   menuPrices: { type: [{ menuId: String, price: Number }], default: [] },
   inStock: { type: Boolean, default: true },
 });

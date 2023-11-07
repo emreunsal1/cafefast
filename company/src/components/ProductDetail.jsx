@@ -8,7 +8,6 @@ import {
   Image,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { GlobalMessageContext } from "@/context/GlobalMessage";
 import { SAFE_IMAGE_TYPE } from "@/constants";
 
 export default function ProductDetail({ data }) {
