@@ -1,13 +1,13 @@
 import React from "react";
 import { Space, Checkbox, Table } from "antd";
+import moment from "moment";
 import { ORDER_STATUSES } from "@/constants";
 import COMPANY_SERVICE from "@/services/company";
 import { copyText } from "@/utils/copy";
+import { useDate } from "@/context/DateContext";
 
 export default function OrderList({ data, onUpdate }) {
-  const approvedUpdateHandler = (event) => [
-  ];
-
+  const { formatDate } = useDate();
   const statusOnChangeHandler = async (orderId, status) => {
     const updated = await COMPANY_SERVICE.updateOrder(orderId, { status });
     onUpdate(orderId, updated.data);
@@ -32,9 +32,14 @@ export default function OrderList({ data, onUpdate }) {
       key: "products",
     },
     {
-      title: "Created At",
+      title: "Sipariş Tarihi",
       dataIndex: "createdAt",
       key: "createdAt",
+      render: (createdAt) => (
+        <Space>
+          {formatDate(createdAt)}
+        </Space>
+      ),
     },
     {
       title: "Status",
