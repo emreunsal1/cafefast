@@ -19,6 +19,15 @@ const get = async () => {
   }
 };
 
+const getDetail = async (id) => {
+  try {
+    const response = await instance.get(`${PRODUCT_ROUTE}/${id}`);
+    return response.data;
+  } catch (error) {
+    return false;
+  }
+};
+
 const update = async (data) => {
   try {
     const response = await instance.put(`${PRODUCT_ROUTE}/${data._id}`, data);
@@ -40,6 +49,7 @@ const deleteProduct = async (id) => {
 const PRODUCT_SERVICE = {
   create,
   get,
+  getDetail,
   update,
   deleteProduct,
 };

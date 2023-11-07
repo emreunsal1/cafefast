@@ -84,11 +84,10 @@ export default function Product() {
       <div className="product-card-wrapper">
         {products.map((product) => <ProductCard key={product._id} onAction={productCardOnActionHandler} product={product} />)}
         <div className="create-product-card">
-          <Card onClick={() => setPopupVisible(true)} style={{ width: 200 }}>
+          <Card onClick={() => router.push("/product")} style={{ width: 200 }}>
             <PlusCircleOutlined />
           </Card>
         </div>
-        {popupVisible && <ProductModal onAction={productModalActionHandler} action={PRODUCT_MODAL_ACTIONS.CREATE} />}
       </div>
     </div>
   );

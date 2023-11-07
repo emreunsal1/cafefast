@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Card } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useRouter } from "next/router";
 import ProductModal, { PRODUCT_MODAL_ACTIONS } from "./ProductModal";
 
 const { Meta } = Card;
@@ -14,8 +15,10 @@ export const PRODUCT_CARD_ACTIONS = {
 export default function ProductCard({ product, onAction }) {
   const [isEdit, setIsEdit] = useState(false);
 
+  const router = useRouter();
+
   const editHandler = () => {
-    setIsEdit(true);
+    router.push(`/product/${product._id}`);
   };
 
   const deleteHandler = () => {

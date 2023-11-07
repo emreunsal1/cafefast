@@ -5,6 +5,7 @@ import ProductCard, { PRODUCT_CARD_ACTIONS } from "./ProductCard";
 import { CATEGORY_SERVICE } from "@/services/menu";
 import { useProduct } from "@/context/ProductContext";
 import { useMenuDetail } from "@/context/MenuContext";
+import ProductsTable from "./ProductsTable";
 
 export default function MenuDetailBody({ selectedCategory }) {
   const { updateProduct } = useProduct();
@@ -25,9 +26,7 @@ export default function MenuDetailBody({ selectedCategory }) {
       <div className="products">
         {!selectedCategory && <Empty />}
         <Row>
-          { selectedCategory?.products.map((product) => (
-            <ProductCard onAction={productCardOnActionHandler} product={product} />
-          ))}
+          <ProductsTable selectedCategory={selectedCategory} data={selectedCategory?.products} />
         </Row>
       </div>
       <Col span={8} />
