@@ -12,7 +12,9 @@ export const PRODUCT_CARD_ACTIONS = {
   CANCEL: "cancel",
 };
 
-export default function ProductCard({ product, onAction }) {
+export default function ProductCard({
+  isMultipleEdit, product, onAction, selectedProducts, setSelectedProducts,
+}) {
   const [isEdit, setIsEdit] = useState(false);
 
   const router = useRouter();
@@ -36,8 +38,23 @@ export default function ProductCard({ product, onAction }) {
     setIsEdit(false);
   };
 
+  const checkboxOnchangeHandler = (e) => {
+    if (e.target.checked) {
+      setSelectedProducts((prev) => [...prev, product._id]);
+      return;
+    }
+    const filteredSelectedProducts = selectedProducts.filter((item) => item !== product._id);
+    setSelectedProducts(filteredSelectedProducts);
+  };
+
   return (
     <div id="ProductCard">
+      {isMultipleEdit && (
+      <input
+        type="checkbox"
+        onChange={(e) => checkboxOnchangeHandler(e)}
+      />
+      )}
       <Card
         hoverable
         style={{

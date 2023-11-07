@@ -46,12 +46,18 @@ const deleteProduct = async (id) => {
   }
 };
 
+const multiDeleteProduct = async (ids) => {
+  const response = await instance.delete(`${PRODUCT_ROUTE}/multiple`, { data: { products: ids } });
+  return response;
+};
+
 const PRODUCT_SERVICE = {
   create,
   get,
   getDetail,
   update,
   deleteProduct,
+  multiDeleteProduct,
 };
 
 export default PRODUCT_SERVICE;

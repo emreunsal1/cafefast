@@ -17,7 +17,7 @@
 - [X]  Profile name surname not working
 - [X]  Add company image for menu website
 - [X]  Ürünlerin çoğu yerde fotoğrafları gelmiyor
-- [ ]  Ürünler sayfasına çoklu silebilme özelliği uyarı popupı lazım
+- [X]  Ürünler sayfasına çoklu silebilme özelliği uyarı popupı lazım
 - [X]  Active menu should be checked on the menu page
 - [X] Menu add multiple delete
 - [X]  Menu update description not working

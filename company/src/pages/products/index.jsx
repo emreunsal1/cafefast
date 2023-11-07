@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card } from "antd";
+import { Button, Card } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import { useProduct } from "../../context/ProductContext";
@@ -9,6 +9,7 @@ import Layout from "../../components/Layout";
 import { CDN_SERVICE } from "@/services/cdn";
 import { API_URl, PRODUCT_ROUTE } from "@/constants";
 import { STORAGE } from "@/utils/browserStorage";
+import PRODUCT_SERVICE from "@/services/product";
 
 export default function Product() {
   const {
@@ -18,6 +19,7 @@ export default function Product() {
   } = useProduct();
   const [popupVisible, setPopupVisible] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [isMultipleEdit, setIsMultipleEdit] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -68,8 +70,18 @@ export default function Product() {
     }
   };
 
-  const multipleDeleteProducts = () => {
-    // TODO ürünlerin toplu silebilmek için backend ekibinin gelişterme yapması bekleniyor
+  const multipleDeleteProducts = async () => {
+    await PRODUCT_SERVICE.multiDeleteProduct(selectedProducts);
+    setIsMultipleEdit(false);
+    setSelectedProducts([]);
+    getProducts();
+  };
+
+  const selectedButtonClickHandler = () => {
+    if (isMultipleEdit) {
+      multipleDeleteProducts();
+    }
+    setIsMultipleEdit(true);
   };
 
   return (
@@ -80,9 +92,21 @@ export default function Product() {
           <span>Excel ile içe aktar</span>
           <input type="file" onChange={importInputChangeHandler} />
         </div>
+        <Button onClick={() => selectedButtonClickHandler()}>
+          {!isMultipleEdit ? "Seç" : "Sil"}
+        </Button>
       </div>
       <div className="product-card-wrapper">
-        {products.map((product) => <ProductCard key={product._id} onAction={productCardOnActionHandler} product={product} />)}
+        {products.map((product) => (
+          <ProductCard
+            setSelectedProducts={setSelectedProducts}
+            selectedProducts={selectedProducts}
+            isMultipleEdit={isMultipleEdit}
+            key={product._id}
+            onAction={productCardOnActionHandler}
+            product={product}
+          />
+        ))}
         <div className="create-product-card">
           <Card onClick={() => router.push("/product")} style={{ width: 200 }}>
             <PlusCircleOutlined />
