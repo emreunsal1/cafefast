@@ -2,19 +2,34 @@ import React, { useEffect, useState } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import { useRouter } from "next/router";
+import z, { ZodError } from "zod";
 import AUTH_SERVICE from "../../services/auth";
 import USER_SERVICE from "../../services/user";
 
 export default function Login() {
   const [authform, setAuthform] = useState({ email: null, password: null });
+  const [formError, setFormError] = useState(false);
   const router = useRouter();
+  const userVerifier = z.object({
+    email: z.string().email(),
+    password: z.string().min(3).max(255),
+  });
   const loginClickHandler = async () => {
-    const response = await AUTH_SERVICE.login(
-      authform.email,
-      authform.password,
-    );
-    if (response.status === 200) {
-      router.push("/");
+    try {
+      userVerifier.parse(authform);
+      const response = await AUTH_SERVICE.login(
+        authform.email,
+        authform.password,
+      );
+      if (response.status === 200) {
+        router.push("/");
+      }
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const formErrorResult = error.flatten();
+        const errors = Object.keys(formErrorResult.fieldErrors).map((item) => formErrorResult.fieldErrors[item][0]);
+        setFormError(errors);
+      }
     }
   };
 
@@ -50,7 +65,7 @@ export default function Login() {
             onChange={(event) => setAuthform({ ...authform, password: event.target.value })}
           />
         </Form.Item>
-
+        {formError && formError.map((item) => <div>{item}</div>)}
         <Form.Item>
           <Button
             type="primary"
