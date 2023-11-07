@@ -213,6 +213,7 @@ function CampaignDetail({ action }) {
         <Button type="primary" htmlType="submit">
           {campaing ? "Kaydet" : "Oluştur"}
         </Button>
+        <Button type="danger" onClick={() => action.updateState(false)}>Vazgeç</Button>
       </Form.Item>
     </Form>
   );

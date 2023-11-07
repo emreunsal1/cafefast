@@ -36,7 +36,7 @@
 
 - [ ] table sayfasında qr silemiyorum çıktı alamıyorum hiçbir bok yapamıyorum duruyor öyle
 
-- [ ] kampanyalar sayfasında edit veya create yapınca altta bir tane vazgeç butonu koyalım kapanmıyor
+- [X] kampanyalar sayfasında edit veya create yapınca altta bir tane vazgeç butonu koyalım kapanmıyor
 
 - [ ] kampanyalar sayfası toplu silebilme özelliği
 
