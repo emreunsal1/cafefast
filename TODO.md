@@ -14,23 +14,23 @@
 
 # COMPANY TODO
 ## BUGS
-- [x]  Profile name surname not working
-- [x]  Add company image for menu website
-- [x]  Ürünlerin çoğu yerde fotoğrafları gelmiyor
+- [X]  Profile name surname not working
+- [X]  Add company image for menu website
+- [X]  Ürünlerin çoğu yerde fotoğrafları gelmiyor
 - [ ]  Ürünler sayfasına çoklu silebilme özelliği uyarı popupı lazım
-- [x]  Active menu should be checked on the menu page
-- [x] Menu add multiple delete
-- [x]  Menu update description not working
-- [x]  Menu table description not working
-- [x]  Menu description update ettiğimde direkt yansımıyor refresh atmak gerekiyor
-- [x]  Menü içerisinde kategori ekleme işlemi düzeltilmeli
-- [ ] Kategorilere tıkladığma ürünler table  şeklinde gösterilecek
+- [X]  Active menu should be checked on the menu page
+- [X] Menu add multiple delete
+- [X]  Menu update description not working
+- [X]  Menu table description not working
+- [X]  Menu description update ettiğimde direkt yansımıyor refresh atmak gerekiyor
+- [X]  Menü içerisinde kategori ekleme işlemi düzeltilmeli
+- [X] Kategorilere tıkladığma ürünler table  şeklinde gösterilecek
 - [ ] kategoriler çoklu silebilme özelliği gelecek(backend geliştiriyor)
 - [X] kategoriye eklediğim ürün çıkartılmıyor(kategori add product sayfası)
 - [X] kategoriye tıkladığımda gördüğüm ürün kartında sil butonu çalışmıyor
 - [ ] kategoride görüntülediğim ürünleri toplu silebilmeliyim (backend bekleniyor)
-- [x] Kampanya ekleme sistemi açıldığında birdaha kapanmıyor
-- [x] kampanya editleme işleminde hiçbirşey yapmadan kaydedersek must be unique hatası veriyor
+- [X] Kampanya ekleme sistemi açıldığında birdaha kapanmıyor
+- [X] kampanya editleme işleminde hiçbirşey yapmadan kaydedersek must be unique hatası veriyor
 
 - [ ] kitchen sayfasında hiçbir bok yapmıyoruz orayı düşünmemiz lazım
 
@@ -38,9 +38,9 @@
 
 - [X] kampanyalar sayfasında edit veya create yapınca altta bir tane vazgeç butonu koyalım kapanmıyor
 
-- [ ] kampanyalar sayfası toplu silebilme özelliği
+- [X] kampanyalar sayfası toplu silebilme özelliği
 
-- [ ] product editleme kımında fotoğrafları güncelleyemiyoruz
+- [X] product editleme kımında fotoğrafları güncelleyemiyoruz
 
 - [ ] onBoarding validasyon yapmamız lazım
 

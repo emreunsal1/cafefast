@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Table } from "antd";
 import React from "react";
 import { useRouter } from "next/router";
 import { CATEGORY_SERVICE } from "@/services/menu";
@@ -9,10 +9,13 @@ export default function ProductsTable({ selectedCategory, data }) {
   const { getMenu } = useMenuDetail();
 
   const deleteButtonClikHandler = async (id) => {
-    await CATEGORY_SERVICE.removeProduct(router.query.menuId, selectedCategory._id, data._id);
+    await CATEGORY_SERVICE.removeProduct(router.query.menuId, selectedCategory._id, id);
     getMenu(router.query.menuId);
   };
-  const editButtonClickHandler = (id) => {};
+
+  const editButtonClickHandler = (id) => {
+    router.push(`/product/${id}`);
+  };
   const colums = [
     {
       title: "Name",
@@ -23,6 +26,7 @@ export default function ProductsTable({ selectedCategory, data }) {
       title: "Image",
       dataIndex: "images",
       key: "images",
+      render: (_, record) => record.images.map((image) => <img width={50} height={50} src={image} alt="." />),
     },
     {
       title: "Description",
@@ -48,6 +52,9 @@ export default function ProductsTable({ selectedCategory, data }) {
 
   ];
   return (
-    <div />
+    <div>
+      {data && <Table columns={colums} dataSource={data} /> }
+
+    </div>
   );
 }
