@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Table, Space,
   Modal, Input,
-  Button, message, Radio, Checkbox,
+  Button, message,
 } from "antd";
 import { useRouter } from "next/router";
 import { MENU_SERVICE } from "../../services/menu";
@@ -11,13 +11,14 @@ import Layout from "../../components/Layout";
 import { STORAGE } from "@/utils/browserStorage";
 import { useProduct } from "@/context/ProductContext";
 import USER_SERVICE from "@/services/user";
+import Checkbox from "@/components/library/Checkbox";
 
 export default function Menu() {
   const [menus, setMenus] = useState([]);
   const [activeMenuId, setActiveMenuId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectModeActive, setSelectModeActive] = useState(false);
-  const selectedMenuIds = useRef([]);
+  const [selectedMenuIds, setSelectedMenuIds] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
   const [newMenu, setNewMenu] = useState({ name: "", description: "" });
   const [messageApi, contextHolder] = message.useMessage();
@@ -106,12 +107,13 @@ export default function Menu() {
 
   const menuSelectHandler = (checked, menuId) => {
     if (checked) {
-      selectedMenuIds.current.push(menuId);
+      setSelectedMenuIds([...selectedMenuIds, menuId]);
       return;
     }
-    selectedMenuIds.current = selectedMenuIds.current.filter((ids) => ids !== menuId);
+    setSelectedMenuIds(selectedMenuIds.filter((ids) => ids !== menuId));
   };
 
+  console.log("selectedMenuIds :>> ", selectedMenuIds);
   useEffect(() => {
     getCompanyMenus();
   }, []);
@@ -121,7 +123,7 @@ export default function Menu() {
       {contextHolder}
       <div className="title">Menus</div>
       <button onClick={() => setSelectModeActive(!selectModeActive)}>Seç</button>
-      {selectModeActive && <button onClick={() => deleteMenu({ menuIds: selectedMenuIds.current })}>Seçili Menüleri Sil</button>}
+      {selectModeActive && <button onClick={() => deleteMenu({ menuIds: selectedMenuIds })}>Seçili Menüleri Sil</button>}
       <div>
         <Table
           loading={loading}
@@ -134,7 +136,7 @@ export default function Menu() {
             align="center"
             render={(_, record) => (
               <Space>
-                <Checkbox onClick={(e) => menuSelectHandler(e.target.checked, record._id)} />
+                <Checkbox onChange={(e) => menuSelectHandler(e.target.checked, record._id)} value={selectedMenuIds.includes(record._id)} />
               </Space>
             )}
           />
@@ -144,7 +146,7 @@ export default function Menu() {
             align="center"
             render={(_, record) => (
               <Space>
-                <Radio onClick={() => activeMenuChangeHandler(record._id)} checked={record._id === activeMenuId} />
+                <Checkbox type="radio" onChange={() => activeMenuChangeHandler(record._id)} value={record._id === activeMenuId} />
               </Space>
             )}
           />
