@@ -1,22 +1,34 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState } from "react";
+import React from "react";
 import classNames from "classnames";
 
 export default function Checkbox({
-  type = "checkbox", label, className, value, onChange,
+  type = "checkbox", label, description, className, value, onChange,
 }) {
-  const [focus, setFocus] = useState(false);
-  const classname = classNames({ "library-input": true, [className]: className, focus });
+  const classname = classNames({
+    "library-checkbox": true,
+    [className]: className,
+    checked: value,
+    [type]: true,
+  });
 
   return (
     <div className={classname}>
       <label>
+        <input
+          checked={value}
+          onChange={onChange}
+          type={type}
+        />
+        <div className="library-checkbox-checkbox">
+          <span className="icon-checkmark" />
+        </div>
         {label && (
-        <div className="library-input-label">
-          {label}
+        <div className="library-checkbox-label">
+          <div className="library-checkbox-label-text">{label}</div>
+          {description && <div className="library-checkbox-label-description">{description}</div>}
         </div>
         )}
-        <input checked={value} onFocus={() => setFocus(true)} onBlur={() => setFocus(false)} onChange={onChange} type={type} />
       </label>
     </div>
   );
