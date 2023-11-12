@@ -224,7 +224,7 @@ export default function ProductDetail() {
                 <div className="attribute-field-value">
                   <input
                     type="checkbox"
-                    value={attributeDetailData.type}
+                    checked={attributeDetailData.type === "multi"}
                     onChange={(e) => attributeDetailFieldChangeHandler("type", e.target.checked ? "multi" : "single")}
                   />
                 </div>
@@ -233,7 +233,7 @@ export default function ProductDetail() {
                 <div className="attribute-field-label">Zorunlu Mu?</div>
                 <input
                   type="checkbox"
-                  value={attributeDetailData.required}
+                  checked={attributeDetailData.required}
                   onChange={(e) => attributeDetailFieldChangeHandler("required", e.target.checked)}
                 />
               </div>
