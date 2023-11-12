@@ -26,4 +26,33 @@
     margin-top: 6px;
     color: $gray;
   }
+
+  &-error {
+    margin-top: 6px;
+    color: #f04438;
+  }
+
+  &.focus {
+    .library-input-input-wrapper {
+      border: 1px solid #d6bbfb;
+      box-shadow: 0px 0px 0px 4px #f4ebff,
+        0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+    }
+  }
+
+  &.error {
+    .library-input-input-wrapper {
+      border: 1px solid #fda29b;
+    }
+  }
+
+  &.disabled {
+    .library-input-input-wrapper {
+      background-color: #f9fafb;
+      border: 1px solid #d0d5dd;
+    }
+    input {
+      color: 667085;
+    }
+  }
 }
