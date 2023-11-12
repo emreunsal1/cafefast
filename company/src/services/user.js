@@ -50,9 +50,6 @@ const me = async () => {
       window.location.assign("/auth/onboarding");
       return;
     }
-    if (!response.data.company.menus.length) {
-      // TODO: menu oluşturma onboarding'i ekle
-    }
     const localCompanyId = localStorage.getItem(LOCAL_COMPANY_ID_KEY);
     if (!localCompanyId || localCompanyId !== companyId) {
       localStorage.setItem(LOCAL_COMPANY_ID_KEY, companyId);

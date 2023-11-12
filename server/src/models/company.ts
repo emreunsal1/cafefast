@@ -60,7 +60,7 @@ const companySchema = new mongoose.Schema<ICompany>({
 const companyModel = mongoose.model("company", companySchema);
 
 export const createCompanyValidator = z.object({
-  name: z.string().min(3).max(255),
+  name: z.string().min(1).max(255),
   logo: z.string().min(3).max(500).optional(),
   activeMenu: z.string().min(3).max(255).optional(),
   products: z.array(z.string()).optional().default([]),

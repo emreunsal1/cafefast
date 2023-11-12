@@ -3,6 +3,7 @@ import {
   Form, Input, Button, Select,
 } from "antd";
 import { useRouter } from "next/router";
+import z, { ZodError } from "zod";
 import USER_SERVICE from "../../services/user";
 import LOCATION_SERVICE from "../../services/location";
 
@@ -25,6 +26,22 @@ function Onboarding() {
   const [step, setStep] = useState("step1");
   const [city, setCity] = useState([]);
   const [district, setDistrict] = useState([]);
+  const [formError, setFormError] = useState(false);
+
+  const stepOneVerifier = z.object({
+    name: z.string().min(2),
+    surname: z.string().min(2),
+    phoneNumber: z.number().max(9999999999).min(1000000000),
+  });
+  const stepTwoVerifier = z.object({
+    name: z.string().min(1).max(255),
+    address: z.object({
+      city: z.string().min(3).max(255),
+      district: z.string().min(3).max(255),
+      mailingAddress: z.string().min(3).max(255),
+      postalCode: z.number().min(10000).max(99999),
+    }),
+  });
 
   const getCity = async () => {
     const { data } = await LOCATION_SERVICE.getCities();
@@ -84,8 +101,31 @@ function Onboarding() {
     }
   };
 
+  const formSubmitHandler = (formStep) => {
+    try {
+      if (formStep === "step1") {
+        stepOneVerifier.parse(userForm);
+        setStep("step2");
+        setFormError(false);
+        return;
+      }
+      if (formStep === "step2") {
+        stepTwoVerifier.parse(companyForm);
+        setFormError(false);
+        handleSubmit();
+        return;
+      }
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const formErrorResult = error.flatten();
+        const errors = Object.keys(formErrorResult.fieldErrors).map((item) => formErrorResult.fieldErrors[item][0]);
+        setFormError(errors);
+      }
+    }
+  };
+
   const renderStep1 = () => (
-    <Form onFinish={() => setStep("step2")}>
+    <Form>
       <Form.Item label="Name" name="name">
         <Input
           name="name"
@@ -104,19 +144,12 @@ function Onboarding() {
         <Input
           name="Phone Number"
           value={userForm.phoneNumber}
-          onChange={(e) => userFormHandler({ name: "phoneNumber", value: e.target.value })}
+          type="number"
+          onChange={(e) => userFormHandler({ name: "phoneNumber", value: Number(e.target.value) })}
         />
       </Form.Item>
-
-      <Form.Item label="Comapny Name" name="companyName">
-        <Input
-          name="company"
-          value={companyForm.name}
-          onChange={(e) => companyFormHandler({ name: "name", value: e.target.value })}
-        />
-
-      </Form.Item>
-      <Button type="primary" htmlType="submit">
+      {formError && formError.map((item) => <div>{item}</div>)}
+      <Button type="primary" onClick={() => formSubmitHandler("step1")}>
         Next
       </Button>
     </Form>
@@ -124,7 +157,6 @@ function Onboarding() {
 
   const renderStep2 = () => (
     <Form
-      onFinish={handleSubmit}
       initialValues={{
         city: city[0]?.label,
       }}
@@ -164,7 +196,16 @@ function Onboarding() {
           onChange={(e) => companyFormHandler({ name: "postalCode", value: e.target.value })}
         />
       </Form.Item>
-      <Button type="primary" htmlType="submit">
+      <Form.Item label="Comapny Name" name="companyName">
+        <Input
+          name="company"
+          value={companyForm.name}
+          onChange={(e) => companyFormHandler({ name: "name", value: e.target.value })}
+        />
+
+      </Form.Item>
+      {formError && formError.map((item) => <div>{item}</div>)}
+      <Button type="primary" onClick={() => formSubmitHandler("step2")}>
         Submit
       </Button>
     </Form>
