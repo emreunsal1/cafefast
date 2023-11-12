@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Table, Space,
   Modal, Input,
-  Button, message,
+  message,
 } from "antd";
 import { useRouter } from "next/router";
 import { MENU_SERVICE } from "../../services/menu";
