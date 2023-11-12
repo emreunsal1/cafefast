@@ -1,5 +1,7 @@
 .product-detail-page {
+  padding: 30px;
   .product-attributes {
+    margin-top: 20px;
     h2 {
     }
     margin-bottom: 50px;
@@ -10,11 +12,24 @@
         width: 250px;
         padding: 20px;
         border-right: 1px solid gray;
+        &-item {
+          padding: 12px 8px;
+          border-radius: 4px;
+          &:not(:last-child) {
+            margin-bottom: 6px;
+          }
+          &.selected {
+            background-color: #7f56d9;
+            color: #fff;
+            font-weight: 600;
+          }
+        }
       }
       .attribute-detail {
         padding: 20px;
         .attribute-field {
           display: flex;
+          margin-bottom: 20px;
           &-label {
             min-width: 120px;
           }

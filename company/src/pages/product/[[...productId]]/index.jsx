@@ -8,6 +8,7 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import { useImmer } from "use-immer";
+import classNames from "classnames";
 import { SAFE_IMAGE_TYPE } from "@/constants";
 import PRODUCT_SERVICE from "@/services/product";
 import { CDN_SERVICE } from "@/services/cdn";
@@ -198,7 +199,13 @@ export default function ProductDetail() {
             <div className="attribute-list">
               {
                 attributes.map((attribute, index) => (
-                  <div className="attribute-list-item" onClick={() => selectAttributeItem(index)}>
+                  <div
+                    className={classNames({
+                      "attribute-list-item": true,
+                      selected: index === selectedAttributeDetailId,
+                    })}
+                    onClick={() => selectAttributeItem(index)}
+                  >
                     {attribute.title}
                   </div>
                 ))
@@ -304,7 +311,6 @@ export default function ProductDetail() {
             {isUpdate ? "Güncelle" : "Oluştur"}
           </Button>
         </Form.Item>
-
       </Form>
     </div>
   );
