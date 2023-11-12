@@ -44,7 +44,7 @@
 
 - [ ] onBoarding validasyon yapmamız lazım
 
-- [ ] login için validasyon
+- [X] login için validasyon
 
 - [ ] ürün girerken validasyon lazım özellikle ücret
 
