@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Row, FloatButton, Col } from "antd";
 import CAMPAIGN_SERVICE from "@/services/campaign";
 import CampainCard from "./CampainCard";
-import AddCampain from "./AddCapmaing";
+import AddCampaign from "./AddCampaign";
 
 export default function CampainList() {
   const [campaings, setCampaings] = useState([]);
@@ -80,7 +80,7 @@ export default function CampainList() {
         ))}
       </Row>
       {(isCreate || isUpdate) && (
-        <AddCampain action={{
+        <AddCampaign action={{
           key: isUpdate ? "update" : "create",
           value: isUpdate,
           updateState: (value) => (isUpdate ? setIsUpdate(value) : setIsCreate(value)),

@@ -1,5 +1,7 @@
 import {
-  Button, Form, Input, Select,
+  Button,
+  Form,
+  Select,
   Space,
   Table,
 } from "antd";
@@ -7,8 +9,8 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import PRODUCT_SERVICE from "../services/product";
 import CAMPAIGN_SERVICE from "../services/campaign";
-import { MENU_SERVICE } from "../services/menu";
 import { useMessage } from "@/context/GlobalMessage";
+import Input from "./library/Input";
 
 const DAYS = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
 const DEFAULT_DAYS_VALUE = DAYS.map((_, i) => i);
@@ -37,8 +39,10 @@ function CampaignDetail({ action }) {
   const campaing = action.key === "update" ? action.value : false;
 
   const fetchProducts = async () => {
+    setIsLoading(true);
     const response = await PRODUCT_SERVICE.get();
     setAllProducts(response);
+    setIsLoading(false);
   };
 
   const setCurrentCampaign = (currentData) => {
@@ -117,51 +121,41 @@ function CampaignDetail({ action }) {
 
   return (
     <Form
-      name="basic"
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
       style={{ maxWidth: 900 }}
       onFinish={onSubmitSuccess}
       autoComplete="off"
     >
       <h2>Kampanyanı Düzenle!</h2>
-      <Form.Item
-        label="İsim"
-        rules={[{ required: true, message: "Lütfen bir isim giriniz" }]}
-      >
-        <Input value={data.name} onChange={(e) => inputChangeHandler("name", e.target.value)} />
-      </Form.Item>
-
-      <Form.Item
+      <Input
+        label="Kampanya İsmi"
+        value={data.name}
+        onChange={(e) => inputChangeHandler("name", e.target.value)}
+      />
+      <Input
         label="Açıklama"
-        rules={[{ required: true, message: "Lütfen bir açıklama giriniz" }]}
-      >
-        <Input value={data.description} onChange={(e) => inputChangeHandler("description", e.target.value)} />
-      </Form.Item>
-
-      <Form.Item
+        description="Kampanyanızda gözükecek açıklamayı giriniz"
+        value={data.description}
+        onChange={(e) => inputChangeHandler("description", e.target.value)}
+      />
+      <Input
         label="Fiyat"
-        rules={[{ required: true, message: "Lütfen fiyat giriniz." }]}
+        description="Kampanyanızın toplam fiyatını giriniz"
+        value={data.price}
+        onChange={(e) => inputChangeHandler("price", Number(e.target.value))}
+      />
+      <Select
+        mode="multiple"
+        style={{ width: "100%" }}
+        value={applicable.days}
+        onChange={daysChangeHandler}
       >
-        <Input value={data.price} onChange={(e) => inputChangeHandler("price", Number(e.target.value))} />
-      </Form.Item>
-      <Form.Item
-        label="Geçerlilik Günleri"
-      >
-        <Select
-          mode="multiple"
-          style={{ width: "100%" }}
-          value={applicable.days}
-          onChange={daysChangeHandler}
-        >
-          {DAYS.map((day, i) => (
-            <Select.Option key={i} value={i} label={day}>
-              <Space>{day}</Space>
-            </Select.Option>
-          ))}
-        </Select>
-        <p>Kampanyanız sadece seçtiğiniz günler için geçerli olacaktır.</p>
-      </Form.Item>
+        {DAYS.map((day, i) => (
+          <Select.Option key={i} value={i} label={day}>
+            <Space>{day}</Space>
+          </Select.Option>
+        ))}
+      </Select>
+      <p>Kampanyanız sadece seçtiğiniz günler için geçerli olacaktır.</p>
       <Form.Item
         label="Geçerlilik Saat Aralığı"
       >
