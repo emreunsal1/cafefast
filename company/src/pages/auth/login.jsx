@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Form, Input } from "antd";
+import { Button, Form } from "antd";
 import { useRouter } from "next/router";
 import z, { ZodError } from "zod";
 import AUTH_SERVICE from "../../services/auth";
 import USER_SERVICE from "../../services/user";
+import Input from "@/components/library/Input";
 
 export default function Login() {
   const [authform, setAuthform] = useState({ email: null, password: null });
@@ -44,40 +44,28 @@ export default function Login() {
         className="login-form"
         initialValues={{ remember: true }}
       >
-        <Form.Item
-          name="username"
-          rules={[{ required: true, message: "Please input your Username!" }]}
-        >
-          <Input
-            prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Username"
-            onChange={(event) => setAuthform({ ...authform, email: event.target.value })}
-          />
-        </Form.Item>
-        <Form.Item
-          name="password"
-          rules={[{ required: true, message: "Please input your Password!" }]}
-        >
-          <Input
-            prefix={<LockOutlined className="site-form-item-icon" />}
-            type="password"
-            placeholder="Password"
-            onChange={(event) => setAuthform({ ...authform, password: event.target.value })}
-          />
-        </Form.Item>
+        <Input
+          label="E-mail"
+          placeholder="example@gmail.com"
+          onChange={(event) => setAuthform({ ...authform, email: event.target.value })}
+        />
+        <Input
+          label="Şifre"
+          type="password"
+          placeholder="*****"
+          onChange={(event) => setAuthform({ ...authform, password: event.target.value })}
+        />
         {formError && formError.map((item) => <div>{item}</div>)}
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="login-form-button"
-            onClick={loginClickHandler}
-          >
-            Log in
-          </Button>
-          Or
-          <a href="/auth/register">register now!</a>
-        </Form.Item>
+        <Button
+          type="primary"
+          htmlType="submit"
+          className="login-form-button"
+          onClick={loginClickHandler}
+        >
+          Giriş Yap
+        </Button>
+        ya da
+        <a href="/auth/register">Kaydol</a>
       </Form>
     </div>
   );

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
-import { Button, Input } from "antd";
+import { Button } from "antd";
 import { useRouter } from "next/router";
 import { registerValidationSchema } from "../../utils/validations";
 import USER_SERVICE from "../../services/user";
+import Input from "@/components/library/Input";
 
 function Register() {
   const [isSubmit, setIsSubmit] = useState(false);
@@ -34,21 +35,24 @@ function Register() {
         <div className="form">
           <form onSubmit={(e) => formik.handleSubmit(e)}>
             <Input
-              placeholder="Email"
+              label="E-mail"
+              placeholder="example@gmail.com"
               onChange={formik.handleChange}
               value={formik.values.email}
               name="email"
             />
             {isSubmit && <div className="error">{formik.errors.email}</div>}
             <Input
-              placeholder="Password"
+              label="Şifre"
+              placeholder="*****"
               onChange={formik.handleChange}
               value={formik.values.password}
               name="password"
             />
             {isSubmit && <div className="error">{formik.errors.password}</div>}
             <Input
-              placeholder="Again Password"
+              placeholder="******"
+              label="Şifreyi tekrar giriniz"
               onChange={formik.handleChange}
               value={formik.values.passwordConfirmation}
               name="passwordConfirmation"
@@ -58,7 +62,7 @@ function Register() {
             )}
 
             <Button htmlType="submit" onClick={submitBtnClickHandler}>
-              ! Register
+              Kaydol
             </Button>
           </form>
         </div>
