@@ -1,1 +1,18 @@
-@import "./product-detail-page.scss";
+// Base
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+@import "./colors";
+@import "./reset";
+@import "normalize.css";
+
+// Pages
+@import "./product-detail-page";
+
+// Components
+@import "./library/input";
+
+// Common
+body {
+  font-family: "Inter", sans-serif;
+  color: #101828;
+  line-height: 1;
+}

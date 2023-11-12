@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
   Button,
-  Input,
   Form,
   Upload,
   Image,
@@ -12,6 +11,7 @@ import { useImmer } from "use-immer";
 import { SAFE_IMAGE_TYPE } from "@/constants";
 import PRODUCT_SERVICE from "@/services/product";
 import { CDN_SERVICE } from "@/services/cdn";
+import Input from "@/components/library/Input";
 
 const DEFAULT_PRODUCT_ATTRIBUTE_OPTION_DATA = {
   name: "",
@@ -173,15 +173,24 @@ export default function ProductDetail() {
             </div>
           </Upload>
         </Form.Item>
-        <Form.Item>
-          <Input placeholder="name" value={product.name} onChange={(e) => setProduct({ ...product, name: e.target.value })} />
-        </Form.Item>
-        <Form.Item>
-          <Input type="number" value={product.price} placeholder="price" onChange={(e) => setProduct({ ...product, price: e.target.value })} />
-        </Form.Item>
-        <Form.Item>
-          <Input placeholder="desc" value={product.description} onChange={(e) => setProduct({ ...product, description: e.target.value })} />
-        </Form.Item>
+        <Input
+          placeholder="name"
+          label="Ürün İsmi"
+          value={product.name}
+          onChange={(e) => setProduct({ ...product, name: e.target.value })}
+        />
+        <Input
+          type="number"
+          label="Fiyat Bilgisi"
+          value={product.price}
+          placeholder="50 TL"
+          onChange={(e) => setProduct({ ...product, price: e.target.value })}
+        />
+        <Input
+          label="Ürün Açıklaması"
+          value={product.description}
+          onChange={(e) => setProduct({ ...product, description: e.target.value })}
+        />
         <div className="product-attributes">
           <h2>Ekstra Özellikler</h2>
           <div className="product-attributes-body">
