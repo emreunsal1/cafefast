@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form } from "antd";
+import { Form } from "antd";
 import { useRouter } from "next/router";
 import z, { ZodError } from "zod";
 import AUTH_SERVICE from "../../services/auth";
 import USER_SERVICE from "../../services/user";
 import Input from "@/components/library/Input";
+import Button from "@/components/library/Button";
 
 export default function Login() {
   const [authform, setAuthform] = useState({ email: null, password: null });
@@ -56,14 +57,16 @@ export default function Login() {
           onChange={(event) => setAuthform({ ...authform, password: event.target.value })}
         />
         {formError && formError.map((item) => <div>{item}</div>)}
-        <Button
-          type="primary"
-          htmlType="submit"
-          className="login-form-button"
-          onClick={loginClickHandler}
-        >
-          Giriş Yap
-        </Button>
+        <div className="button-wrapper" style={{ width: "300px", margin: "20px" }}>
+          <Button
+            variant="outlined"
+            hmtlType="submit"
+            onClick={loginClickHandler}
+            size="small"
+          >
+            Giriş Yap
+          </Button>
+        </div>
         ya da
         <a href="/auth/register">Kaydol</a>
       </Form>

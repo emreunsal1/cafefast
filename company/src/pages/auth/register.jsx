@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
-import { Button } from "antd";
+
 import { useRouter } from "next/router";
 import { registerValidationSchema } from "../../utils/validations";
 import USER_SERVICE from "../../services/user";
 import Input from "@/components/library/Input";
+import Button from "@/components/library/Button";
 
 function Register() {
   const [isSubmit, setIsSubmit] = useState(false);

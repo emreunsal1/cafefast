@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 
 export default function Button({
-  variant, inputType, onClick, children, disabled, size,
+  variant, hmtlType, onClick, children, disabled, size,
 }) {
   const classname = classNames({
     button: true,
@@ -11,7 +11,7 @@ export default function Button({
   });
   return (
     <button
-      type={inputType || "button"}
+      type={hmtlType || "button"}
       id="Button"
       className={classname}
       disabled={disabled}
