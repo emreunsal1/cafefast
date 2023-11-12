@@ -11,6 +11,7 @@ import Layout from "../../components/Layout";
 import { STORAGE } from "@/utils/browserStorage";
 import { useProduct } from "@/context/ProductContext";
 import USER_SERVICE from "@/services/user";
+import Button from "@/components/library/Button";
 import Checkbox from "@/components/library/Checkbox";
 
 export default function Menu() {
@@ -183,7 +184,7 @@ export default function Menu() {
         </Table>
       </div>
       <div className="create-menu">
-        <Button onClick={() => setIsModalOpen(true)}>Create Menu</Button>
+        <Button variant="outlined" onClick={() => setIsModalOpen(true)}>Create Menu</Button>
       </div>
       <Modal
         title="Basic Modal"
