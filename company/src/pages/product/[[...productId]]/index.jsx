@@ -11,7 +11,8 @@ import { useImmer } from "use-immer";
 import { SAFE_IMAGE_TYPE } from "@/constants";
 import PRODUCT_SERVICE from "@/services/product";
 import { CDN_SERVICE } from "@/services/cdn";
-import Input from "@/components/library/Input";
+import Input from "../../../components/library/Input";
+import Checkbox from "../../../components/library/Checkbox";
 
 const DEFAULT_PRODUCT_ATTRIBUTE_OPTION_DATA = {
   name: "",
@@ -207,42 +208,43 @@ export default function ProductDetail() {
             {renderAttributeDetail && (
             <div className="attribute-detail">
               <div className="attribute-field">
-                <div className="attribute-field-label">İsim</div>
                 <div className="attribute-field-value">
-                  <input
+                  <Input
                     type="text"
                     placeholder="Sos Seçimi"
+                    label="Özellik İsmi"
                     value={attributeDetailData.title}
                     onChange={(e) => attributeDetailFieldChangeHandler("title", e.target.value)}
                   />
                 </div>
               </div>
               <div className="attribute-field">
-                <div className="attribute-field-label">Açıklama</div>
                 <div className="attribute-field-value">
-                  <input
+                  <Input
                     type="text"
-                    placeholder="Sos seçiminizi yapınız"
+                    label="Özellik Açıklaması"
                     value={attributeDetailData.description}
                     onChange={(e) => attributeDetailFieldChangeHandler("description", e.target.value)}
                   />
                 </div>
               </div>
               <div className="attribute-field">
-                <div className="attribute-field-label">Çoklu Seçim</div>
                 <div className="attribute-field-value">
-                  <input
+                  <Checkbox
                     type="checkbox"
-                    checked={attributeDetailData.type === "multi"}
+                    label="Çoklu Seçim"
+                    description="Eklediğiniz özelliğin seçeneklerini birden çok seçilebilir yapmak için işaretleyin."
+                    value={attributeDetailData.type === "multi"}
                     onChange={(e) => attributeDetailFieldChangeHandler("type", e.target.checked ? "multi" : "single")}
                   />
                 </div>
               </div>
               <div className="attribute-field">
-                <div className="attribute-field-label">Zorunlu Mu?</div>
-                <input
+                <Checkbox
                   type="checkbox"
-                  checked={attributeDetailData.required}
+                  label="Zorunlu Seçim"
+                  description="Eklediğiniz özelliğin en az bir tane seçilmesini istiyorsanız işaretleyin"
+                  value={attributeDetailData.required}
                   onChange={(e) => attributeDetailFieldChangeHandler("required", e.target.checked)}
                 />
               </div>
