@@ -50,7 +50,7 @@ export default function Index() {
 
   return (
     <div>
-      {!isExistQr && (
+      {isExistQr.length < 1 && (
       <>
         <div className="step-container">
           <Steps current={currentStep} items={steps.map((item) => ({ key: item.title, description: item.description }))} />
