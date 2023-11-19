@@ -1,8 +1,9 @@
 $sidebar-opened-width: 300px;
-$sidebar-closed-width: 110px;
+$sidebar-closed-width: 90px;
 
 .sidebar-placeholder {
   width: $sidebar-opened-width;
+  transition: 300ms;
   &.closed {
     width: $sidebar-closed-width;
   }
@@ -25,9 +26,10 @@ $sidebar-closed-width: 110px;
       justify-content: space-between;
       padding: 20px 10px;
       margin-bottom: 20px;
-      .comapny-place {
+      .company-place {
         font-size: 35px;
         font-weight: bold;
+        text-wrap: nowrap;
         color: #3c4469;
       }
       .opened-button {
@@ -46,7 +48,7 @@ $sidebar-closed-width: 110px;
         align-items: center;
         font-size: 18px;
         font-weight: bold;
-        padding: 20px 50px;
+        padding: 20px 35px;
         cursor: pointer;
         user-select: none;
         .icon-wrapper {
@@ -89,6 +91,9 @@ $sidebar-closed-width: 110px;
     display: inline-block;
     .list {
       display: inline-block;
+      .menu-item {
+        justify-content: center;
+      }
     }
   }
 }
