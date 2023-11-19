@@ -6,6 +6,8 @@ import AUTH_SERVICE from "../../services/auth";
 import USER_SERVICE from "../../services/user";
 import Input from "@/components/library/Input";
 import Button from "@/components/library/Button";
+import { STORAGE } from "@/utils/browserStorage";
+import { CLIENT_SIDE_IS_LOGIN_COOKIE_NAME } from "@/constants";
 
 export default function Login() {
   const [authform, setAuthform] = useState({ email: null, password: null });
@@ -35,6 +37,10 @@ export default function Login() {
   };
 
   useEffect(() => {
+    const isLogin = STORAGE.getCookie(CLIENT_SIDE_IS_LOGIN_COOKIE_NAME) === "true";
+    if (isLogin) {
+      router.push("/");
+    }
     USER_SERVICE.me();
   }, []);
 

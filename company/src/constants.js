@@ -21,4 +21,6 @@ export const ORDER_STATUSES = [
   "canceled",
 ];
 
+export const CLIENT_SIDE_IS_LOGIN_COOKIE_NAME = "is-login";
+
 export const SAFE_IMAGE_TYPE = "image/png,image/jpeg, image/webp, image/heic";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 
 import { useRouter } from "next/router";
@@ -6,6 +6,8 @@ import { registerValidationSchema } from "../../utils/validations";
 import USER_SERVICE from "../../services/user";
 import Input from "@/components/library/Input";
 import Button from "@/components/library/Button";
+import { STORAGE } from "@/utils/browserStorage";
+import { CLIENT_SIDE_IS_LOGIN_COOKIE_NAME } from "@/constants";
 
 function Register() {
   const [isSubmit, setIsSubmit] = useState(false);
@@ -29,6 +31,13 @@ function Register() {
   const submitBtnClickHandler = () => {
     setIsSubmit(true);
   };
+
+  useEffect(() => {
+    const isLogin = STORAGE.getCookie(CLIENT_SIDE_IS_LOGIN_COOKIE_NAME) === "true";
+    if (isLogin) {
+      router.push("/");
+    }
+  }, []);
 
   return (
     <div>

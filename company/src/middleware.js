@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { AUTH_TOKEN_NAME } from "./constants";
+import { AUTH_TOKEN_NAME, CLIENT_SIDE_IS_LOGIN_COOKIE_NAME } from "./constants";
 import { verifyJWT } from "./utils/auth";
 
 const redirect = (path, request) => NextResponse.redirect(new URL(path, request.url));
@@ -7,15 +7,18 @@ const redirect = (path, request) => NextResponse.redirect(new URL(path, request.
 export async function middleware(request) {
   if (request.cookies.has(AUTH_TOKEN_NAME)) {
     const authToken = request.cookies.get(AUTH_TOKEN_NAME).value;
-    const isLogin = verifyJWT(authToken);
+    const isLogin = await verifyJWT(authToken);
     if (isLogin) {
       const nextResponse = NextResponse.next();
       nextResponse.headers.set("x-pass-ss-auth", "true");
+      nextResponse.cookies.set(CLIENT_SIDE_IS_LOGIN_COOKIE_NAME, "true");
       return nextResponse;
     }
   }
 
-  return redirect("/auth/login", request);
+  const redirectResponse = redirect("/auth/login", request);
+  redirectResponse.cookies.set(CLIENT_SIDE_IS_LOGIN_COOKIE_NAME, "false");
+  return redirectResponse;
 }
 
 // Add authentication required paths here
