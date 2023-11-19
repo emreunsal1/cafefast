@@ -82,7 +82,7 @@ export default function ProductDetail() {
     }
     mockProduct.images = images.current;
     await PRODUCT_SERVICE.create(mockProduct);
-    router.push("/products");
+    router.push("/product");
   };
 
   useEffect(() => {

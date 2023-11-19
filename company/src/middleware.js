@@ -19,7 +19,9 @@ export async function middleware(request) {
     const authToken = request.cookies.get(AUTH_TOKEN_NAME).value;
     const isLogin = verifyJWT(authToken);
     if (isLogin) {
-      return;
+      const nextResponse = NextResponse.next();
+      nextResponse.headers.set("x-pass-ss-auth", "true");
+      return nextResponse;
     }
   }
 
@@ -28,5 +30,17 @@ export async function middleware(request) {
 
 // Add authentication required paths here
 export const config = {
-  matcher: ["/menu", "/products", "/profile", "/"],
+  matcher: [
+    "/auth/onboarding",
+    "/campaigns",
+    "/campaigns/(.*)",
+    "/menu",
+    "/menu/(.*)",
+    "/product",
+    "/product/(.*)",
+    "/table",
+    "/profile",
+    "/kitchen",
+    "/",
+  ],
 };

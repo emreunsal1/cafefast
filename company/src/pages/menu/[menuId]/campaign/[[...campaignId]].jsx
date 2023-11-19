@@ -7,7 +7,7 @@ export default function CategoryProducts() {
   // TODO: product'lardaki gibi sadece kampanyayı menüye ekleyip çıkarabiliceğimiz bir ekran gelmeli
 
   const redirectToMenuPage = () => {
-    router.push(`/menus/${router.query.menuId}`);
+    router.push(`/menu/${router.query.menuId}`);
   };
 
   return (

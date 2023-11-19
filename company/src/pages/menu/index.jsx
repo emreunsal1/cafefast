@@ -41,7 +41,7 @@ export default function Menu() {
       setIsModalOpen(true);
     }
     if (STORAGE.getLocal("isCompleteMenuBoard") == "false" && !response.length) {
-      router.push("/products");
+      router.push("/product");
     }
   };
 

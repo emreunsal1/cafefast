@@ -4,7 +4,7 @@ import React from "react";
 const MenuItems = [
   { key: "Profile", route: "/profile" },
   { key: "Menu", route: "/menu" },
-  { key: "Products", route: "/products" },
+  { key: "Products", route: "/product" },
   { key: "Kitchen", route: "/kitchen" },
   { key: "Table", route: "/table" },
   { key: "Campain", route: "/campaings" },
