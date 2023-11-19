@@ -108,7 +108,7 @@ export default function Product() {
           />
         ))}
         <div className="create-product-card">
-          <Card onClick={() => router.push("/product")} style={{ width: 200 }}>
+          <Card onClick={() => router.push("/product/new")} style={{ width: 200 }}>
             <PlusCircleOutlined />
           </Card>
         </div>

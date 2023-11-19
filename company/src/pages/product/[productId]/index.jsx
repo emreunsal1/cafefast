@@ -86,7 +86,7 @@ export default function ProductDetail() {
   };
 
   useEffect(() => {
-    if (router.query.productId) {
+    if (router.query.productId !== "new") {
       setIsUpdate(true);
       getProductData();
     }
