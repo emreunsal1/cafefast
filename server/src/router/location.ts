@@ -14,7 +14,7 @@ route.get("/", (req, res) => {
 
 route.get("/:id/districts", (req, res) => {
   const { id } = req.params;
-  const findedCity = AddressData.find((city) => city.id === Number(id));
+  const findedCity = AddressData[id];
 
   if (!findedCity) {
     return res.status(404).send({

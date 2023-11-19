@@ -21,17 +21,16 @@ function Onboarding() {
     company: {
       name: "",
       address: {
-        city: "",
+        city: "Eskişehir",
         district: "",
         mailingAddress: "",
         postalCode: "",
       },
     },
   });
-
   const [step, setStep] = useState("step1");
-  const [city, setCity] = useState([]);
-  const [district, setDistrict] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [districts, setDistricts] = useState([]);
   const [formError, setFormError] = useState(false);
 
   const stepOneVerifier = z.object({
@@ -51,22 +50,22 @@ function Onboarding() {
 
   const getCity = async () => {
     const { data } = await LOCATION_SERVICE.getCities();
-    const mutateCity = data.map((item) => ({ label: item.name, value: item.id }));
-    setCity(mutateCity);
+    const mutateCity = data.map((item) => ({ label: item.name, value: item.name }));
+    setCities(mutateCity);
   };
 
-  // TODO: City'ler çalışmıyor düzelt
-  const getDistrict = async (cityID) => {
-    const { data } = await LOCATION_SERVICE.getDistrict(cityID);
+  const getDistricts = async (cityName) => {
+    const cityIndex = cities.findIndex((city) => city.value === cityName);
+    const { data } = await LOCATION_SERVICE.getDistrict(cityIndex);
     const mutateDistrict = data.map((item) => ({ label: item.name, value: item.name }));
-    setDistrict(mutateDistrict);
+    setDistricts(mutateDistrict);
   };
 
   useEffect(() => {
-    if (onboardingData.company.address.city) {
-      getDistrict(onboardingData.company.address.city);
+    if (cities.length && onboardingData.company.address.city) {
+      getDistricts(onboardingData.company.address.city);
     }
-  }, [onboardingData.company.address.city]);
+  }, [onboardingData.company.address.city, cities]);
 
   const userFormHandler = (data) => {
     setOnboardingData((_onboardingData) => { _onboardingData.user[data.name] = data.value; });
@@ -75,12 +74,6 @@ function Onboarding() {
   useEffect(() => {
     getCity();
   }, []);
-
-  useEffect(() => {
-    if (city.length > 0) {
-      setOnboardingData((_onboardingData) => { _onboardingData.company.address.city = 1; });
-    }
-  }, [city]);
 
   const handleSubmit = async () => {
     const response = await USER_SERVICE.compeleteOnboarding(onboardingData);
@@ -140,7 +133,7 @@ function Onboarding() {
   const renderStep2 = () => (
     <Form
       initialValues={{
-        city: city[0]?.label,
+        city: cities[0]?.label,
       }}
     >
       <Input
@@ -151,15 +144,17 @@ function Onboarding() {
       />
       <Select
         style={{ width: 120 }}
-        onChange={(e) => setOnboardingData((_onboardingData) => { _onboardingData.company.address.city = city[e].name; })}
-        options={city}
+        onChange={(cityName) => setOnboardingData((_onboardingData) => {
+          _onboardingData.company.address.city = cityName;
+        })}
+        options={cities}
         value={onboardingData.company.address.city}
       />
       <Select
-        disabled={district.length === 0}
+        disabled={districts.length === 0}
         style={{ width: 120 }}
-        onChange={(e) => setOnboardingData((_onboardingData) => { _onboardingData.company.address.district = e.name; })}
-        options={district}
+        onChange={(cityName) => setOnboardingData((_onboardingData) => { _onboardingData.company.address.district = cityName; })}
+        options={districts}
         value={onboardingData.company.address.district}
       />
       <Input
@@ -177,7 +172,7 @@ function Onboarding() {
       />
       {formError && formError.map((item) => <div>{item}</div>)}
       <Button type="primary" onClick={() => formSubmitHandler("step2")}>
-        Submit
+        Kaydet
       </Button>
     </Form>
   );
