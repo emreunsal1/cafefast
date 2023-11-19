@@ -5,7 +5,6 @@ import {
 import USER_SERVICE from "../services/user";
 import ADRESS_SERVICE from "../services/location";
 import COMPANY_SERVICE from "../services/company";
-import Layout from "../components/Layout";
 import { CDN_SERVICE } from "../services/cdn";
 
 export default function Profile() {
@@ -232,11 +231,3 @@ export default function Profile() {
     </div>
   );
 }
-
-Profile.getLayout = function getLayout(profile) {
-  return (
-    <Layout>
-      {profile}
-    </Layout>
-  );
-};

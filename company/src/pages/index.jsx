@@ -20,11 +20,3 @@ export default function Index() {
 
   return <div id="homepage"><h1>HOMEPAGE</h1></div>;
 }
-
-Index.getLayout = function getLayout(index) {
-  return (
-    <Layout>
-      {index}
-    </Layout>
-  );
-};

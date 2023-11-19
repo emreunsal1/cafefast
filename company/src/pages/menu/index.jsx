@@ -210,11 +210,3 @@ export default function Menu() {
     </div>
   );
 }
-
-Menu.getLayout = function getLayout(menu) {
-  return (
-    <Layout>
-      {menu}
-    </Layout>
-  );
-};
