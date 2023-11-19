@@ -12,7 +12,7 @@ export default function SideBar() {
   const MenuItems = [
     { key: "Profile", route: "/profile", icon: "profile" },
     { key: "Menu", route: "/menu", icon: "menu" },
-    { key: "Products", route: "/products", icon: "product" },
+    { key: "Products", route: "/product", icon: "product" },
     { key: "Kitchen", route: "/kitchen", icon: "kitchen" },
     { key: "Table", route: "/table", icon: "qr-icon" },
     { key: "Campain", route: "/campaings", icon: "campain" },
