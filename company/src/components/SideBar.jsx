@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import classNames from "classnames";
 import AUTH_SERVICE from "@/services/auth";
 
 export default function SideBar() {
@@ -10,6 +11,7 @@ export default function SideBar() {
   const [isOpened, setIsOpened] = useState(true);
 
   const MenuItems = [
+    { key: "Anasayfa", route: "/", icon: "home" },
     { key: "Profile", route: "/profile", icon: "profile" },
     { key: "Menu", route: "/menu", icon: "menu" },
     { key: "Products", route: "/product", icon: "product" },
@@ -38,7 +40,7 @@ export default function SideBar() {
             {
           MenuItems.map((item, index) => (
             <div
-              className="menu-item"
+              className={classNames("menu-item", { selected: router.pathname === item.route })}
               key={index}
               onClick={() => {
                 if (item.clicked) {

@@ -1,5 +1,5 @@
 $sidebar-opened-width: 300px;
-$sidebar-closed-width: 135px;
+$sidebar-closed-width: 110px;
 
 .sidebar-placeholder {
   width: $sidebar-opened-width;
@@ -61,6 +61,17 @@ $sidebar-closed-width: 135px;
         }
         &:hover {
           background-color: rgba($color: #2f4cdd, $alpha: 0.1);
+          .title {
+            color: #2f4cdd;
+          }
+          .icon-wrapper {
+            i {
+              color: #2f4cdd;
+            }
+          }
+        }
+
+        &.selected {
           .title {
             color: #2f4cdd;
           }
