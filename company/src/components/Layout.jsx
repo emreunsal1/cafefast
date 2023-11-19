@@ -2,6 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import AUTH_SERVICE from "@/services/auth";
 import USER_SERVICE from "@/services/user";
+import SideBar from "./SideBar";
 
 export default function Layout({ children }) {
   const router = useRouter();
@@ -11,9 +12,7 @@ export default function Layout({ children }) {
   };
   return (
     <div id="layout">
-      <div className="header" onClick={logout}>
-        Logout
-      </div>
+      <SideBar />
       <main>{children}</main>
     </div>
   );

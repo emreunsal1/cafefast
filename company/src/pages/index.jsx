@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import MenuBar from "../components/MenuBar";
 import USER_SERVICE from "../services/user";
 import Layout from "@/components/Layout";
 import { STORAGE } from "@/utils/browserStorage";
@@ -18,14 +17,6 @@ export default function Index() {
   useEffect(() => {
     menuOnBoardingController();
   }, []);
-
-  return (
-    <div>
-      <div className="menu">
-        <MenuBar />
-      </div>
-    </div>
-  );
 }
 
 Index.getLayout = function getLayout(index) {

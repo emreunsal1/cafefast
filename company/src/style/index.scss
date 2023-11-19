@@ -5,9 +5,12 @@
 @import "../public/style.css";
 
 // Pages
-@import "./product-detail-page";
+@import "./pages/product-detail-page.scss";
 
-// Components
+//components
+@import "./components/sidebar.scss";
+
+// library
 @import "./library/input";
 @import "./library/button";
 @import "./library/checkbox";

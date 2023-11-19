@@ -31,6 +31,7 @@
 - [ ] kategoride görüntülediğim ürünleri toplu silebilmeliyim (backend bekleniyor)
 - [X] Kampanya ekleme sistemi açıldığında birdaha kapanmıyor
 - [X] kampanya editleme işleminde hiçbirşey yapmadan kaydedersek must be unique hatası veriyor
+- [ ] side bar yapılacak
 
 - [ ] kitchen sayfasında hiçbir bok yapmıyoruz orayı düşünmemiz lazım
 
@@ -47,6 +48,13 @@
 - [X] login için validasyon
 
 - [ ] ürün girerken validasyon lazım özellikle ücret
+
+# COMPANY TODO COMPONENT
+- [X] INPUT
+- [X] BUTTON
+- [X] CHECKBOX
+- [X] RADIO BUTTON
+- [ ] 
 
 ## TODOS
 - [ ]  Tüm sayfayı kaplayacak bir layout sistemi geri tuşuna basmadan işlem yapabilme (buna başlandı logout yazısı oradan geliyor)
