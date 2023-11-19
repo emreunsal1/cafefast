@@ -1,26 +1,37 @@
-.side-bar{
-  transition: all 3ms;
-  width: 300px;
-  box-shadow: 9px 0px 24px 0px rgba(0,0,0,0.1);
+$sidebar-opened-width: 300px;
+$sidebar-closed-width: 135px;
+
+.sidebar-placeholder {
+  width: $sidebar-opened-width;
+  &.closed {
+    width: $sidebar-closed-width;
+  }
+}
+
+.side-bar {
+  width: $sidebar-opened-width;
+  border-right: 1px solid rgba($color: $black, $alpha: 0.1);
   height: 100vh;
   transition: all 200ms;
   overflow: hidden;
-  .container{
-    transition: all 3s;
-    .header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  .container {
+    .header {
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 20px 10px;
       margin-bottom: 20px;
-      transition: all 3s;
-      .comapny-place{
+      .comapny-place {
         font-size: 35px;
         font-weight: bold;
-        color: #3C4469;
+        color: #3c4469;
       }
-      .opened-button{
-        i{
+      .opened-button {
+        i {
           font-size: 35px;
           font-weight: bold;
           cursor: pointer;
@@ -28,9 +39,9 @@
         }
       }
     }
-    .list{
-      transition: 3s;
-      .menu-item{
+    .list {
+      width: 100%;
+      .menu-item {
         display: flex;
         align-items: center;
         font-size: 18px;
@@ -38,43 +49,35 @@
         padding: 20px 50px;
         cursor: pointer;
         user-select: none;
-        .icon-wrapper{
-          i{
+        .icon-wrapper {
+          i {
             font-size: 30px;
             color: #969ba0;
           }
         }
-        .title{
+        .title {
           color: #969ba0;
           margin-left: 30px;
         }
-        &:hover{
+        &:hover {
           background-color: rgba($color: #2f4cdd, $alpha: 0.1);
-          .title{
+          .title {
             color: #2f4cdd;
           }
-          .icon-wrapper{
-            i{
+          .icon-wrapper {
+            i {
               color: #2f4cdd;
             }
           }
         }
       }
     }
-    
   }
-  &.closed{
-    width: 135px;
+  &.closed {
+    width: $sidebar-closed-width;
     display: inline-block;
-    .header{
-      justify-content: left;
-      .opened-button{
-        margin-left: 30px;
-      }
-    }
-    .list{
+    .list {
       display: inline-block;
     }
   }
 }
-

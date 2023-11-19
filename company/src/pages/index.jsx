@@ -17,6 +17,8 @@ export default function Index() {
   useEffect(() => {
     menuOnBoardingController();
   }, []);
+
+  return <div id="homepage"><h1>HOMEPAGE</h1></div>;
 }
 
 Index.getLayout = function getLayout(index) {

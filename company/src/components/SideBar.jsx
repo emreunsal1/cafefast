@@ -22,18 +22,20 @@ export default function SideBar() {
   ];
 
   return (
-    <div id="Menu" className={`side-bar ${isOpened ? "" : "closed"}`}>
-      <div className="container">
-        <div className="header">
-          <div className="comapny-place">
-            {isOpened ? "CAFE FAST" : "CF" }
+    <>
+      <div className={`sidebar-placeholder ${isOpened ? "" : "closed"}`} />
+      <div id="Menu" className={`side-bar ${isOpened ? "" : "closed"}`}>
+        <div className="container">
+          <div className="header">
+            <div className="comapny-place">
+              {isOpened ? "CAFE FAST" : "CF" }
+            </div>
+            <div className="opened-button" onClick={() => setIsOpened(!isOpened)}>
+              <i className="icon icon-sidemenu" />
+            </div>
           </div>
-          <div className="opened-button" onClick={() => setIsOpened(!isOpened)}>
-            <i className="icon icon-sidemenu" />
-          </div>
-        </div>
-        <div className="list">
-          {
+          <div className="list">
+            {
           MenuItems.map((item, index) => (
             <div
               className="menu-item"
@@ -56,8 +58,10 @@ export default function SideBar() {
             </div>
           ))
       }
+          </div>
         </div>
       </div>
-    </div>
+    </>
+
   );
 }
