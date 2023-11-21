@@ -12,12 +12,13 @@
 
 //components
 @import "./components/sidebar";
+@import "./components/product-card";
 
 // library
 @import "./library/input";
 @import "./library/button";
 @import "./library/checkbox";
-@import "./components/productCard";
+@import "./library/select";
 
 // Common
 body {

@@ -1,0 +1,47 @@
+.library-select {
+  $select-height: 38px;
+
+  font-size: 14px;
+  font-weight: 500;
+  &-label {
+    margin-bottom: 6px;
+    color: $black;
+  }
+  &-description {
+  }
+  &-select-input {
+    border-radius: 8px;
+    &__control {
+      border-radius: 8px !important;
+      height: $select-height;
+      &--is-focused {
+        border: 1px solid #d6bbfb !important;
+        box-shadow: 0px 0px 0px 4px #f4ebff,
+          0px 1px 2px 0px rgba(16, 24, 40, 0.05) !important;
+      }
+    }
+    &__value-container {
+      height: $select-height;
+    }
+    &__input-container {
+      line-height: 1;
+      height: 100%;
+    }
+    &__single-value {
+      line-height: $select-height - 6px;
+      height: 100%;
+    }
+    &__placeholder {
+      line-height: $select-height - 6px;
+      height: 100%;
+    }
+    &__option {
+      &--is-focused {
+        background-color: #f4ebff !important;
+      }
+      &--is-selected {
+        background-color: #d6bbfb !important;
+      }
+    }
+  }
+}

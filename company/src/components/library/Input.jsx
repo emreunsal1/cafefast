@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import classNames from "classnames";
 
 export default function Input({
-  label, description, value, type, onChange, className, placeholder, error, disabled, name,
+  label, description, value, type, onChange, className, placeholder, error, readOnly, name,
 }) {
   const [focus, setFocus] = useState(false);
   const classname = classNames({
@@ -10,7 +10,7 @@ export default function Input({
     [className]: className,
     focus,
     error,
-    disabled,
+    "read-only": readOnly,
   });
 
   return (
@@ -21,7 +21,7 @@ export default function Input({
           placeholder={placeholder}
           type={type}
           name={name}
-          disabled={disabled}
+          readOnly={readOnly}
           value={value}
           onChange={onChange}
           onFocus={() => setFocus(true)}
