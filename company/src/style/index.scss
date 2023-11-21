@@ -8,6 +8,7 @@
 // Pages
 @import "./pages/product-detail-page";
 @import "./pages/profile-page";
+@import "./pages/products";
 
 //components
 @import "./components/sidebar";
@@ -16,6 +17,7 @@
 @import "./library/input";
 @import "./library/button";
 @import "./library/checkbox";
+@import "./components/productCard";
 
 // Common
 body {

@@ -1,0 +1,10 @@
+.products {
+  .product-list-wrapper {
+    display: flex;
+    align-items: center;
+    .product-card {
+      margin: 0px 10px;
+      width: 25%;
+    }
+  }
+}

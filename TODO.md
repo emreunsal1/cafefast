@@ -31,7 +31,9 @@
 - [ ] kategoride görüntülediğim ürünleri toplu silebilmeliyim (backend bekleniyor)
 - [X] Kampanya ekleme sistemi açıldığında birdaha kapanmıyor
 - [X] kampanya editleme işleminde hiçbirşey yapmadan kaydedersek must be unique hatası veriyor
-- [ ] side bar yapılacak
+- [X] side bar yapılacak
+- [ ] Popup componenti yazılacak
+- [X] ProductCard Componenti Yazılacak
 
 - [ ] kitchen sayfasında hiçbir bok yapmıyoruz orayı düşünmemiz lazım
 

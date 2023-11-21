@@ -3,8 +3,9 @@ import { Button, Card } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import { useProduct } from "../../context/ProductContext";
-import ProductCard, { PRODUCT_CARD_ACTIONS } from "../../components/ProductCard";
-import ProductModal, { PRODUCT_MODAL_ACTIONS } from "../../components/ProductModal";
+import { PRODUCT_CARD_ACTIONS } from "../../components/ProductCard";
+import ProductCard from "../../components/ProdcutCard";
+import { PRODUCT_MODAL_ACTIONS } from "../../components/ProductModal";
 import Layout from "../../components/Layout";
 import { CDN_SERVICE } from "@/services/cdn";
 import { API_URl, PRODUCT_ROUTE } from "@/constants";
@@ -28,36 +29,6 @@ export default function Product() {
       setPopupVisible(true);
     }
   }, []);
-
-  const productCardOnActionHandler = ({ action, data }) => {
-    if (action === PRODUCT_CARD_ACTIONS.CREATE) {
-      createProduct(data);
-    }
-    if (action === PRODUCT_CARD_ACTIONS.UPDATE) {
-      updateProduct(data);
-    }
-    if (action === PRODUCT_CARD_ACTIONS.DELETE) {
-      deleteProduct(data._id);
-    }
-  };
-
-  const productModalActionHandler = async ({ data, images }) => {
-    if (data === PRODUCT_MODAL_ACTIONS.CANCEL) {
-      setPopupVisible(false);
-      return;
-    }
-    let uploadedImages = [];
-    if (images.length) {
-      const originalFiles = images.map((image) => image.originFileObj);
-      const response = await CDN_SERVICE.uploadMultipleImages(originalFiles);
-      uploadedImages = response.data;
-    }
-    createProduct({ ...data, images: uploadedImages });
-    setPopupVisible(false);
-    if (STORAGE.getLocal("isCompleteMenuBoard") == "false") {
-      router.push("/menu");
-    }
-  };
 
   const importInputChangeHandler = async (e) => {
     const excelFile = e.target.files[0];
@@ -85,7 +56,7 @@ export default function Product() {
   };
 
   return (
-    <div>
+    <div className="products">
       <div className="export-import-products-button">
         <a href={`${API_URl}${PRODUCT_ROUTE}/export`} download>Ürünleri Dışarı Aktar</a>
         <div>
@@ -96,15 +67,13 @@ export default function Product() {
           {!isMultipleEdit ? "Seç" : "Sil"}
         </Button>
       </div>
-      <div className="product-card-wrapper">
+      <div className="product-list-wrapper">
         {products.map((product) => (
           <ProductCard
-            setSelectedProducts={setSelectedProducts}
+            isSelectable={isMultipleEdit}
             selectedProducts={selectedProducts}
-            isMultipleEdit={isMultipleEdit}
-            key={product._id}
-            onAction={productCardOnActionHandler}
-            product={product}
+            setSelectedProducts={setSelectedProducts}
+            data={product}
           />
         ))}
         <div className="create-product-card">
