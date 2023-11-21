@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Form, Input, Button, Select,
-} from "antd";
+
 import USER_SERVICE from "../services/user";
 import ADRESS_SERVICE from "../services/location";
 import COMPANY_SERVICE from "../services/company";
 import { CDN_SERVICE } from "../services/cdn";
+import Button from "@/components/library/Button";
+import Input from "@/components/library/Input";
 
 export default function Profile() {
   const [isEdit, setIsEdit] = useState(false);
@@ -88,7 +88,7 @@ export default function Profile() {
     setCity(mutateCity);
   };
 
-  const inputChangeHandler = (e) => {
+  const fileInputChangeHandler = (e) => {
     const image = e.target.files[0];
     setCompanyData({ ...companyData, logo: URL.createObjectURL(image) });
     e.target.value = null;
@@ -105,129 +105,42 @@ export default function Profile() {
     }
   }, [isEdit]);
 
+  const companyImageClickHandler = () => {
+    document.querySelector("#company-image-input").click();
+  };
+
   return (
-
-    <div id="profile">
-      {!isEdit && (
-      <div className="container">
-        <div className="profile-list">
-          <div className="user-info">
-            <h2>User Info</h2>
-            <div className="row">
-              name:
-              {user.name}
-            </div>
-            <div className="row">
-              surname:
-              {user.surname}
-            </div>
-            <div className="row">
-              email:
-              {user.email}
-            </div>
-            <div className="row">
-              phone:
-              {user.phoneNumber}
-            </div>
-            <div className="row">
-              email:
-              {user.email}
-            </div>
-            <div className="company-info">
-              <h2>Company Info</h2>
-              <div className="company-logo">
-                Company Logo:
-                <img src={companyData.logo} alt="Company logo" />
-              </div>
-              <div className="row">
-                company name :
-                {companyData.name}
-              </div>
-              <div className="row">
-                city :
-                {companyAddress.city}
-              </div>
-              <div className="row">
-                district :
-                {companyAddress.district}
-              </div>
-              <div className="row">
-                Postal Code :
-                {companyAddress.postalCode}
-              </div>
-              <div className="row">
-                mailingAddress :
-                {companyAddress.mailingAddress}
-              </div>
-
+    <div className="profile-page">
+      <h2>Profil Bilgileri</h2>
+      <div className="profile-section">
+        <div className="profile-section-header">
+          <h3>Şirket Bilgileri</h3>
+        </div>
+        <div className="divider" />
+        <div className="profile-section-body">
+          <div className="profile-section-body-company-image" onClick={companyImageClickHandler}>
+            <img src={companyData.logo} />
+            <div className="edit-icon-wrapper">
+              <i className="icon icon-sidemenu" />
             </div>
           </div>
-          <Button onClick={() => setIsEdit(true)}>Edit</Button>
+          <Input className="profile-section-body-input" label="Şirket İsmi" value={companyData.name} />
         </div>
       </div>
-      )}
-      {isEdit
-       && (
-       <div className="edit-container">
-         <h2>User Info</h2>
-         <Form onFinish={saveButtonClickHandler}>
-           <Form.Item label="name" initialValue={user.name} name="name">
-             <Input name="name" value={user.name} onChange={(e) => userUpdateHandler({ name: "name", value: e.target.value })} />
-           </Form.Item>
-           <Form.Item label="surname" initialValue={user.surname} name="surname">
-             <Input name="surname" value={user.surname} onChange={(e) => userUpdateHandler({ name: "surname", value: e.target.value })} />
-           </Form.Item>
-           <Form.Item label="Phone Number" initialValue={user.phoneNumber} name="phoneNumber">
-             <Input name="phoneNumber" value={user.phoneNumber} onChange={(e) => userUpdateHandler({ name: "phoneNumber", value: e.target.value })} />
-           </Form.Item>
-           <h2>Company Info</h2>
-           <div className="company-logo">
-             <img src={companyData.logo} alt="Company logo" />
-             <input type="file" onChange={inputChangeHandler} />
-           </div>
-           <Form.Item label="Company Name" initialValue={companyData.name} name="companyName">
-             <Input name="companyName" value={companyData.name} onChange={(e) => companyUpdateHandler({ name: "name", value: e.target.value })} />
-           </Form.Item>
-           <Form.Item initialValue={companyAddress.city} label="City" name="city">
-             <Select
-               style={{ width: 120 }}
-               onChange={(e) => addressUpdateHandler({ name: "city", value: e })}
-               options={city}
-               name="city"
-               value={companyAddress.city}
-             />
-           </Form.Item>
-           <Form.Item label="district" name="district" initialValue={companyAddress.district}>
-             <Select
-               style={{ width: 120 }}
-               onChange={(e) => addressUpdateHandler({ name: "district", value: e })}
-               options={district}
-               name="district"
-               value={companyAddress.district}
-             />
-           </Form.Item>
-           <Form.Item label="postal code" initialValue={companyAddress.postalCode} name="postalCode">
-             <Input
-               name="postalCode"
-               type="number"
-               value={companyAddress.postalCode}
-               onChange={(e) => addressUpdateHandler({ name: "postalCode", value: Number(e.target.value) })}
-             />
-           </Form.Item>
-           <Form.Item initialValue={companyAddress.mailingAddress} label="Mailing Address" name="mailingAddress">
-             <Input
-               name="mailingAddress"
-               value={companyAddress.mailingAddress}
-               onChange={(e) => addressUpdateHandler({ name: "mailingAddress", value: e.target.value })}
-             />
-           </Form.Item>
-           <Button type="primary" htmlType="submit">
-             Save!
-           </Button>
-         </Form>
-
-       </div>
-       )}
+      <div className="profile-section">
+        <div className="profile-section-header">
+          <h3>Kullanıcı Bilgileri</h3>
+        </div>
+        <div className="divider" />
+        <div className="profile-section-body">
+          <Input className="profile-section-body-input" label="İsim" value={user.name} />
+          <Input className="profile-section-body-input" label="Soyisim" value={user.surname} />
+          <Input className="profile-section-body-input" label="E-mail" disabled value={user.email} />
+          <Input className="profile-section-body-input" label="Telefon Numarası" disabled value={user.phoneNumber} />
+        </div>
+      </div>
+      <input type="file" id="company-image-input" hidden onChange={fileInputChangeHandler} />
+      <Button variant="small" onClick={saveButtonClickHandler}>Kaydet</Button>
     </div>
   );
 }

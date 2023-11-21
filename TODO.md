@@ -55,6 +55,7 @@
 - [X] CHECKBOX
 - [X] RADIO BUTTON
 - [ ] 
+- [ ] Global Loader 
 
 ## TODOS
 - [ ]  Tüm sayfayı kaplayacak bir layout sistemi geri tuşuna basmadan işlem yapabilme (buna başlandı logout yazısı oradan geliyor)

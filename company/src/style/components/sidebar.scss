@@ -2,10 +2,10 @@ $sidebar-opened-width: 300px;
 $sidebar-closed-width: 90px;
 
 .sidebar-placeholder {
-  width: $sidebar-opened-width;
+  min-width: $sidebar-opened-width;
   transition: 300ms;
   &.closed {
-    width: $sidebar-closed-width;
+    min-width: $sidebar-closed-width;
   }
 }
 

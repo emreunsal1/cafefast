@@ -2,12 +2,12 @@ import React from "react";
 import classNames from "classnames";
 
 export default function Button({
-  variant, hmtlType, onClick, children, disabled, size,
+  variant, hmtlType, onClick, children, disabled, size, fluid,
 }) {
-  const classname = classNames({
-    button: true,
+  const classname = classNames("library-button", {
     [variant]: variant,
     [size]: size,
+    fluid: !!fluid,
   });
   return (
     <button
@@ -17,7 +17,7 @@ export default function Button({
       disabled={disabled}
       onClick={onClick}
     >
-      <span>{children}</span>
+      {children}
     </button>
   );
 }

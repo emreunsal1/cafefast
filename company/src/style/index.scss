@@ -3,13 +3,14 @@
 @import "./reset";
 @import "normalize.css";
 @import "../public/icomoon/style.css";
-@import "./layout/index.scss";
+@import "./layout/index";
 
 // Pages
-@import "./pages/product-detail-page.scss";
+@import "./pages/product-detail-page";
+@import "./pages/profile-page";
 
 //components
-@import "./components/sidebar.scss";
+@import "./components/sidebar";
 
 // library
 @import "./library/input";
