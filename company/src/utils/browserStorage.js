@@ -1,9 +1,16 @@
 /* eslint-disable no-plusplus */
 export const getLocal = (key) => {
+  const value = localStorage.getItem(key);
   if (localStorage.getItem(key)) {
-    return localStorage.getItem(key);
+    if (value === "false" || value === "true") {
+      if (value === "false") {
+        return false;
+      }
+      return true;
+    }
+    return value;
   }
-  return false;
+  return null;
 };
 
 export const setLocal = (key, value) => {

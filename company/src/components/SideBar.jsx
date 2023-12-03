@@ -2,12 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import classNames from "classnames";
 import AUTH_SERVICE from "@/services/auth";
-import { STORAGE } from "@/utils/browserStorage";
 
 // TODO: Buradaki localstorage transition problemini çöz.
-export default function SideBar() {
+export default function SideBar({ isOpened }) {
   const router = useRouter();
-  const [isOpened, setIsOpened] = useState(false);
 
   const MenuItems = [
     { key: "Anasayfa", route: "/", icon: "home" },
@@ -22,15 +20,6 @@ export default function SideBar() {
     },
   ];
 
-  const openHandler = () => {
-    STORAGE.setLocal("sideMenuOpened", !isOpened);
-    setIsOpened(!isOpened);
-  };
-
-  useEffect(() => {
-    setIsOpened(STORAGE.getLocal("sideMenuOpened") === "true");
-  }, []);
-
   const placeholderClassname = classNames("sidebar-placeholder", { closed: !isOpened });
   const sidebarClassname = classNames("side-bar", { closed: !isOpened });
 
@@ -41,10 +30,7 @@ export default function SideBar() {
         <div className="container">
           <div className="header">
             <div className="company-place">
-              {isOpened ? "CAFE FAST" : "C" }
-            </div>
-            <div className="opened-button" onClick={openHandler}>
-              <i className="icon icon-sidemenu" />
+              {isOpened ? "CAFE FAST" : "CF" }
             </div>
           </div>
           <div className="list">

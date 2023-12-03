@@ -26,19 +26,12 @@ $sidebar-closed-width: 90px;
       justify-content: space-between;
       padding: 20px 10px;
       margin-bottom: 20px;
+      border-bottom: 1px solid $border-gray;
       .company-place {
         font-size: 35px;
         font-weight: bold;
         text-wrap: nowrap;
         color: #3c4469;
-      }
-      .opened-button {
-        i {
-          font-size: 35px;
-          font-weight: bold;
-          cursor: pointer;
-          color: #2f4cdd;
-        }
       }
     }
     .list {
