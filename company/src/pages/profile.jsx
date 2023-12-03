@@ -39,6 +39,7 @@ export default function Profile() {
   const selectedImage = useRef(null);
 
   const getUserData = async () => {
+    setLoading(true);
     const repsonse = await USER_SERVICE.me();
 
     const {
@@ -49,6 +50,7 @@ export default function Profile() {
     });
 
     setCompanyData(({ name: company.name, logo: company.logo, address: company.address }));
+    setLoading(false);
   };
 
   const userUpdateHandler = ({ name, event }) => {
@@ -56,12 +58,14 @@ export default function Profile() {
   };
 
   const getDistricts = async (cityID) => {
+    setLoading(true);
     const { data } = await ADRESS_SERVICE.getDistrict(cityID);
     const mutatedDistricts = data.map((item) => ({ label: item.name, value: item.name }));
     setDistricts(mutatedDistricts);
     if (!companyData.address.district) {
       setCompanyData((_companyData) => { _companyData.address.district = mutatedDistricts[0].label; });
     }
+    setLoading(false);
   };
 
   const saveButtonClickHandler = async () => {
