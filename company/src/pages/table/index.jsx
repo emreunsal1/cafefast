@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Steps, Button } from "antd";
+import { Steps } from "antd";
 import { useRouter } from "next/router";
 import QrGeneratorForm from "@/components/QrGeneratorForm";
 import TableStepPreview from "@/components/TableStepPreview";
 import COMPANY_SERVICE from "@/services/company";
 import QrList from "@/components/QrList";
 import { STORAGE } from "@/utils/browserStorage";
+import Button from "@/components/library/Button";
 
 export default function Index() {
   const steps = [{
@@ -17,16 +18,16 @@ export default function Index() {
   }];
   const [currentStep, setCurrentStep] = useState(0);
   const [data, setData] = useState([{ key: "", count: 0 }]);
-  const [isExistQr, setIsExistQr] = useState(false);
+  const [companyTables, setCompanyTables] = useState(false);
 
   const router = useRouter();
 
   const getQrCode = async () => {
     const response = await COMPANY_SERVICE.getQr();
-    if (response.length && STORAGE.getLocal("isCompleteMenuBoard") == "false") {
+    if (response.length && STORAGE.getLocal("isCompleteMenuBoard") === "false") {
       router.push("/");
     }
-    setIsExistQr(response);
+    setCompanyTables(response);
   };
   useEffect(() => {
     getQrCode();
@@ -49,11 +50,14 @@ export default function Index() {
   };
 
   return (
-    <div>
-      {isExistQr.length < 1 && (
+    <div className="table-page">
+      <h3>Masalarım</h3>
+      {companyTables.length < 1 && (
       <>
         <div className="step-container">
-          <Steps current={currentStep} items={steps.map((item) => ({ key: item.title, description: item.description }))} />
+          <div className="steps-wrapper">
+            <Steps current={currentStep} items={steps.map((item) => ({ key: item.title, description: item.description }))} />
+          </div>
           {currentStep === 0 && (
           <QrGeneratorForm
             setCurrentStep={setCurrentStep}
@@ -66,10 +70,10 @@ export default function Index() {
         {currentStep === 1 && <Button onClick={doneClickHandler}>Done</Button> }
       </>
       )}
-      {isExistQr
+      {companyTables
       && (
       <div className="list-wrapper">
-        <QrList data={isExistQr} />
+        <QrList data={companyTables} />
       </div>
       )}
     </div>

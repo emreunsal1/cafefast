@@ -118,11 +118,13 @@ export default function Menu() {
     getCompanyMenus();
   }, []);
 
+  // TODO: Tekli menü silme bozuk
+  // TODO: Seç çoklu sil butonları state'leri bozuk
   return (
     <div className="menus-page">
       <h2 className="menus-page-title">Menüler</h2>
-      <button onClick={() => setSelectModeActive(!selectModeActive)}>Seç</button>
-      {selectModeActive && <button onClick={() => deleteMenu({ menuIds: selectedMenuIds })}>Seçili Menüleri Sil</button>}
+      <Button onClick={() => setSelectModeActive(!selectModeActive)}>Seç</Button>
+      {selectModeActive && <Button onClick={() => deleteMenu({ menuIds: selectedMenuIds })}>Seçili Menüleri Sil</Button>}
       <div>
         <Table
           loading={loading}

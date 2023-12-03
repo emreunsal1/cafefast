@@ -1,0 +1,17 @@
+.qr-generator-form {
+  .form-wrapper {
+    margin-bottom: 20px;
+    .inputs-wrapper {
+      .inputs-row {
+        display: flex;
+      }
+    }
+  }
+  .library-checkbox {
+    margin-bottom: 20px;
+  }
+  &-actions {
+    display: flex;
+    gap: 10px;
+  }
+}

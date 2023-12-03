@@ -8,18 +8,22 @@
 @import "./layout/index";
 
 // Pages
+@import "./pages/homepage";
 @import "./pages/product-detail-page";
 @import "./pages/profile-page";
 @import "./pages/products-page";
 @import "./pages/menus-page";
 @import "./pages/kitchen-page";
-@import "./pages//menu-detail-page.scss";
+@import "./pages//menu-detail-page";
+@import "./pages/table-page";
+@import "./pages/campaigns-page";
 
 //components
 @import "./components/sidebar";
 @import "./components/product-card";
 @import "./components/header";
-@import "./components/category-sidebar.scss";
+@import "./components/category-sidebar";
+@import "./components/qr-generator-form";
 
 // library
 @import "./library/input";

@@ -14,7 +14,6 @@ import Select from "@/components/library/Select";
 import { useLoading } from "@/context/LoadingContext";
 import { useMessage } from "@/context/GlobalMessage";
 
-// TODO: açık adres ve posta kodu için input ekle
 export default function Profile() {
   const { setLoading } = useLoading();
   const message = useMessage();

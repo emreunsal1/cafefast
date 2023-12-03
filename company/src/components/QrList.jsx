@@ -4,7 +4,6 @@ import { QRCode } from "antd";
 export default function QrList({ data }) {
   return (
     <div>
-      <div className="Title">Qr Code List</div>
       <div className="list">
         {data.map(() => (
           <QRCode

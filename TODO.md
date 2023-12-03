@@ -58,7 +58,7 @@
 - [X] RADIO BUTTON
 - [x] Global Loader 
 - [x] Global Message
-- [ ] 
+- [ ] Modal (Popup)
 
 ## TODOS
 - [ ]  Tüm sayfayı kaplayacak bir layout sistemi geri tuşuna basmadan işlem yapabilme (buna başlandı logout yazısı oradan geliyor)
