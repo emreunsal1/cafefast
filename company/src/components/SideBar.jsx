@@ -9,15 +9,11 @@ export default function SideBar({ isOpened }) {
 
   const MenuItems = [
     { key: "Anasayfa", route: "/", icon: "home" },
-    { key: "Profile", route: "/profile", icon: "profile" },
-    { key: "Menu", route: "/menu", icon: "menu" },
-    { key: "Products", route: "/product", icon: "product" },
-    { key: "Kitchen", route: "/kitchen", icon: "kitchen" },
-    { key: "Table", route: "/table", icon: "qr-icon" },
-    { key: "Campain", route: "/campaings", icon: "campain" },
-    {
-      key: "Logout", route: "/auth/login", clicked: AUTH_SERVICE.logout, icon: "exit",
-    },
+    { key: "Menüler", route: "/menu", icon: "menu" },
+    { key: "Ürünler", route: "/product", icon: "product" },
+    { key: "Mutfak", route: "/kitchen", icon: "kitchen" },
+    { key: "Masalar", route: "/table", icon: "qr-icon" },
+    { key: "Kampanyalar", route: "/campaings", icon: "campain" },
   ];
 
   const placeholderClassname = classNames("sidebar-placeholder", { closed: !isOpened });

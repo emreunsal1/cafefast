@@ -16,7 +16,7 @@ import { useMessage } from "@/context/GlobalMessage";
 
 // TODO: açık adres ve posta kodu için input ekle
 export default function Profile() {
-  const setLoading = useLoading();
+  const { setLoading } = useLoading();
   const message = useMessage();
   const [user, setUser] = useState({
     name: "",

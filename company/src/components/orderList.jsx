@@ -1,13 +1,16 @@
 import React from "react";
-import { Space, Checkbox, Table } from "antd";
-import moment from "moment";
-import { ORDER_STATUSES } from "@/constants";
+import { Space, Table } from "antd";
+import { ORDER_STATUSES, ORDER_STATUS_TEXTS } from "@/constants";
 import COMPANY_SERVICE from "@/services/company";
 import { copyText } from "@/utils/copy";
 import { useDate } from "@/context/DateContext";
+import Button from "./library/Button";
+import { useMessage } from "@/context/GlobalMessage";
+import Select from "./library/Select";
 
 export default function OrderList({ data, onUpdate }) {
   const { formatDate } = useDate();
+  const message = useMessage();
   const statusOnChangeHandler = async (orderId, status) => {
     const updated = await COMPANY_SERVICE.updateOrder(orderId, { status });
     onUpdate(orderId, updated.data);
@@ -18,15 +21,25 @@ export default function OrderList({ data, onUpdate }) {
       title: "Sipariş Numarası",
       dataIndex: "_id",
       key: "_id",
-      render: (id) => (<span onClick={() => copyText(id)}>Kopyala</span>),
+      width: 150,
+      align: "center",
+      render: (id) => (
+        <Button onClick={() => {
+          message.success("Sipariş numarası kopyalandı.");
+          copyText(id);
+        }}
+        >
+          Kopyala
+        </Button>
+      ),
     },
     {
-      title: "Total Price",
+      title: "Toplam Fiyat",
       key: "totalPriceText",
       dataIndex: "totalPriceText",
     },
     {
-      title: "Products",
+      title: "Ürünler",
       dataIndex: "products",
       render: (productData) => productData.map((item) => <Space key={item.product._id}>{item.product.name}</Space>),
       key: "products",
@@ -42,15 +55,16 @@ export default function OrderList({ data, onUpdate }) {
       ),
     },
     {
-      title: "Status",
+      title: "Sipariş Durumu",
       dataIndex: "status",
       key: "status",
+      width: 200,
       render: (statusValue, _record) => (
-        <Space>
-          <select value={statusValue} onChange={(e) => statusOnChangeHandler(_record._id, e.target.value)}>
-            {ORDER_STATUSES.map((status) => (<option value={status}>{status}</option>))}
-          </select>
-        </Space>
+        <Select
+          value={{ value: statusValue, label: ORDER_STATUS_TEXTS[statusValue] }}
+          onChange={(selectedOption) => statusOnChangeHandler(_record._id, selectedOption.value)}
+          options={ORDER_STATUSES.map((status) => ({ value: status, label: ORDER_STATUS_TEXTS[status] }))}
+        />
       ),
     },
   ];

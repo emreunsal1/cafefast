@@ -2,7 +2,14 @@ import React, { createContext, useContext } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Context = createContext({});
+// eslint-disable-next-line no-unused-vars
+const emptyFunc = (_message = "") => {};
+const Context = createContext({
+  info: emptyFunc,
+  success: emptyFunc,
+  error: emptyFunc,
+  warning: emptyFunc,
+});
 
 export function GlobalMessageContext({ children }) {
   const sendMessage = (type, messageText) => {

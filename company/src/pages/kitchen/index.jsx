@@ -2,22 +2,29 @@ import React, { useEffect, useState } from "react";
 import COMPANY_SERVICE from "@/services/company";
 import OrderList from "@/components/orderList";
 import { useSocket } from "@/context/SocketContext";
+import { useLoading } from "@/context/LoadingContext";
+import { useMessage } from "@/context/GlobalMessage";
 
 export default function Index() {
   const [orders, setOrders] = useState([]);
   const { listener, socket } = useSocket();
+  const { loading, setLoading } = useLoading();
+  const message = useMessage();
 
   const getOrders = async () => {
+    setLoading(true);
     const response = await COMPANY_SERVICE.getOrders();
     setOrders(response);
+    setLoading(false);
   };
 
   useEffect(() => {
     getOrders();
   }, []);
 
-  const onUpdate = () => {
-    getOrders();
+  const onUpdate = async () => {
+    await getOrders();
+    message.success("Sipariş başarıyla güncellendi");
   };
 
   useEffect(() => {
@@ -27,10 +34,11 @@ export default function Index() {
   }, [socket]);
 
   return (
-    <div>
+    <div className="kitchen-page">
+      <h2>Mutfak</h2>
       <div className="orders-table">
-        {orders.length !== 0 && <OrderList data={orders} onUpdate={onUpdate} />}
-        {orders.length === 0 && <div> hiç siparişiniz blulunmamaktadır</div>}
+        {!loading && <OrderList data={orders} onUpdate={onUpdate} />}
+        {!loading && orders.length === 0 && <div>Hiç siparişiniz bulunmamaktadır</div>}
       </div>
     </div>
   );

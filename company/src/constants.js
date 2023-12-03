@@ -20,6 +20,13 @@ export const ORDER_STATUSES = [
   "delivered",
   "canceled",
 ];
+export const ORDER_STATUS_TEXTS = {
+  waiting_approve: "Onay Bekliyor",
+  in_progress: "Hazırlanıyor",
+  ready: "Hazır",
+  delivered: "Teslim Edildi",
+  canceled: "İptal Edildi",
+};
 
 export const CLIENT_SIDE_IS_LOGIN_COOKIE_NAME = "is-login";
 
