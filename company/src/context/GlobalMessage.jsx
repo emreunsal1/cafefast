@@ -8,6 +8,7 @@ export function GlobalMessageContext({ children }) {
   const sendMessage = (type, messageText) => {
     toast(messageText, {
       type,
+      autoClose: 1500,
     });
   };
 

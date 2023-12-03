@@ -36,10 +36,10 @@ export default function Menu() {
 
   const menOnboardingController = async () => {
     const response = await getProducts();
-    if (STORAGE.getLocal("isCompleteMenuBoard") == "false" && response.length) {
+    if (STORAGE.getLocal("isCompleteMenuBoard") === "false" && response.length) {
       setIsModalOpen(true);
     }
-    if (STORAGE.getLocal("isCompleteMenuBoard") == "false" && !response.length) {
+    if (STORAGE.getLocal("isCompleteMenuBoard") === "false" && !response.length) {
       router.push("/product");
     }
   };
@@ -91,9 +91,10 @@ export default function Menu() {
       message.error("Menü oluşturulamadı");
       return;
     }
+    message.success("Menü oluşturuldu");
     setMenus([...menus, response.data]);
     setIsModalOpen(false);
-    if (STORAGE.getLocal("isCompleteMenuBoard") == "false") {
+    if (STORAGE.getLocal("isCompleteMenuBoard") === "false") {
       const { data } = response;
       router.push(`/menu/${data._id}`);
     }
@@ -120,7 +121,6 @@ export default function Menu() {
 
   return (
     <div>
-      {contextHolder}
       <div className="title">Menus</div>
       <button onClick={() => setSelectModeActive(!selectModeActive)}>Seç</button>
       {selectModeActive && <button onClick={() => deleteMenu({ menuIds: selectedMenuIds })}>Seçili Menüleri Sil</button>}
