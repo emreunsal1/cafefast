@@ -114,14 +114,13 @@ export default function Menu() {
     setSelectedMenuIds(selectedMenuIds.filter((ids) => ids !== menuId));
   };
 
-  console.log("selectedMenuIds :>> ", selectedMenuIds);
   useEffect(() => {
     getCompanyMenus();
   }, []);
 
   return (
-    <div>
-      <div className="title">Menus</div>
+    <div className="menus-page">
+      <h2 className="menus-page-title">Menüler</h2>
       <button onClick={() => setSelectModeActive(!selectModeActive)}>Seç</button>
       {selectModeActive && <button onClick={() => deleteMenu({ menuIds: selectedMenuIds })}>Seçili Menüleri Sil</button>}
       <div>
@@ -151,7 +150,7 @@ export default function Menu() {
             )}
           />
           <Table.Column
-            title="Name"
+            title="Menü Adı"
             key="name"
             render={(_, record) => (
               <Space>
@@ -160,7 +159,7 @@ export default function Menu() {
             )}
           />
           <Table.Column
-            title="Description"
+            title="Açıklama"
             key="description"
             render={(_, record) => (
               <Space>
@@ -170,12 +169,13 @@ export default function Menu() {
           />
 
           <Table.Column
-            title="Action"
+            title=""
             key="action"
+            width={100}
             render={(_, record) => (
               <Space size="middle">
-                <div onClick={() => deleteMenu({ menuId: record._id })}>delete</div>
-                <div onClick={() => setIsUpdate(record._id)}>update</div>
+                <div onClick={() => deleteMenu({ menuId: record._id })}>Sil</div>
+                <div onClick={() => setIsUpdate(record._id)}>Güncelle</div>
               </Space>
             )}
           />
@@ -183,7 +183,7 @@ export default function Menu() {
         </Table>
       </div>
       <div className="create-menu">
-        <Button variant="outlined" onClick={() => setIsModalOpen(true)}>Create Menu</Button>
+        <Button variant="outlined" onClick={() => setIsModalOpen(true)}>Yeni Menü Oluştur</Button>
       </div>
       <Modal
         title="Basic Modal"

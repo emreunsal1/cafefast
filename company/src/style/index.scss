@@ -3,12 +3,14 @@
 @import "./reset";
 @import "normalize.css";
 @import "../public/icomoon/style.css";
+@import "common";
 @import "./layout/index";
 
 // Pages
 @import "./pages/product-detail-page";
 @import "./pages/profile-page";
-@import "./pages/products";
+@import "./pages/products-page";
+@import "./pages/menus-page";
 
 //components
 @import "./components/sidebar";
@@ -19,26 +21,3 @@
 @import "./library/button";
 @import "./library/checkbox";
 @import "./library/select";
-
-// Common
-body {
-  font-family: "Inter", sans-serif;
-  color: $black;
-  line-height: 1;
-}
-
-.global-loading {
-  position: absolute;
-  inset: 0;
-  background-color: rgba($color: #fff, $alpha: 0.6);
-  z-index: 99;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
-  cursor: wait;
-  img {
-    width: 100px;
-    height: 100px;
-  }
-}

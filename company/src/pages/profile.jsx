@@ -125,10 +125,10 @@ export default function Profile() {
 
   return (
     <div className="profile-page">
-      <h2>Profil Bilgileri</h2>
+      <h3>Profil Bilgileri</h3>
       <div className="profile-section">
         <div className="profile-section-header">
-          <h3>Şirket Bilgileri</h3>
+          <h4>Şirket Bilgileri</h4>
         </div>
         <div className="divider" />
         <div className="profile-section-body">
@@ -178,7 +178,7 @@ export default function Profile() {
       </div>
       <div className="profile-section">
         <div className="profile-section-header">
-          <h3>Kullanıcı Bilgileri</h3>
+          <h4>Kullanıcı Bilgileri</h4>
         </div>
         <div className="divider" />
         <div className="profile-section-body">
