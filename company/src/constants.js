@@ -28,6 +28,14 @@ export const ORDER_STATUS_TEXTS = {
   canceled: "İptal Edildi",
 };
 
+export const PAGE_TITLES = {
+  product: "Yönetim Paneli | Ürünler",
+  menu: "Yönetim Paneli | Menüler",
+  kitchen: "Yönetim Paneli | Mutfak",
+  table: "Yönetim Paneli | Masalar",
+  campaings: "Yönetim Paneli | Kampanyalar",
+};
+
 export const CLIENT_SIDE_IS_LOGIN_COOKIE_NAME = "is-login";
 
 export const SAFE_IMAGE_TYPE = "image/png,image/jpeg, image/webp, image/heic";
