@@ -1,6 +1,8 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-shadow */
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useEffect, useMemo, useRef, useState,
+} from "react";
 import { useImmer } from "use-immer";
 import USER_SERVICE from "../services/user";
 import ADRESS_SERVICE from "../services/location";
@@ -10,10 +12,12 @@ import Button from "@/components/library/Button";
 import Input from "@/components/library/Input";
 import Select from "@/components/library/Select";
 import { useLoading } from "@/context/LoadingContext";
+import { useMessage } from "@/context/GlobalMessage";
 
 // TODO: açık adres ve posta kodu için input ekle
 export default function Profile() {
   const setLoading = useLoading();
+  const message = useMessage();
   const [user, setUser] = useState({
     name: "",
     surname: "",
@@ -77,6 +81,7 @@ export default function Profile() {
     if (response !== false && companyResponse !== false) {
       getUserData();
     }
+    message.success("OLEYYY");
     setLoading(false);
   };
 

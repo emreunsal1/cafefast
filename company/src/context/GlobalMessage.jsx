@@ -1,20 +1,27 @@
 import React, { createContext, useContext } from "react";
-import { message } from "antd";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Context = createContext({});
 
 export function GlobalMessageContext({ children }) {
-  const [messageApi, contextHolder] = message.useMessage();
-
   const sendMessage = (type, messageText) => {
-    messageApi.open({
+    toast(messageText, {
       type,
-      content: messageText,
     });
   };
+
+  const info = (text) => sendMessage("info", text);
+  const success = (text) => sendMessage("success", text);
+  const error = (text) => sendMessage("error", text);
+  const warning = (text) => sendMessage("warning", text);
+
   return (
-    <Context.Provider value={sendMessage}>
-      {contextHolder}
+    <Context.Provider value={{
+      info, success, error, warning,
+    }}
+    >
+      <ToastContainer />
       {children}
     </Context.Provider>
   );
