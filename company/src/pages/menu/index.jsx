@@ -2,17 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Table, Space,
   Modal, Input,
-  message,
 } from "antd";
 import { useRouter } from "next/router";
 import { MENU_SERVICE } from "../../services/menu";
 import COMPANY_SERVICE from "@/services/company";
-import Layout from "../../components/Layout";
 import { STORAGE } from "@/utils/browserStorage";
 import { useProduct } from "@/context/ProductContext";
 import USER_SERVICE from "@/services/user";
 import Button from "@/components/library/Button";
 import Checkbox from "@/components/library/Checkbox";
+import { useMessage } from "@/context/GlobalMessage";
 
 export default function Menu() {
   const [menus, setMenus] = useState([]);
@@ -22,7 +21,7 @@ export default function Menu() {
   const [selectedMenuIds, setSelectedMenuIds] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
   const [newMenu, setNewMenu] = useState({ name: "", description: "" });
-  const [messageApi, contextHolder] = message.useMessage();
+  const message = useMessage();
   const [loading, setLoading] = useState(false);
   const { getProducts } = useProduct();
   const router = useRouter();
@@ -83,13 +82,13 @@ export default function Menu() {
     setLoading(true);
     const { name, desc } = newMenu;
     if (!name.length) {
-      messageApi.error("Name Is Required");
+      message.error("İsim girmelisiniz");
       return;
     }
     const response = await MENU_SERVICE.create(name, desc);
     setLoading(false);
     if (response.status !== 200) {
-      messageApi.error("Not Created Menu :(");
+      message.error("Menü oluşturulamadı");
       return;
     }
     setMenus([...menus, response.data]);

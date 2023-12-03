@@ -81,7 +81,7 @@ export default function Profile() {
     if (response !== false && companyResponse !== false) {
       getUserData();
     }
-    message.success("OLEYYY");
+    message.success("Bilgilerin başarıyla kaydedildi.");
     setLoading(false);
   };
 

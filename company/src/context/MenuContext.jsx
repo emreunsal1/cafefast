@@ -9,7 +9,7 @@ export function MenuDetailContext({ children }) {
   const [menu, setMenu] = useState(null);
   const [categories, setCategories] = useState([]);
   const [campaings, setCampaings] = useState([]);
-  const sendGlobalMessage = useMessage();
+  const message = useMessage();
 
   const getMenu = async (menuId) => {
     const response = await MENU_SERVICE.detail(menuId);
@@ -26,7 +26,7 @@ export function MenuDetailContext({ children }) {
       return response.data;
     } catch (error) {
       if (error.response.data.error === "CATEGORY_NAME_MUST_BE_UNIQUE") {
-        sendGlobalMessage("error", "category name must be unique");
+        message.error("category name must be unique");
       }
     }
   };
@@ -40,7 +40,7 @@ export function MenuDetailContext({ children }) {
       setCategories(newCategories);
     } catch (error) {
       if (error.response.data.error === "CATEGORY_NAME_MUST_BE_UNIQUE") {
-        sendGlobalMessage("error", "category name must be unique");
+        message.error("category name must be unique");
       }
     }
   };

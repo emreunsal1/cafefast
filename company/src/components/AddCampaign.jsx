@@ -77,7 +77,7 @@ function CampaignDetail({ action }) {
     if (!campaing) {
       const response = await CAMPAIGN_SERVICE.create(submitData);
       if (response) {
-        message("success", "Kampanya başarıyla oluşturuldu!");
+        message.success("Kampanya başarıyla oluşturuldu!");
         action.updateState(false);
       }
       return;
@@ -86,7 +86,7 @@ function CampaignDetail({ action }) {
     const response = await CAMPAIGN_SERVICE.update(campaing._id, submitData);
     if (response) {
       setCurrentCampaign(response.data);
-      message("success", "Güncelleme başarılı!");
+      message.success("Güncelleme başarılı!");
       action.updateState(false);
     }
   };
