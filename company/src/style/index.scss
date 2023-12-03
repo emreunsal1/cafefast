@@ -26,3 +26,19 @@ body {
   color: $black;
   line-height: 1;
 }
+
+.global-loading {
+  position: absolute;
+  inset: 0;
+  background-color: rgba($color: #fff, $alpha: 0.6);
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  cursor: wait;
+  img {
+    width: 100px;
+    height: 100px;
+  }
+}

@@ -9,9 +9,11 @@ import { CDN_SERVICE } from "../services/cdn";
 import Button from "@/components/library/Button";
 import Input from "@/components/library/Input";
 import Select from "@/components/library/Select";
+import { useLoading } from "@/context/LoadingContext";
 
 // TODO: açık adres ve posta kodu için input ekle
 export default function Profile() {
+  const setLoading = useLoading();
   const [user, setUser] = useState({
     name: "",
     surname: "",
@@ -59,6 +61,7 @@ export default function Profile() {
   };
 
   const saveButtonClickHandler = async () => {
+    setLoading(true);
     const response = await USER_SERVICE.update(user);
     const _companyUpdateData = JSON.parse(JSON.stringify(companyData));
     if (selectedImage.current) {
@@ -74,6 +77,7 @@ export default function Profile() {
     if (response !== false && companyResponse !== false) {
       getUserData();
     }
+    setLoading(false);
   };
 
   const getCities = async () => {
