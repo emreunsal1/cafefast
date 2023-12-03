@@ -33,13 +33,6 @@ productRouter.get(
 );
 
 productRouter.get(
-  "/:productId",
-  COMPANY_MIDDLEWARE,
-  PRODUCT_EXISTS_IN_COMPANY_MIDDLEWARE,
-  getProductDetailController,
-);
-
-productRouter.get(
   "/export",
   exportAllProductsController,
 );
@@ -49,6 +42,13 @@ productRouter.post(
   uploadMiddleware.single("products"),
   COMPANY_MIDDLEWARE,
   importProductsController,
+);
+
+productRouter.get(
+  "/:productId",
+  COMPANY_MIDDLEWARE,
+  PRODUCT_EXISTS_IN_COMPANY_MIDDLEWARE,
+  getProductDetailController,
 );
 
 productRouter.post(

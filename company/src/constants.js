@@ -34,6 +34,7 @@ export const PAGE_TITLES = {
   kitchen: "Yönetim Paneli | Mutfak",
   table: "Yönetim Paneli | Masalar",
   campaings: "Yönetim Paneli | Kampanyalar",
+  profile: "Yönetim Paneli | Profil Bilgileri",
 };
 
 export const CLIENT_SIDE_IS_LOGIN_COOKIE_NAME = "is-login";
