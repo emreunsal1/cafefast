@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import classNames from "classnames";
 
 export default function Input({
-  label, description, value, type, onChange, className, placeholder, error, readOnly, name,
+  label, description, type,
+  onChange, value, className,
+  placeholder, error, readOnly, name,
 }) {
+  const ref = useRef();
   const [focus, setFocus] = useState(false);
   const classname = classNames({
     "library-input": true,
@@ -13,14 +16,23 @@ export default function Input({
     "read-only": readOnly,
   });
 
+  if (type === "number" && ref.current) {
+    ref.current.addEventListener("keypress", (evt) => {
+      // Only Numbers
+      if (evt.which < 48 || evt.which > 57) {
+        evt.preventDefault();
+      }
+    });
+  }
+
   return (
     <div className={classname}>
       {label && <div className="library-input-label">{label}</div>}
       <div className="library-input-input-wrapper">
         <input
           placeholder={placeholder}
-          type={type}
           name={name}
+          ref={ref}
           readOnly={readOnly}
           value={value}
           onChange={onChange}

@@ -1,13 +1,13 @@
 import dotenv from "dotenv";
 import http from "http";
-import express, { Request, Response } from "express";
+import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { checkS3Connection } from "./services/aws";
 
 import router from "./router";
 import connectDB from "./database/connect";
-import logger, { clearLogs } from "./utils/logger";
+import logger from "./utils/logger";
 import { createSocketServer } from "./utils/socket";
 import { connectToRedis } from "./services/redis";
 import { errorHandlerMiddleware } from "./middleware/errorHandlerMiddleware";
@@ -16,10 +16,11 @@ const app = express();
 
 const init = async () => {
   dotenv.config();
-  await clearLogs();
+
   await connectDB();
   await connectToRedis();
   await checkS3Connection();
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(cors({ credentials: true, origin: ["http://localhost:3000", "http://localhost:3001"] }));

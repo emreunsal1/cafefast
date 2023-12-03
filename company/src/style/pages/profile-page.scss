@@ -37,6 +37,7 @@
       }
       &-city-district-input {
         display: flex;
+        margin-bottom: 15px;
         .library-select {
           width: 100%;
           &:not(:last-child) {

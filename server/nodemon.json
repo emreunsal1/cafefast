@@ -1,4 +1,4 @@
 {
-  "watch": ["dist/", "package.json"],
-  "delay": 500
+  "watch": ["./dist"],
+  "delay": 1000
 }

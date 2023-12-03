@@ -149,6 +149,22 @@ export default function Profile() {
               onChange={(data) => selectOnChangeHandler("district", data)}
             />
           </div>
+          <Input
+            className="profile-section-body-input"
+            label="Posta Kodu"
+            type="number"
+            value={companyData.address.postalCode}
+            onChange={(e) => setCompanyData((_companyData) => {
+              _companyData.address.postalCode = Number(e.target.value);
+            })}
+          />
+          <Input
+            className="profile-section-body-input"
+            label="Açık Adres"
+            value={companyData.address.mailingAddress}
+            onChange={(e) => setCompanyData((_companyData) => { _companyData.address.mailingAddress = e.target.value; })}
+          />
+
         </div>
       </div>
       <div className="profile-section">
