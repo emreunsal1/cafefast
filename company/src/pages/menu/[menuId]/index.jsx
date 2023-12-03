@@ -74,60 +74,13 @@ function MenuDetail() {
   }, [isAddCampaing]);
 
   return (
-    <div>
-      <h2>Categories</h2>
-      <Row>
-        <Col span={4}>
-          <div className="side-bar">
-            <CategorySideBar selectedCategoryId={selectedCategoryId} setSelectedCategoryId={setSelectedCategoryId} />
-          </div>
-        </Col>
-        <Col span={18}>
-          <MenuDetailBody selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategoryId} />
-        </Col>
-      </Row>
-      <h2>Campaigns</h2>
-      <Row>
-        <Col span={10}>
-          <div className="side-bar">
-            <Row gutter={16}>
-              {campaings && campaings.map((campaing) => (
-                <Col span={8} key={campaing._id}>
-                  <Card
-                    title={campaing.name}
-                    extra={<div onClick={() => removeClickHandler(campaing)}>remove -</div>}
-                  >
-                    {campaing.description}
-                  </Card>
-                </Col>
-              ))}
-            </Row>
-            <Button onClick={() => setIsAddCampaing(true)}>Add Campaign</Button>
-          </div>
-        </Col>
-      </Row>
-      {isAddCampaing && (
-      <Row gutter={16}>
-        { allCampaings.map((campain, index) => (
-          <Col span={8} key={index}>
-            <Card
-              title={campain.name}
-              extra={<div onClick={() => addCampaingClickHandler(campain)}>add +</div>}
-            >
-              {campain.description}
-            </Card>
-          </Col>
-        ))}
-        <Button danger className="close-add-campaing-place" onClick={() => setIsAddCampaing(false)}>Kapat</Button>
-      </Row>
-      )}
-      {selectedCategory && (
-        <FloatButton
-          icon={<PlusOutlined />}
-          description="Add Products"
-          onClick={redirectToProductAddPage}
+    <div className="menu-detail-page">
+      <div className="menu-detail-side-bar">
+        <CategorySideBar
+          selectedCategoryId={selectedCategoryId}
+          setSelectedCategoryId={setSelectedCategoryId}
         />
-      )}
+      </div>
     </div>
   );
 }

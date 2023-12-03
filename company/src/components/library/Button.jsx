@@ -5,7 +5,7 @@ export default function Button({
   variant, hmtlType, onClick, children, disabled, size, fluid,
 }) {
   const classname = classNames("library-button", {
-    [variant]: variant,
+    [variant]: variant, // default filled | outlined
     [size]: size,
     fluid: !!fluid,
   });

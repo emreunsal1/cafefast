@@ -1,0 +1,73 @@
+.category-side-bar-container {
+  border-right: 1px solid $border-gray;
+  display: inline-block;
+  height: calc(100vh - $header-height);
+  position: fixed;
+
+  .add-campaing-button {
+    padding: 10px;
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+  }
+  h6 {
+    margin-bottom: 15px;
+    padding: 10px;
+  }
+  .category-list {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid $border-gray;
+    .list-item {
+      padding: 15px 30px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      color: $gray;
+      &:hover {
+        background-color: rgba($color: #2f4cdd, $alpha: 0.1);
+        p {
+          color: #2f4cdd;
+        }
+      }
+      &.active {
+        background-color: rgba($color: #2f4cdd, $alpha: 0.1);
+        p {
+          color: #2f4cdd;
+        }
+      }
+    }
+  }
+  .add-category-button {
+    padding: 30px;
+    .new-category-place {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      .actions {
+        margin-left: 10px;
+        i {
+          color: $gray;
+          cursor: pointer;
+          border-radius: 50%;
+          padding: 5px;
+          font-size: 18px;
+          font-weight: bold;
+        }
+        .icon-checkmark {
+          color: $green;
+          &:hover {
+            background-color: rgba($color: $green, $alpha: 0.1);
+          }
+        }
+        .icon-cancel {
+          color: $red;
+          &:hover {
+            background-color: rgba($color: $red, $alpha: 0.1);
+          }
+        }
+      }
+    }
+  }
+}

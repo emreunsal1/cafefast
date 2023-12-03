@@ -1,7 +1,25 @@
+.header-place-holder {
+  min-height: $header-height;
+  top: 0;
+  left: 0;
+  width: calc(100% - $sidebar-closed-width);
+  &.opened {
+    width: calc(100% - $sidebar-opened-width);
+  }
+}
 .header-layout {
   width: 100%;
   border-bottom: 1px solid $border-gray;
   display: block;
+  position: fixed;
+  min-height: 76px;
+  top: 0;
+  left: $sidebar-closed-width;
+  width: calc(100% - $sidebar-closed-width);
+  &.opened {
+    width: calc(100% - $sidebar-opened-width);
+    left: $sidebar-opened-width;
+  }
 
   .header-container {
     width: 100%;
