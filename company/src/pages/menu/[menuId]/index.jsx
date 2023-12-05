@@ -20,10 +20,6 @@ function MenuDetail() {
 
   const router = useRouter();
 
-  const redirectToProductAddPage = () => {
-    router.push(`/menu/${router.query.menuId}/category/${selectedCategory._id}`);
-  };
-
   const getCampaings = async () => {
     const response = await CAMPAIGN_SERVICE.get();
     const { data } = response;
