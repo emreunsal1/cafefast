@@ -46,7 +46,7 @@ export default function CategoryDetail() {
     await CATEGORY_SERVICE.addProduct(router.query.menuId, categoryData._id, productData._id);
     const filteredProducts = allProducts.filter((_product) => _product._id !== productData._id);
     setCategoryProducts([...categoryProducts, productData]);
-    await getMenu(router.query.menuId);
+    await getMenu();
     setAllProducts(filteredProducts);
     if (STORAGE.getLocal("isCompleteMenuBoard") === "false") {
       router.push("/table");

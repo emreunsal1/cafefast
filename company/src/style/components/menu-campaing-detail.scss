@@ -1,0 +1,31 @@
+.menu-campaing-detail {
+  padding: 20px;
+  width: 100%;
+  .menu-campaing-title {
+    margin-bottom: 20px;
+  }
+  .menu-campaing-body {
+    .active-campaings {
+      margin-bottom: 20px;
+      border: 1px solid #d0d5dd;
+      border-radius: 8px;
+      padding: 10px;
+      .title {
+        margin-bottom: 10px;
+      }
+      .table-wrapper {
+      }
+    }
+    .deactive-campaings {
+      margin-bottom: 20px;
+      border: 1px solid #d0d5dd;
+      border-radius: 8px;
+      padding: 10px;
+      .title {
+        margin-bottom: 10px;
+      }
+      .table-wrapper {
+      }
+    }
+  }
+}

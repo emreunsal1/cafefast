@@ -5,6 +5,7 @@ import CategorySideBar from "../../../components/CategorySideBar";
 import { MenuDetailContext, useMenuDetail } from "../../../context/MenuContext";
 import CAMPAIGN_SERVICE from "@/services/campaign";
 import CategoryDetail from "@/components/CategoryDetail";
+import MenuCampaingDetail from "@/components/MenuCampaingDetail";
 
 function MenuDetail() {
   const {
@@ -71,9 +72,16 @@ function MenuDetail() {
   return (
     <div className="menu-detail-page">
       <CategorySideBar />
+      {selectedCategory && (
       <div className="menu-detail-body-wrapper">
         <CategoryDetail />
       </div>
+      )}
+      {!selectedCategory && (
+      <div className="menu-detail-campaings-wrapper">
+        <MenuCampaingDetail />
+      </div>
+      )}
     </div>
   );
 }

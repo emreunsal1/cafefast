@@ -73,7 +73,7 @@ export default function CategorySideBar() {
         ))}
       </div>
       <div className="add-campaign-button">
-        <Button fluid>Kampnayalar</Button>
+        <Button fluid onClick={() => setSelectedCategory(null)}>Kampnayalar</Button>
       </div>
     </div>
   );

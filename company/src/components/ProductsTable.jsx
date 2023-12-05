@@ -10,7 +10,7 @@ export default function ProductsTable({ selectedCategory, data }) {
 
   const deleteButtonClikHandler = async (id) => {
     await CATEGORY_SERVICE.removeProduct(router.query.menuId, selectedCategory._id, id);
-    getMenu(router.query.menuId);
+    getMenu();
   };
 
   const editButtonClickHandler = (id) => {

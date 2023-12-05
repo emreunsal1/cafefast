@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
+import { useRouter } from "next/router";
 import { CATEGORY_SERVICE, MENU_SERVICE } from "../services/menu";
 import { useMessage } from "./GlobalMessage";
 import CAMPAIGN_SERVICE from "@/services/campaign";
@@ -12,7 +13,9 @@ export function MenuDetailContext({ children }) {
   const [selectedCategory, setSelectedCategory] = useState();
   const message = useMessage();
 
-  const getMenu = async (menuId) => {
+  const router = useRouter();
+
+  const getMenu = async (menuId = router.query.menuId) => {
     const response = await MENU_SERVICE.detail(menuId);
     setMenu(response.data);
     setCategories(response.data.categories);
