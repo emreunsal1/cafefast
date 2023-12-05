@@ -1,29 +1,37 @@
-.category-side-bar-placeholder {
-  width: 217px;
-}
-
 .category-side-bar-container {
   border-right: 1px solid $border-gray;
   display: inline-block;
-  height: calc(100vh - $header-height);
-  position: fixed;
+  height: 100%;
+  position: relative;
+  width: 300px;
 
-  .add-campaing-button {
+  &-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    h6 {
+    }
+    .library-button {
+    }
+  }
+
+  .add-campaign-button {
     padding: 10px;
     position: absolute;
     bottom: 0px;
     width: 100%;
   }
-  h6 {
-    margin-bottom: 15px;
-    padding: 10px;
-  }
+
   .category-list {
     margin-bottom: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid $border-gray;
-    .list-item {
-      padding: 15px 30px;
+    &-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
       font-size: $text-small;
       font-weight: bold;
       cursor: pointer;
@@ -41,14 +49,18 @@
           color: $primary;
         }
       }
+
+      i {
+        font-size: 10px;
+      }
     }
   }
   .add-category-button {
-    padding: 30px;
+    padding: 0 10px 0 10px;
+    margin-bottom: 10px;
     .new-category-place {
       display: flex;
       align-items: center;
-      margin-bottom: 10px;
       .actions {
         margin-left: 10px;
         i {

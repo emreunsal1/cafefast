@@ -70,9 +70,7 @@ function MenuDetail() {
 
   return (
     <div className="menu-detail-page">
-      <div className="menu-detail-side-bar">
-        <CategorySideBar />
-      </div>
+      <CategorySideBar />
       <div className="menu-detail-body-wrapper">
         <CategoryDetail />
       </div>

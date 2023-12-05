@@ -1,8 +1,15 @@
 // Common
-body {
-  font-family: "Inter", sans-serif;
-  color: $black;
-  line-height: 1;
+html {
+  height: 100%;
+  body {
+    font-family: "Inter", sans-serif;
+    color: $black;
+    line-height: 1;
+    height: 100%;
+  }
+  #__next {
+    height: 100%;
+  }
 }
 
 .global-loading {

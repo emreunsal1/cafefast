@@ -20,7 +20,7 @@ export default function Layout({ children }) {
   }, []);
 
   return (
-    <div id="layout">
+    <div className="layout">
       <SideBar isOpened={sideBarIsOpened} />
       <div className="main" style={{ width: "100%" }}>
         <Header sideBarButtonClickHandler={sideBarButtonClickHandler} sideBarIsOpened={sideBarIsOpened} />

@@ -40,53 +40,41 @@ export default function CategorySideBar() {
   }, [router.isReady]);
 
   return (
-    <>
-      <div className="category-side-bar-placeholder" />
-      <div className="category-side-bar-container">
-        <div className="categories-place">
-          <h6>Kategoriler</h6>
-          <div className="category-list">
-
-            {categories.map((item) => (
-              <div
-                className={`list-item ${selectedCategory?._id === item._id ? "active" : ""}`}
-                onClick={() => setSelectedCategory(item)}
-              >
-                <p>
-                  <span>&#x25cf;</span>
-                  {" "}
-                  {item.name}
-                </p>
-              </div>
-            ))}
-
-          </div>
-          <div className="add-category-button">
-            {isCreateCategory && (
-            <div className="new-category-place">
-              <Input placeholder="İçecekler" onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })} />
-              <div className="actions">
-                <Icon name="checkmark" onClick={() => createCategoryButtonClickHandler()} />
-                <Icon name="cancel" onClick={() => setIsCreateCategory(false)} />
-              </div>
-            </div>
-            )}
-            {!isCreateCategory && (
-            <Button
-              onClick={() => setIsCreateCategory(true)}
-              fluid
-              variant="outlined"
-            >
-              Kategori Ekle
-            </Button>
-            )}
-          </div>
-        </div>
-        <div className="add-campaing-button">
-          <Button fluid>Kampnayalar</Button>
-        </div>
+    <div className="category-side-bar-container">
+      <div className="category-side-bar-container-title">
+        <h6>Kategoriler</h6>
+        <Button
+          onClick={() => setIsCreateCategory(true)}
+          variant="outlined"
+        >
+          Ekle +
+        </Button>
       </div>
-
-    </>
+      {isCreateCategory && (
+        <div className="add-category-button">
+          <div className="new-category-place">
+            <Input placeholder="İçecekler" onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })} />
+            <div className="actions">
+              <Icon name="checkmark" onClick={() => createCategoryButtonClickHandler()} />
+              <Icon name="cancel" onClick={() => setIsCreateCategory(false)} />
+            </div>
+          </div>
+        </div>
+      )}
+      <div className="category-list">
+        {categories.map((item) => (
+          <div
+            className={`category-list-item ${selectedCategory?._id === item._id ? "active" : ""}`}
+            onClick={() => setSelectedCategory(item)}
+          >
+            {item.name}
+            <Icon name="right-arrow" />
+          </div>
+        ))}
+      </div>
+      <div className="add-campaign-button">
+        <Button fluid>Kampnayalar</Button>
+      </div>
+    </div>
   );
 }

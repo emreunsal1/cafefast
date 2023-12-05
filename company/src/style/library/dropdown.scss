@@ -3,6 +3,7 @@
   display: inline-block;
   &-button {
     user-select: none;
+    cursor: pointer;
   }
   &-body {
     display: flex;

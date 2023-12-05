@@ -1,6 +1,7 @@
 .sidebar-placeholder {
   min-width: $sidebar-opened-width;
   transition: 300ms;
+  height: 100%;
   &.closed {
     min-width: $sidebar-closed-width;
   }

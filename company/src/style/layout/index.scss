@@ -1,6 +1,9 @@
-#layout {
+.layout {
   display: flex;
+  height: 100%;
   main {
     width: 100%;
+    height: calc(100% - $header-height);
+    overflow-y: scroll;
   }
 }

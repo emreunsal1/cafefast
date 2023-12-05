@@ -1,8 +1,7 @@
 .menu-detail-page {
   display: flex;
-  .menu-detail-side-bar {
-  }
+  height: 100%;
   .menu-detail-body-wrapper {
-    width: 100%;
+    flex: 1;
   }
 }

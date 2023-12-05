@@ -1,22 +1,19 @@
 .header-place-holder {
-  min-height: $header-height;
+  height: $header-height;
   top: 0;
   left: 0;
-  width: calc(100% - $sidebar-closed-width);
-  &.opened {
-    width: calc(100% - $sidebar-opened-width);
-  }
+  width: 100%;
 }
 .header-layout {
   width: 100%;
-  border-bottom: 1px solid $border-gray;
   display: block;
   position: fixed;
-  min-height: 76px;
+  height: $header-height;
   top: 0;
   z-index: 99;
   left: $sidebar-closed-width;
   width: calc(100% - $sidebar-closed-width);
+  transition: 200ms;
   &.opened {
     width: calc(100% - $sidebar-opened-width);
     left: $sidebar-opened-width;
@@ -29,10 +26,14 @@
     align-items: center;
     padding: 12.5px 10px;
     background-color: #fff;
+    height: $header-height;
+    border-bottom: 1px solid $border-gray;
+
     .header-left {
+      width: 20px;
       .button-wrapper {
         i {
-          font-size: 35px;
+          font-size: 20px;
           font-weight: bold;
           cursor: pointer;
           color: $primary;
@@ -54,7 +55,7 @@
     .header-right {
       display: flex;
       justify-content: space-evenly;
-      width: 100px;
+      width: 50px;
       .library-dropdown-button {
         font-size: 30px;
       }
