@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Table } from "antd";
-import { LeftCircleFilled } from "@ant-design/icons";
 import PRODUCT_SERVICE from "@/services/product";
-import { CATEGORY_SERVICE, MENU_SERVICE } from "@/services/menu";
+import { CATEGORY_SERVICE } from "@/services/menu";
 import { STORAGE } from "@/utils/browserStorage";
 import { useMenuDetail } from "@/context/MenuContext";
 import Button from "./library/Button";
@@ -49,7 +48,7 @@ export default function CategoryDetail() {
     setCategoryProducts([...categoryProducts, productData]);
     await getMenu(router.query.menuId);
     setAllProducts(filteredProducts);
-    if (STORAGE.getLocal("isCompleteMenuBoard") == "false") {
+    if (STORAGE.getLocal("isCompleteMenuBoard") === "false") {
       router.push("/table");
     }
   };
@@ -65,19 +64,19 @@ export default function CategoryDetail() {
 
   const defaultColumns = [
     {
-      title: "Name",
+      title: "Ürün Adı",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Description",
+      title: "Açıklama",
       dataIndex: "description",
       key: "age",
     },
     {
-      title: "Price",
+      title: "Fiyat",
       dataIndex: "price",
-      key: "price",
+      key: "priceAsText",
     },
   ];
 
@@ -123,7 +122,7 @@ export default function CategoryDetail() {
         </h3>
       </div>
 
-      <div className="active-products">
+      <div className="category-detail-list active-products">
         <div className="title">
           <h5>Mevcut Ürünler</h5>
         </div>
@@ -132,7 +131,7 @@ export default function CategoryDetail() {
         </div>
       </div>
 
-      <div className="deactive-products">
+      <div className="category-detail-list deactive-products">
         <div className="title">
           <h5>Tüm Ürünler</h5>
         </div>

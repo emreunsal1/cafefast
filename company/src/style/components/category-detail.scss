@@ -1,20 +1,18 @@
 .category-detail {
-  padding: 15px;
+  padding: 20px;
   .selected-category-name {
     margin-bottom: 20px;
   }
-  .active-products {
+
+  .category-detail-list {
     margin-bottom: 20px;
+    border: 1px solid $border-gray;
+    border-radius: 8px;
+    padding: 10px;
     .title {
       margin-bottom: 10px;
     }
-    .table-wrapper {
-    }
-  }
-  .deactive-products {
-    .title {
-      margin-bottom: 10px;
-    }
+
     .table-wrapper {
       .actions {
         button {
@@ -23,6 +21,10 @@
           }
         }
       }
+    }
+    .active-products {
+    }
+    .deactive-products {
     }
   }
 }
