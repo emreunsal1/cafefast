@@ -36,7 +36,7 @@ export default function Dropdown({
         {buttonContent}
       </motion.div>
       <motion.div
-        animate={{ opacity: isOpen ? 1 : 0 }}
+        animate={{ opacity: isOpen ? 1 : 0, visibility: isOpen ? "visible" : "hidden" }}
         id="library-dropdown-body"
         className={bodyClassname}
       >

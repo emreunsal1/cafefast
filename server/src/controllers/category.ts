@@ -77,7 +77,6 @@ export const deleteCategoryController = async (req: Request, res: Response, next
     }
 
     res.status(200).send();
-    return;
   } catch (error) {
     next(error);
   }

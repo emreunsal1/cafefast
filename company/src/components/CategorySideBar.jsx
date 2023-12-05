@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import classNames from "classnames";
+import { motion } from "framer-motion";
 import { useMenuDetail } from "../context/MenuContext";
 import { STORAGE } from "@/utils/browserStorage";
 import Button from "./library/Button";
 import Input from "./library/Input";
 import Icon from "./library/Icon";
+import { useLoading } from "@/context/LoadingContext";
 
 export default function CategorySideBar() {
   const {
@@ -14,13 +17,16 @@ export default function CategorySideBar() {
   const [newCategory, setNewCategory] = useState({ name: "", order: categories.length + 1 });
   const [isCreateCategory, setIsCreateCategory] = useState(false);
   const router = useRouter();
+  const { setLoading } = useLoading();
 
   const addCategoryHandler = async (id) => {
     const { name, order } = newCategory;
+    setLoading(true);
     const response = await addCategory(id, name, order);
-    setNewCategory({ name: "", order: categories.length + 1 });
+    setLoading(false);
     setIsCreateCategory(false);
-    if (STORAGE.getLocal("isCompleteMenuBoard") == "false") {
+    setNewCategory({ name: "", order: categories.length + 1 });
+    if (STORAGE.getLocal("isCompleteMenuBoard") === "false") {
       router.push(`/menu/${router.query.menuId}/category/${response._id}`);
     }
   };
@@ -34,7 +40,7 @@ export default function CategorySideBar() {
   };
 
   useEffect(() => {
-    if (STORAGE.getLocal("isCompleteMenuBoard") == "false") {
+    if (STORAGE.getLocal("isCompleteMenuBoard") === "false") {
       setIsCreateCategory(true);
     }
   }, [router.isReady]);
@@ -50,17 +56,19 @@ export default function CategorySideBar() {
           Ekle +
         </Button>
       </div>
-      {isCreateCategory && (
-        <div className="add-category-button">
-          <div className="new-category-place">
-            <Input placeholder="İçecekler" onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })} />
-            <div className="actions">
-              <Icon name="checkmark" onClick={() => createCategoryButtonClickHandler()} />
-              <Icon name="cancel" onClick={() => setIsCreateCategory(false)} />
-            </div>
+      <div
+        className={classNames("add-category-button", {
+          active: isCreateCategory,
+        })}
+      >
+        <div className="new-category-place">
+          <Input placeholder="İçecekler" onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })} />
+          <div className="actions">
+            <Icon name="checkmark" onClick={() => createCategoryButtonClickHandler()} />
+            <Icon name="cancel" onClick={() => setIsCreateCategory(false)} />
           </div>
         </div>
-      )}
+      </div>
       <div className="category-list">
         {categories.map((item) => (
           <div

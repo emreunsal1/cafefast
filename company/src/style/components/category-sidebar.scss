@@ -1,3 +1,6 @@
+$campaigns-button-height: 62px;
+$categories-sidebar-title-height: 62px;
+
 .category-side-bar-container {
   border-right: 1px solid $border-gray;
   display: inline-block;
@@ -10,6 +13,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px;
+    border-bottom: 1px solid $border-gray;
     h6 {
     }
     .library-button {
@@ -27,6 +31,10 @@
     margin-bottom: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid $border-gray;
+    height: calc(
+      100% - $categories-sidebar-title-height - $campaigns-button-height
+    );
+    overflow-y: scroll;
     &-item {
       display: flex;
       justify-content: space-between;
@@ -56,8 +64,22 @@
     }
   }
   .add-category-button {
-    padding: 0 10px 0 10px;
-    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #fff;
+    position: absolute;
+    top: $categories-sidebar-title-height + 1;
+    border-bottom: 1px solid $border-gray;
+    width: 100%;
+    left: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: 100ms ease-in;
+    visibility: hidden;
+    &.active {
+      opacity: 1;
+      transform: translateY(-0);
+      visibility: visible;
+    }
     .new-category-place {
       display: flex;
       align-items: center;
