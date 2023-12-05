@@ -30,13 +30,19 @@
     border-bottom: 1px solid $border-gray;
 
     .header-left {
-      width: 20px;
+      width: 35px;
       .button-wrapper {
         i {
           font-size: 20px;
           font-weight: bold;
           cursor: pointer;
           color: $primary;
+          &:nth-child(2) {
+            margin-left: -12px;
+          }
+          &:nth-child(3) {
+            margin-left: -12px;
+          }
         }
       }
     }

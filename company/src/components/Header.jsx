@@ -41,6 +41,8 @@ export default function Header({ sideBarButtonClickHandler, sideBarIsOpened }) {
             <div className="button-wrapper" onClick={sideBarButtonClickHandler}>
               <motion.div animate={{ transform: sideBarIsOpened ? "rotate(180deg)" : "rotate(0deg)" }}>
                 <Icon name="right-arrow" />
+                <Icon name="right-arrow" />
+                <Icon name="right-arrow" />
               </motion.div>
             </div>
           </div>
