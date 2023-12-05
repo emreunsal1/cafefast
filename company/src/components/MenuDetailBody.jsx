@@ -22,14 +22,11 @@ export default function MenuDetailBody({ selectedCategory }) {
   };
 
   return (
-    <div>
-      <div className="products">
-        {!selectedCategory && <Empty />}
-        <Row>
-          <ProductsTable selectedCategory={selectedCategory} data={selectedCategory?.products} />
-        </Row>
-      </div>
-      <Col span={8} />
+    <div className="products">
+      {!selectedCategory && <Empty />}
+      <Row>
+        <ProductsTable selectedCategory={selectedCategory} data={selectedCategory?.products} />
+      </Row>
     </div>
   );
 }

@@ -5,12 +5,20 @@ import { LeftCircleFilled } from "@ant-design/icons";
 import PRODUCT_SERVICE from "@/services/product";
 import { CATEGORY_SERVICE, MENU_SERVICE } from "@/services/menu";
 import { STORAGE } from "@/utils/browserStorage";
+import { useMenuDetail } from "@/context/MenuContext";
+import Button from "./library/Button";
+import Icon from "./library/Icon";
+import { useLoading } from "@/context/LoadingContext";
 
-export default function CategoryProducts() {
+export default function CategoryDetail() {
   const router = useRouter();
   const [allProducts, setAllProducts] = useState([]);
   const [categoryProducts, setCategoryProducts] = useState([]);
   const [categoryData, setCategoryData] = useState(null);
+  const { selectedCategory } = useMenuDetail();
+
+  const { loading, setLoading } = useLoading();
+  const { menu, getMenu } = useMenuDetail();
 
   const fetchAllProducts = async () => {
     const response = await PRODUCT_SERVICE.get();
@@ -18,30 +26,32 @@ export default function CategoryProducts() {
   };
 
   const fetchMenuData = async () => {
-    const response = await MENU_SERVICE.detail(router.query.menuId);
-    const foundCategory = response.data.categories.find((category) => category._id === router.query.categoryId);
+    const foundCategory = menu.categories.find((category) => category._id === selectedCategory._id);
     setCategoryData(foundCategory);
     setCategoryProducts(foundCategory.products);
+    setLoading(false);
   };
 
   useEffect(() => {
-    if (router.isReady) {
+    if (selectedCategory && router.isReady) {
+      setLoading(true);
       fetchMenuData();
     }
-  }, [router.isReady]);
+  }, [selectedCategory]);
 
   useEffect(() => {
     fetchAllProducts();
   }, []);
 
-  const redirectToMenuPage = () => {
-    router.push(`/menu/${router.query.menuId}`);
+  const redirectToEditProduct = (selectedProductId) => {
+    router.push(`/product/${selectedProductId}`);
   };
 
   const addProductsToSelectedCategory = async (productData) => {
     await CATEGORY_SERVICE.addProduct(router.query.menuId, categoryData._id, productData._id);
     const filteredProducts = allProducts.filter((_product) => _product._id !== productData._id);
     setCategoryProducts([...categoryProducts, productData]);
+    await getMenu(router.query.menuId);
     setAllProducts(filteredProducts);
     if (STORAGE.getLocal("isCompleteMenuBoard") == "false") {
       router.push("/table");
@@ -81,7 +91,10 @@ export default function CategoryProducts() {
       title: "",
       dataIndex: "",
       render: (_, record) => (
-        <span onClick={() => removeProductToCategory(record)}>çıkart</span>
+        <Button onClick={() => removeProductToCategory(record)}>
+          <Icon name="delete-outlined" />
+          Çıkart
+        </Button>
       ),
     },
   ];
@@ -92,7 +105,13 @@ export default function CategoryProducts() {
       title: "",
       dataIndex: "",
       render: (_, record) => (
-        <span onClick={() => addProductsToSelectedCategory(record)}>Ekle</span>
+        <div className="actions">
+          <Button onClick={() => addProductsToSelectedCategory(record)}> + Ekle</Button>
+          <Button variant="outlined" onClick={() => redirectToEditProduct(record._id)}>
+            <Icon name="edit-outlined" />
+            Düzenle
+          </Button>
+        </div>
       ),
     },
   ];
@@ -101,17 +120,30 @@ export default function CategoryProducts() {
   const notAddedProducts = allProducts.filter((product) => !categoryProductsIds.includes(product._id));
 
   return categoryData && (
-    <div>
-      <h2>
-        <LeftCircleFilled onClick={redirectToMenuPage} style={{ marginRight: 20 }} />
-        <span>{categoryData.name}</span>
-      </h2>
+    <div className="category-detail">
+      <div className="selected-category-name">
+        <h3>
+          {categoryData.name}
+        </h3>
+      </div>
 
-      <h3>Category Products</h3>
-      <Table dataSource={categoryProducts} columns={categoryProductsColumns} pagination={false} />
+      <div className="active-products">
+        <div className="title">
+          <h5>Mevcut Ürünler</h5>
+        </div>
+        <div className="table-wrapper">
+          <Table dataSource={categoryProducts} columns={categoryProductsColumns} pagination={false} />
+        </div>
+      </div>
 
-      <h3>All Products</h3>
-      <Table dataSource={notAddedProducts} columns={allProductsColumns} pagination={false} />
+      <div className="deactive-products">
+        <div className="title">
+          <h5>Tüm Ürünler</h5>
+        </div>
+        <div className="table-wrapper">
+          <Table dataSource={notAddedProducts} columns={allProductsColumns} pagination={false} />
+        </div>
+      </div>
     </div>
   );
 }

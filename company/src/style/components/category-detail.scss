@@ -1,0 +1,28 @@
+.category-detail {
+  padding: 15px;
+  .selected-category-name {
+    margin-bottom: 20px;
+  }
+  .active-products {
+    margin-bottom: 20px;
+    .title {
+      margin-bottom: 10px;
+    }
+    .table-wrapper {
+    }
+  }
+  .deactive-products {
+    .title {
+      margin-bottom: 10px;
+    }
+    .table-wrapper {
+      .actions {
+        button {
+          &:not(:last-child) {
+            margin-right: 10px;
+          }
+        }
+      }
+    }
+  }
+}

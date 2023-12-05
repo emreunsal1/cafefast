@@ -1,28 +1,23 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Col, Empty, FloatButton, Row,
-  Card,
-} from "antd";
-import { PlusOutlined } from "@ant-design/icons";
 import CategorySideBar from "../../../components/CategorySideBar";
 import { MenuDetailContext, useMenuDetail } from "../../../context/MenuContext";
-import ProductCard, { PRODUCT_CARD_ACTIONS } from "../../../components/ProductCard";
 import CAMPAIGN_SERVICE from "@/services/campaign";
-import MenuDetailBody from "@/components/MenuDetailBody";
+import CategoryDetail from "@/components/CategoryDetail";
 
 function MenuDetail() {
-  const [selectedCategoryId, setSelectedCategoryId] = useState([]);
   const {
-    categories, getMenu, campaings, removeCampaings,
+    getMenu,
+    campaings,
+    removeCampaings,
+    selectedCategory,
   } = useMenuDetail();
+
   const [isAddCampaing, setIsAddCampaing] = useState(false);
   const [allCampaings, setAllCampaings] = useState([]);
-  const router = useRouter();
 
-  const selectedCategory = categories?.find((category) => category._id === selectedCategoryId) || null;
+  const router = useRouter();
 
   const redirectToProductAddPage = () => {
     router.push(`/menu/${router.query.menuId}/category/${selectedCategory._id}`);
@@ -76,10 +71,10 @@ function MenuDetail() {
   return (
     <div className="menu-detail-page">
       <div className="menu-detail-side-bar">
-        <CategorySideBar
-          selectedCategoryId={selectedCategoryId}
-          setSelectedCategoryId={setSelectedCategoryId}
-        />
+        <CategorySideBar />
+      </div>
+      <div className="menu-detail-body-wrapper">
+        <CategoryDetail />
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ export function MenuDetailContext({ children }) {
   const [menu, setMenu] = useState(null);
   const [categories, setCategories] = useState([]);
   const [campaings, setCampaings] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState();
   const message = useMessage();
 
   const getMenu = async (menuId) => {
@@ -59,7 +60,16 @@ export function MenuDetailContext({ children }) {
 
   return (
     <Context.Provider value={{
-      menu, categories, campaings, setCategories, addCategory, getMenu, updateCategory, removeCampaings,
+      menu,
+      categories,
+      campaings,
+      selectedCategory,
+      setCategories,
+      addCategory,
+      getMenu,
+      updateCategory,
+      removeCampaings,
+      setSelectedCategory,
     }}
     >
       {children}

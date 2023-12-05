@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useMenuDetail } from "../context/MenuContext";
-import CategorySideBarItem from "./CategorySideBarItem";
 import { STORAGE } from "@/utils/browserStorage";
 import Button from "./library/Button";
 import Input from "./library/Input";
 import Icon from "./library/Icon";
 
-export default function CategorySideBar({ selectedCategoryId, setSelectedCategoryId }) {
-  const { categories, addCategory } = useMenuDetail();
+export default function CategorySideBar() {
+  const {
+    categories, addCategory, selectedCategory, setSelectedCategory,
+  } = useMenuDetail();
 
   const [newCategory, setNewCategory] = useState({ name: "", order: categories.length + 1 });
   const [isCreateCategory, setIsCreateCategory] = useState(false);
@@ -39,49 +40,53 @@ export default function CategorySideBar({ selectedCategoryId, setSelectedCategor
   }, [router.isReady]);
 
   return (
-    <div className="category-side-bar-container">
-      <div className="categories-place">
-        <h6>Kategoriler</h6>
-        <div className="category-list">
+    <>
+      <div className="category-side-bar-placeholder" />
+      <div className="category-side-bar-container">
+        <div className="categories-place">
+          <h6>Kategoriler</h6>
+          <div className="category-list">
 
-          {categories.map((item) => (
-            <div
-              className={`list-item ${selectedCategoryId === item._id ? "active" : ""}`}
-              onClick={() => setSelectedCategoryId(item._id)}
-            >
-              <p>
-                <span>&#x25cf;</span>
-                {" "}
-                {item.name}
-              </p>
-            </div>
-          ))}
+            {categories.map((item) => (
+              <div
+                className={`list-item ${selectedCategory?._id === item._id ? "active" : ""}`}
+                onClick={() => setSelectedCategory(item)}
+              >
+                <p>
+                  <span>&#x25cf;</span>
+                  {" "}
+                  {item.name}
+                </p>
+              </div>
+            ))}
 
-        </div>
-        <div className="add-category-button">
-          {isCreateCategory && (
-          <div className="new-category-place">
-            <Input placeholder="İçecekler" onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })} />
-            <div className="actions">
-              <Icon name="checkmark" onClick={() => createCategoryButtonClickHandler()} />
-              <Icon name="cancel" onClick={() => setIsCreateCategory(false)} />
-            </div>
           </div>
-          )}
-          {!isCreateCategory && (
-          <Button
-            onClick={() => setIsCreateCategory(true)}
-            fluid
-            variant="outlined"
-          >
-            Kategori Ekle
-          </Button>
-          )}
+          <div className="add-category-button">
+            {isCreateCategory && (
+            <div className="new-category-place">
+              <Input placeholder="İçecekler" onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })} />
+              <div className="actions">
+                <Icon name="checkmark" onClick={() => createCategoryButtonClickHandler()} />
+                <Icon name="cancel" onClick={() => setIsCreateCategory(false)} />
+              </div>
+            </div>
+            )}
+            {!isCreateCategory && (
+            <Button
+              onClick={() => setIsCreateCategory(true)}
+              fluid
+              variant="outlined"
+            >
+              Kategori Ekle
+            </Button>
+            )}
+          </div>
+        </div>
+        <div className="add-campaing-button">
+          <Button fluid>Kampnayalar</Button>
         </div>
       </div>
-      <div className="add-campaing-button">
-        <Button fluid>Kampnayalar</Button>
-      </div>
-    </div>
+
+    </>
   );
 }

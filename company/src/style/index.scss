@@ -20,6 +20,7 @@
 @import "./components/header";
 @import "./components/category-sidebar";
 @import "./components/qr-generator-form";
+@import "./components/category-detail.scss";
 
 // Pages
 @import "./pages/homepage";
@@ -31,3 +32,4 @@
 @import "./pages//menu-detail-page";
 @import "./pages/table-page";
 @import "./pages/campaigns-page";
+@import "./pages//menu-detail-page.scss";
