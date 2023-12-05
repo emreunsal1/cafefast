@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from "react";
 import classNames from "classnames";
+import Icon from "./Icon";
 
 export default function Checkbox({
   type = "checkbox", label, description, className, value, onChange,
@@ -21,7 +22,7 @@ export default function Checkbox({
           type={type}
         />
         <div className="library-checkbox-checkbox">
-          <span className="icon-checkmark" />
+          <Icon name="checkmark" />
         </div>
         {label && (
         <div className="library-checkbox-label">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import classNames from "classnames";
 import AUTH_SERVICE from "@/services/auth";
+import Icon from "./library/Icon";
 
 // TODO: Buradaki localstorage transition problemini çöz.
 export default function SideBar({ isOpened }) {
@@ -43,7 +44,7 @@ export default function SideBar({ isOpened }) {
               }}
             >
               <div className="icon-wrapper">
-                <i className={`icon icon-${item.icon}`} />
+                <Icon name={item.icon} />
               </div>
               {isOpened && (
               <div className="title">

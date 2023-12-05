@@ -13,6 +13,7 @@ import Input from "@/components/library/Input";
 import Select from "@/components/library/Select";
 import { useLoading } from "@/context/LoadingContext";
 import { useMessage } from "@/context/GlobalMessage";
+import Icon from "@/components/library/Icon";
 
 export default function Profile() {
   const { setLoading } = useLoading();
@@ -138,7 +139,7 @@ export default function Profile() {
           <div className="profile-section-body-company-image" onClick={companyImageClickHandler}>
             <img src={companyData.logo} />
             <div className="edit-icon-wrapper">
-              <i className="icon icon-edit-outlined" />
+              <Icon name="edit-outlined" />
             </div>
           </div>
           <Input

@@ -3,4 +3,18 @@
   h2 {
     margin-bottom: 30px;
   }
+  &-table {
+    &-actions {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      .library-button {
+        display: flex;
+        align-items: center;
+        i {
+          margin-left: 5px;
+        }
+      }
+    }
+  }
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Checkbox from "./library/Checkbox";
 import { useProduct } from "@/context/ProductContext";
+import Icon from "./library/Icon";
 
 export default function ProductCard({
   data, isSelectable, selectedProducts, setSelectedProducts,
@@ -51,10 +52,10 @@ export default function ProductCard({
         </div>
         <div className="actions">
           <div className="item edit" onClick={() => router.push(`/product/${data._id}`)}>
-            <i className="icon icon-edit-outlined" />
+            <Icon name="edit-outlined" />
           </div>
           <div className="item delete" onClick={() => deleteProduct(data._id)}>
-            <i className="icon icon-delete-outlined" />
+            <Icon name="delete-outlined" />
           </div>
         </div>
       </div>

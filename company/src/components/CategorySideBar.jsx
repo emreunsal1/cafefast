@@ -5,6 +5,7 @@ import CategorySideBarItem from "./CategorySideBarItem";
 import { STORAGE } from "@/utils/browserStorage";
 import Button from "./library/Button";
 import Input from "./library/Input";
+import Icon from "./library/Icon";
 
 export default function CategorySideBar({ selectedCategoryId, setSelectedCategoryId }) {
   const { categories, addCategory } = useMenuDetail();
@@ -62,8 +63,8 @@ export default function CategorySideBar({ selectedCategoryId, setSelectedCategor
           <div className="new-category-place">
             <Input placeholder="İçecekler" onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })} />
             <div className="actions">
-              <i className="icon icon-checkmark" onClick={() => createCategoryButtonClickHandler()} />
-              <i className="icon icon-cancel" onClick={() => setIsCreateCategory(false)} />
+              <Icon name="checkmark" onClick={() => createCategoryButtonClickHandler()} />
+              <Icon name="cancel" onClick={() => setIsCreateCategory(false)} />
             </div>
           </div>
           )}

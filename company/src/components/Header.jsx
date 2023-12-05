@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import classNames from "classnames";
 import cafeFastIcon from "../public/images/cafeFastIcon.png";
 import AUTH_SERVICE from "@/services/auth";
+import Icon from "./library/Icon";
 
 export default function Header({ sideBarButtonClickHandler, sideBarIsOpened }) {
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function Header({ sideBarButtonClickHandler, sideBarIsOpened }) {
         <div className="header-container">
           <div className="header-left">
             <div className="button-wrapper" onClick={sideBarButtonClickHandler}>
-              <i className="icon icon-sidemenu" />
+              <Icon name="sidemenu" />
             </div>
           </div>
           <div className="header-center">
@@ -32,10 +33,10 @@ export default function Header({ sideBarButtonClickHandler, sideBarIsOpened }) {
           </div>
           <div className="header-right">
             <div className="profile" onClick={() => router.push("/profile")}>
-              <i className="icon icon-profile" />
+              <Icon name="profile" />
             </div>
             <div className="logout" onClick={() => AUTH_SERVICE.logout()}>
-              <i className="icon icon-exit" />
+              <Icon name="exit" />
             </div>
           </div>
         </div>

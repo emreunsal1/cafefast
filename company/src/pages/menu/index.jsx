@@ -12,6 +12,7 @@ import USER_SERVICE from "@/services/user";
 import Button from "@/components/library/Button";
 import Checkbox from "@/components/library/Checkbox";
 import { useMessage } from "@/context/GlobalMessage";
+import Icon from "@/components/library/Icon";
 
 export default function Menu() {
   const [menus, setMenus] = useState([]);
@@ -74,7 +75,7 @@ export default function Menu() {
     setIsModalOpen(false);
   };
 
-  const rowclickHandler = (menu) => {
+  const redirectToMenu = (menu) => {
     router.push(`/menu/${menu._id}`);
   };
 
@@ -156,7 +157,7 @@ export default function Menu() {
             key="name"
             render={(_, record) => (
               <Space>
-                <div onClick={() => rowclickHandler(record)}>{record.name}</div>
+                <div>{record.name}</div>
               </Space>
             )}
           />
@@ -175,10 +176,14 @@ export default function Menu() {
             key="action"
             width={100}
             render={(_, record) => (
-              <Space size="middle">
-                <div onClick={() => deleteMenu({ menuId: record._id })}>Sil</div>
-                <div onClick={() => setIsUpdate(record._id)}>Güncelle</div>
-              </Space>
+              <div className="menus-page-table-actions">
+                <Button variant="outlined" onClick={() => redirectToMenu(record)}>
+                  Detay
+                  <Icon name="menu" />
+                </Button>
+                <Button onClick={() => deleteMenu({ menuId: record._id })}>Sil</Button>
+                <Button onClick={() => setIsUpdate(record._id)}>Güncelle</Button>
+              </div>
             )}
           />
 

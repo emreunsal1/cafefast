@@ -33,7 +33,7 @@ function Register() {
   };
 
   useEffect(() => {
-    const isLogin = STORAGE.getCookie(CLIENT_SIDE_IS_LOGIN_COOKIE_NAME) === "true";
+    const isLogin = STORAGE.getCookie(CLIENT_SIDE_IS_LOGIN_COOKIE_NAME);
     if (isLogin) {
       router.push("/");
     }

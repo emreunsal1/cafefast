@@ -12,7 +12,6 @@ export default function Button({
   return (
     <button
       type={hmtlType || "button"}
-      id="Button"
       className={classname}
       disabled={disabled}
       onClick={onClick}
