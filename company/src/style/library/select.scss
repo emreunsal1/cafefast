@@ -1,7 +1,7 @@
 .library-select {
   $select-height: 38px;
 
-  font-size: 14px;
+  font-size: $text-xsmall;
   font-weight: 500;
   &-label {
     margin-bottom: 6px;

@@ -20,7 +20,7 @@
     border-bottom: 1px solid $border-gray;
     .list-item {
       padding: 15px 30px;
-      font-size: 16px;
+      font-size: $text-small;
       font-weight: bold;
       cursor: pointer;
       user-select: none;
@@ -52,7 +52,7 @@
           cursor: pointer;
           border-radius: 50%;
           padding: 5px;
-          font-size: 18px;
+          font-size: $text-medium;
           font-weight: bold;
         }
         .icon-checkmark {

@@ -42,11 +42,11 @@
       }
       .price {
         margin: 15px 0px;
-        font-size: 15px;
+        font-size: $text-small;
         font-weight: 500;
         span {
           margin-left: 5px;
-          font-size: 15px;
+          font-size: $text-small;
           font-weight: bold;
         }
       }
@@ -78,7 +78,7 @@
       }
       .item {
         padding: 10px 0px;
-        font-size: 20px;
+        font-size: $text-large;
         display: flex;
         justify-content: center;
         align-items: center;
