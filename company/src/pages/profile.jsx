@@ -15,6 +15,8 @@ import { useLoading } from "@/context/LoadingContext";
 import { useMessage } from "@/context/GlobalMessage";
 import Icon from "@/components/library/Icon";
 
+const createStringifiedPageData = ({ user, company }) => JSON.stringify({ user, company });
+
 export default function Profile() {
   const { setLoading } = useLoading();
   const message = useMessage();
@@ -36,7 +38,8 @@ export default function Profile() {
   });
   const [cities, setCities] = useState(null);
   const [districts, setDistricts] = useState(null);
-  const selectedImage = useRef(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const initialPageData = useRef();
 
   const getUserData = async () => {
     setLoading(true);
@@ -45,11 +48,15 @@ export default function Profile() {
     const {
       name, email, phoneNumber, surname, company,
     } = repsonse.data.data;
-    setUser({
-      name, email, phoneNumber, surname,
-    });
 
-    setCompanyData(({ name: company.name, logo: company.logo, address: company.address }));
+    const _companyData = { name: company.name, logo: company.logo, address: company.address };
+    const _userData = {
+      name, email, phoneNumber, surname,
+    };
+
+    setUser(_userData);
+    setCompanyData(_companyData);
+    initialPageData.current = createStringifiedPageData({ company: _companyData, user: _userData });
     setLoading(false);
   };
 
@@ -72,12 +79,12 @@ export default function Profile() {
     setLoading(true);
     const response = await USER_SERVICE.update(user);
     const _companyUpdateData = JSON.parse(JSON.stringify(companyData));
-    if (selectedImage.current) {
-      const { data } = await CDN_SERVICE.uploadImage(selectedImage.current);
+    if (selectedImage) {
+      const { data } = await CDN_SERVICE.uploadImage(selectedImage);
       _companyUpdateData.logo = data.fileName;
-      selectedImage.current = null;
+      setSelectedImage(null);
     }
-    if (!selectedImage.current) {
+    if (!selectedImage) {
       delete _companyUpdateData.logo;
     }
     const companyResponse = await COMPANY_SERVICE.update(_companyUpdateData);
@@ -99,7 +106,7 @@ export default function Profile() {
     const image = e.target.files[0];
     setCompanyData((_companyData) => { _companyData.logo = URL.createObjectURL(image); });
     e.target.value = null;
-    selectedImage.current = image;
+    setSelectedImage(image);
   };
 
   const selectedCity = cities?.find((city) => city.label === companyData.address.city);
@@ -126,6 +133,15 @@ export default function Profile() {
     }
     setCompanyData((companyData) => { companyData.address[field] = data.label; });
   };
+
+  const discardChanges = () => {
+    const initialData = JSON.parse(initialPageData.current);
+    setCompanyData(initialData.company);
+    setUser(initialData.user);
+    setSelectedImage(null);
+  };
+
+  const isUpdateActive = initialPageData.current !== createStringifiedPageData({ company: companyData, user }) || !!selectedImage;
 
   return (
     <div className="profile-page">
@@ -214,8 +230,12 @@ export default function Profile() {
           />
         </div>
       </div>
+
       <input type="file" id="company-image-input" hidden onChange={fileInputChangeHandler} />
-      <Button variant="small" onClick={saveButtonClickHandler}>Kaydet</Button>
+      <div className="profile-page-actions">
+        <Button disabled={!isUpdateActive} onClick={saveButtonClickHandler}>Kaydet</Button>
+        {isUpdateActive && <Button onClick={discardChanges}>Değişiklikleri İptal Et</Button>}
+      </div>
     </div>
   );
 }

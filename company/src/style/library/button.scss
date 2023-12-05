@@ -23,10 +23,9 @@
     border-radius: 8px;
     border: 1px solid var(--gray-300, $border-gray);
     background-color: var(--base-white, #fff);
-    box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+    box-shadow: 0px 1px 2px 0px rgba($primary, 0.05);
     &:hover {
-      box-shadow: 0px 0px 0px 4px #f2f4f7,
-        0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+      box-shadow: $input-focus-box-shadow;
     }
     &[disabled] {
       border: 1px solid var(--gray-200, #eaecf0);
@@ -40,10 +39,10 @@
     border-radius: 8px;
     border: 1px solid var(--gray-300, $border-gray);
     background-color: $red;
-    box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+    box-shadow: 0px 1px 2px 0px rgba($red, 0.05);
     &:hover {
-      box-shadow: 0px 0px 0px 4px #f2f4f7,
-        0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+      box-shadow: 0px 0px 0px 3px rgba($red, 0.05),
+        0px 1px 2px 0px rgba($red, 0.05);
     }
     &[disabled] {
       border: 1px solid var(--gray-200, #eaecf0);
@@ -53,8 +52,8 @@
   }
 
   &[disabled] {
-    border: 1px solid var(--primary-200, #e9d7fe);
-    background-color: var(--primary-200, #e9d7fe);
+    border: 1px solid rgba($primary, 0.1);
+    background-color: rgba($primary, 0.1);
     color: var(--base-white, #fff);
     pointer-events: none;
   }
@@ -79,6 +78,6 @@
   }
 
   &:hover {
-    box-shadow: 0px 0px 0px 4px #f4ebff, 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+    box-shadow: $input-focus-box-shadow;
   }
 }

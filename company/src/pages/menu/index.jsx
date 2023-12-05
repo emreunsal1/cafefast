@@ -13,6 +13,7 @@ import Button from "@/components/library/Button";
 import Checkbox from "@/components/library/Checkbox";
 import { useMessage } from "@/context/GlobalMessage";
 import Icon from "@/components/library/Icon";
+import { useLoading } from "@/context/LoadingContext";
 
 export default function Menu() {
   const [menus, setMenus] = useState([]);
@@ -23,7 +24,7 @@ export default function Menu() {
   const [isUpdate, setIsUpdate] = useState(false);
   const [newMenu, setNewMenu] = useState({ name: "", description: "" });
   const message = useMessage();
-  const [loading, setLoading] = useState(false);
+  const { loading, setLoading } = useLoading();
   const { getProducts } = useProduct();
   const router = useRouter();
 

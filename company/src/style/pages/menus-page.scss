@@ -4,6 +4,9 @@
     margin-bottom: 30px;
   }
   &-table {
+    .ant-table-cell {
+      align-items: center;
+    }
     &-actions {
       display: flex;
       align-items: center;
