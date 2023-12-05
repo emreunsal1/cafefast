@@ -54,21 +54,36 @@
     .header-right {
       display: flex;
       justify-content: space-evenly;
-      width: 10%;
-      font-size: 25px;
-      font-weight: bold;
-      .profile {
-        cursor: pointer;
-        i {
-          &:hover {
-            color: $primary;
-          }
-        }
+      width: 100px;
+      .library-dropdown-button {
+        font-size: 30px;
       }
-      .logout {
-        cursor: pointer;
-        i {
-          color: red;
+      .library-dropdown-body {
+        border-radius: 6px;
+        border: 1px solid $border-gray;
+        &-item {
+          .header-dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 6px;
+            user-select: none;
+            cursor: pointer;
+            &:hover {
+              background-color: rgba($color: $primary, $alpha: 0.1);
+            }
+            i {
+              margin-right: 10px;
+              font-size: 20px;
+            }
+
+            &.logout {
+              color: $red;
+              &:hover {
+                background-color: rgba($color: $red, $alpha: 0.1);
+              }
+            }
+          }
         }
       }
     }

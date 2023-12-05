@@ -1,0 +1,27 @@
+.library-dropdown {
+  position: relative;
+  display: inline-block;
+  &-button {
+    user-select: none;
+  }
+  &-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    position: absolute;
+    background-color: #fff;
+    top: calc(100% + 6px);
+    padding: 10px;
+    &-item {
+    }
+
+    &.menu-position {
+      &-righttoleft {
+        right: 0;
+      }
+      &-lefttoright {
+        left: 0;
+      }
+    }
+  }
+}

@@ -5,9 +5,24 @@ import classNames from "classnames";
 import cafeFastIcon from "../public/images/cafeFastIcon.png";
 import AUTH_SERVICE from "@/services/auth";
 import Icon from "./library/Icon";
+import Dropdown from "./library/Dropdown";
 
 export default function Header({ sideBarButtonClickHandler, sideBarIsOpened }) {
   const router = useRouter();
+
+  const myProfileItem = (
+    <div className="header-dropdown-item" onClick={() => router.push("/profile")}>
+      <Icon name="profile" />
+      Profilim
+    </div>
+  );
+  const logoutItem = (
+    <div className="header-dropdown-item logout" onClick={() => AUTH_SERVICE.logout()}>
+      <Icon name="exit" />
+      Çıkış
+    </div>
+  );
+  const dropdownItems = [myProfileItem, logoutItem];
 
   return (
     <>
@@ -32,12 +47,11 @@ export default function Header({ sideBarButtonClickHandler, sideBarIsOpened }) {
             </div>
           </div>
           <div className="header-right">
-            <div className="profile" onClick={() => router.push("/profile")}>
-              <Icon name="profile" />
-            </div>
-            <div className="logout" onClick={() => AUTH_SERVICE.logout()}>
-              <Icon name="exit" />
-            </div>
+            <Dropdown
+              menuPosition="righttoleft"
+              buttonContent={<Icon name="profile" />}
+              items={dropdownItems}
+            />
           </div>
         </div>
       </div>
