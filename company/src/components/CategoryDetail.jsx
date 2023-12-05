@@ -8,7 +8,6 @@ import { STORAGE } from "@/utils/browserStorage";
 import { useMenuDetail } from "@/context/MenuContext";
 import Button from "./library/Button";
 import Icon from "./library/Icon";
-import { useLoading } from "@/context/LoadingContext";
 
 export default function CategoryDetail() {
   const router = useRouter();
@@ -17,7 +16,6 @@ export default function CategoryDetail() {
   const [categoryData, setCategoryData] = useState(null);
   const { selectedCategory } = useMenuDetail();
 
-  const { loading, setLoading } = useLoading();
   const { menu, getMenu } = useMenuDetail();
 
   const fetchAllProducts = async () => {
@@ -29,12 +27,10 @@ export default function CategoryDetail() {
     const foundCategory = menu.categories.find((category) => category._id === selectedCategory._id);
     setCategoryData(foundCategory);
     setCategoryProducts(foundCategory.products);
-    setLoading(false);
   };
 
   useEffect(() => {
     if (selectedCategory && router.isReady) {
-      setLoading(true);
       fetchMenuData();
     }
   }, [selectedCategory]);
