@@ -181,8 +181,11 @@ export default function Menu() {
                   Detay
                   <Icon name="menu" />
                 </Button>
-                <Button onClick={() => deleteMenu({ menuId: record._id })}>Sil</Button>
-                <Button onClick={() => setIsUpdate(record._id)}>Güncelle</Button>
+                <Button onClick={() => setIsUpdate(record._id)}>
+                  Düzenle
+                  <Icon name="edit-outlined" />
+                </Button>
+                <Button variant="red" onClick={() => deleteMenu({ menuId: record._id })}>Sil</Button>
               </div>
             )}
           />

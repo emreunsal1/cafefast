@@ -7,6 +7,19 @@
 @import "common";
 @import "./layout/index";
 
+// library
+@import "./library/input";
+@import "./library/button";
+@import "./library/checkbox";
+@import "./library/select";
+
+//components
+@import "./components/sidebar";
+@import "./components/product-card";
+@import "./components/header";
+@import "./components/category-sidebar";
+@import "./components/qr-generator-form";
+
 // Pages
 @import "./pages/homepage";
 @import "./pages/product-detail-page";
@@ -17,16 +30,3 @@
 @import "./pages//menu-detail-page";
 @import "./pages/table-page";
 @import "./pages/campaigns-page";
-
-//components
-@import "./components/sidebar";
-@import "./components/product-card";
-@import "./components/header";
-@import "./components/category-sidebar";
-@import "./components/qr-generator-form";
-
-// library
-@import "./library/input";
-@import "./library/button";
-@import "./library/checkbox";
-@import "./library/select";

@@ -13,7 +13,7 @@
     width: 100%;
     cursor: pointer;
     &:hover {
-      border-color: $button-default;
+      border-color: $primary;
     }
     .selectable {
       position: absolute;
@@ -74,7 +74,7 @@
         right: calc(50% - 3px);
       }
       &:hover {
-        border-color: $button-default;
+        border-color: $primary;
       }
       .item {
         padding: 10px 0px;
@@ -87,12 +87,12 @@
       }
       .edit {
         &:hover {
-          color: $button-default;
+          color: $primary;
         }
       }
       .delete {
         &:hover {
-          color: red;
+          color: $red;
         }
       }
     }

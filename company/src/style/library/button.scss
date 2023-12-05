@@ -4,12 +4,12 @@
   font-size: 14px;
   font-weight: 600;
   line-height: 20px;
-  background: $button-default;
+  background-color: $primary;
   color: white;
   border: none;
   outline: none;
   border-radius: 8px;
-  border: 1px solid var(--primary-700, $button-default);
+  border: 1px solid var(--primary-700, $primary);
   cursor: pointer;
   user-select: none;
 
@@ -22,7 +22,7 @@
     color: $black;
     border-radius: 8px;
     border: 1px solid var(--gray-300, $border-gray);
-    background: var(--base-white, #fff);
+    background-color: var(--base-white, #fff);
     box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
     &:hover {
       box-shadow: 0px 0px 0px 4px #f2f4f7,
@@ -30,14 +30,31 @@
     }
     &[disabled] {
       border: 1px solid var(--gray-200, #eaecf0);
-      background: var(--base-white, #fff);
+      background-color: var(--base-white, #fff);
+      color: var(--gray-300, #d0d5dd);
+    }
+  }
+
+  &.red {
+    color: #fff;
+    border-radius: 8px;
+    border: 1px solid var(--gray-300, $border-gray);
+    background-color: $red;
+    box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+    &:hover {
+      box-shadow: 0px 0px 0px 4px #f2f4f7,
+        0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+    }
+    &[disabled] {
+      border: 1px solid var(--gray-200, #eaecf0);
+      background-color: var(--base-white, #fff);
       color: var(--gray-300, #d0d5dd);
     }
   }
 
   &[disabled] {
     border: 1px solid var(--primary-200, #e9d7fe);
-    background: var(--primary-200, #e9d7fe);
+    background-color: var(--primary-200, #e9d7fe);
     color: var(--base-white, #fff);
     pointer-events: none;
   }

@@ -52,24 +52,24 @@
           margin-left: 30px;
         }
         &:hover {
-          background-color: rgba($color: #2f4cdd, $alpha: 0.1);
+          background-color: rgba($color: $primary, $alpha: 0.1);
           .title {
-            color: #2f4cdd;
+            color: $primary;
           }
           .icon-wrapper {
             i {
-              color: #2f4cdd;
+              color: $primary;
             }
           }
         }
 
         &.selected {
           .title {
-            color: #2f4cdd;
+            color: $primary;
           }
           .icon-wrapper {
             i {
-              color: #2f4cdd;
+              color: $primary;
             }
           }
         }
