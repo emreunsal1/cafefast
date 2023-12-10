@@ -38,10 +38,10 @@ export default function Menu() {
 
   const menOnboardingController = async () => {
     const response = await getProducts();
-    if (STORAGE.getLocal("isCompleteMenuBoard") === "false" && response.length) {
+    if (STORAGE.getLocal("isCompleteMenuBoard") && response.length) {
       setIsModalOpen(true);
     }
-    if (STORAGE.getLocal("isCompleteMenuBoard") === "false" && !response.length) {
+    if (STORAGE.getLocal("isCompleteMenuBoard") && !response.length) {
       router.push("/product");
     }
   };
@@ -96,7 +96,7 @@ export default function Menu() {
     message.success("Menü oluşturuldu");
     setMenus([...menus, response.data]);
     setIsModalOpen(false);
-    if (STORAGE.getLocal("isCompleteMenuBoard") === "false") {
+    if (STORAGE.getLocal("isCompleteMenuBoard")) {
       const { data } = response;
       router.push(`/menu/${data._id}`);
     }

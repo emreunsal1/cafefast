@@ -48,7 +48,7 @@ export default function CategoryDetail() {
     setCategoryProducts([...categoryProducts, productData]);
     await getMenu();
     setAllProducts(filteredProducts);
-    if (STORAGE.getLocal("isCompleteMenuBoard") === "false") {
+    if (STORAGE.getLocal("isCompleteMenuBoard")) {
       router.push("/table");
     }
   };

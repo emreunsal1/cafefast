@@ -26,7 +26,7 @@ export default function CategorySideBar() {
     setLoading(false);
     setIsCreateCategory(false);
     setNewCategory({ name: "", order: categories.length + 1 });
-    if (STORAGE.getLocal("isCompleteMenuBoard") === "false") {
+    if (STORAGE.getLocal("isCompleteMenuBoard")) {
       router.push(`/menu/${router.query.menuId}/category/${response._id}`);
     }
   };
@@ -40,7 +40,7 @@ export default function CategorySideBar() {
   };
 
   useEffect(() => {
-    if (STORAGE.getLocal("isCompleteMenuBoard") === "false") {
+    if (STORAGE.getLocal("isCompleteMenuBoard")) {
       setIsCreateCategory(true);
     }
   }, [router.isReady]);
