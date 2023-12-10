@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { Table } from "antd";
 import PRODUCT_SERVICE from "@/services/product";
@@ -7,15 +7,20 @@ import { STORAGE } from "@/utils/browserStorage";
 import { useMenuDetail } from "@/context/MenuContext";
 import Button from "./library/Button";
 import Icon from "./library/Icon";
+import Input from "./library/Input";
+import { CDN_SERVICE } from "@/services/cdn";
 
 export default function CategoryDetail() {
   const router = useRouter();
   const [allProducts, setAllProducts] = useState([]);
   const [categoryProducts, setCategoryProducts] = useState([]);
   const [categoryData, setCategoryData] = useState(null);
-  const { selectedCategory } = useMenuDetail();
+  const { selectedCategoryId } = useMenuDetail();
+  const [categoryName, setCategoryName] = useState(null);
 
-  const { menu, getMenu } = useMenuDetail();
+  const {
+    menu, getMenu, updateCategory, deleteCategory,
+  } = useMenuDetail();
 
   const fetchAllProducts = async () => {
     const response = await PRODUCT_SERVICE.get();
@@ -23,16 +28,17 @@ export default function CategoryDetail() {
   };
 
   const fetchMenuData = async () => {
-    const foundCategory = menu.categories.find((category) => category._id === selectedCategory._id);
+    const foundCategory = menu.categories.find((category) => category._id === selectedCategoryId);
     setCategoryData(foundCategory);
+    setCategoryName(foundCategory.name);
     setCategoryProducts(foundCategory.products);
   };
 
   useEffect(() => {
-    if (selectedCategory && router.isReady) {
+    if (selectedCategoryId && router.isReady) {
       fetchMenuData();
     }
-  }, [selectedCategory]);
+  }, [selectedCategoryId]);
 
   useEffect(() => {
     fetchAllProducts();
@@ -62,11 +68,43 @@ export default function CategoryDetail() {
     }
   };
 
+  const categoryImageClickHandler = () => {
+    document.querySelector("#category-image-input").click();
+  };
+
+  const fileInputChangeHandler = async (e) => {
+    const image = e.target.files[0];
+    const cdnImage = await CDN_SERVICE.uploadImage(image);
+    const newImageUrl = URL.createObjectURL(image);
+    setCategoryData((_categoryData) => ({ ..._categoryData, image: newImageUrl }));
+    e.target.value = null;
+    updateCategory({ _id: categoryData._id, image: cdnImage.data.fileName });
+  };
+
+  const categoryNameUpdateHandler = async () => {
+    await updateCategory({ _id: categoryData._id, name: categoryData.name });
+    setCategoryName(categoryData.name);
+  };
+
   const defaultColumns = [
     {
       title: "Ürün Adı",
       dataIndex: "name",
       key: "name",
+    },
+    {
+      title: "Fotoğraflar",
+      dataIndex: "images",
+      key: "images",
+      render: (_, record) => (
+        <div className="product-images-list">
+          {record.images.slice(0, 3).map((item, index) => (
+            <div className="images-item">
+              <img src={item} alt="kategori" />
+            </div>
+          ))}
+        </div>
+      ),
     },
     {
       title: "Açıklama",
@@ -86,10 +124,16 @@ export default function CategoryDetail() {
       title: "",
       dataIndex: "",
       render: (_, record) => (
-        <Button onClick={() => removeProductToCategory(record)}>
-          <Icon name="delete-outlined" />
-          Çıkart
-        </Button>
+        <div className="actions">
+          <Button onClick={() => removeProductToCategory(record)}>
+            <Icon name="delete-outlined" />
+            Çıkart
+          </Button>
+          <Button variant="outlined" onClick={() => redirectToEditProduct(record._id)}>
+            <Icon name="edit-outlined" />
+            Düzenle
+          </Button>
+        </div>
       ),
     },
   ];
@@ -116,10 +160,35 @@ export default function CategoryDetail() {
 
   return categoryData && (
     <div className="category-detail">
-      <div className="selected-category-name">
-        <h3>
-          {categoryData.name}
-        </h3>
+      <div className="category-preview">
+        <div className="category-edit-wrapper">
+          <div className="category-title-form">
+            <Input value={categoryData.name} onChange={(e) => setCategoryData({ ...categoryData, name: e.target.value })} />
+            {categoryName !== categoryData.name && (
+            <div className="save-button-wrapper">
+              <Button onClick={() => categoryNameUpdateHandler()}>
+                <Icon name="save-outlined" />
+                {" "}
+                Kaydet
+              </Button>
+            </div>
+            )}
+          </div>
+          <div className="delete-button-wrapper">
+            <Button onClick={() => deleteCategory(categoryData._id)}>
+              <Icon name="delete-outlined" />
+            </Button>
+          </div>
+        </div>
+        <div className="category-image-wrapper">
+          <div className="category-image" onClick={categoryImageClickHandler}>
+            <img src={categoryData.image} />
+            <div className="edit-icon-wrapper">
+              <Icon name="edit-outlined" />
+            </div>
+          </div>
+        </div>
+        <input type="file" id="category-image-input" hidden onChange={fileInputChangeHandler} />
       </div>
 
       <div className="category-detail-list active-products">

@@ -12,7 +12,9 @@ function MenuDetail() {
     getMenu,
     campaings,
     removeCampaings,
-    selectedCategory,
+    selectedCategoryId,
+    menu,
+
   } = useMenuDetail();
 
   const [isAddCampaing, setIsAddCampaing] = useState(false);
@@ -68,15 +70,19 @@ function MenuDetail() {
   return (
     <div className="menu-detail-page">
       <CategorySideBar />
-      {selectedCategory && (
-      <div className="menu-detail-body-wrapper">
-        <CategoryDetail />
-      </div>
-      )}
-      {!selectedCategory && (
-      <div className="menu-detail-campaings-wrapper">
-        <MenuCampaingDetail />
-      </div>
+      {menu && (
+      <>
+        {selectedCategoryId && (
+        <div className="menu-detail-body-wrapper">
+          <CategoryDetail />
+        </div>
+        )}
+        {!selectedCategoryId && (
+        <div className="menu-detail-campaings-wrapper">
+          <MenuCampaingDetail />
+        </div>
+        )}
+      </>
       )}
     </div>
   );

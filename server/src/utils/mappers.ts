@@ -78,6 +78,7 @@ export const mapCampaign = (campaign) => ({
 });
 export const mapCategory = (category) => ({
   ...category,
+  image: `${process.env.AWS_CLOUDFRONT_URL}/${category.image}`,
   products: category.products.map((product) => mapProduct(product)),
 });
 

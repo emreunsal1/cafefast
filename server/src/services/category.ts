@@ -21,7 +21,7 @@ export const deleteCategoriesWithIds = async (categoryIds) => categoryModel.dele
 
 export const updateCategory = async (categoryId, data) => {
   try {
-    const result = await categoryModel.findOneAndUpdate({ _id: categoryId }, data, { new: true });
+    const result = await categoryModel.findOneAndUpdate({ _id: categoryId }, data, { new: true }).populate("products");
     return { data: result };
   } catch (error) {
     return { error: (error as any).message || error };

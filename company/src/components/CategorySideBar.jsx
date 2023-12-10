@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 import classNames from "classnames";
 import { motion } from "framer-motion";
 import { useMenuDetail } from "../context/MenuContext";
@@ -11,8 +12,9 @@ import { useLoading } from "@/context/LoadingContext";
 
 export default function CategorySideBar() {
   const {
-    categories, addCategory, selectedCategory, setSelectedCategory,
+    categories, addCategory, selectedCategoryId, setSelectedCategoryId,
   } = useMenuDetail();
+  const searchParams = useSearchParams();
 
   const [newCategory, setNewCategory] = useState({ name: "", order: categories.length + 1 });
   const [isCreateCategory, setIsCreateCategory] = useState(false);
@@ -39,9 +41,17 @@ export default function CategorySideBar() {
     addCategoryHandler(router.query.menuId);
   };
 
+  const categoryItemClickHandler = (item) => {
+    router.push(`/menu/${router.query.menuId}/?categoryId=${item._id}`);
+    setSelectedCategoryId(item._id);
+  };
+
   useEffect(() => {
     if (!STORAGE.getLocal("isCompleteMenuBoard")) {
       setIsCreateCategory(true);
+    }
+    if (searchParams.get("categoryId")) {
+      setSelectedCategoryId(searchParams.get("categoryId"));
     }
   }, [router.isReady]);
 
@@ -72,8 +82,8 @@ export default function CategorySideBar() {
       <div className="category-list">
         {categories.map((item) => (
           <div
-            className={`category-list-item ${selectedCategory?._id === item._id ? "active" : ""}`}
-            onClick={() => setSelectedCategory(item)}
+            className={`category-list-item ${selectedCategoryId === item._id ? "active" : ""}`}
+            onClick={() => categoryItemClickHandler(item)}
           >
             {item.name}
             <Icon name="right-arrow" />
@@ -81,7 +91,7 @@ export default function CategorySideBar() {
         ))}
       </div>
       <div className="add-campaign-button">
-        <Button fluid onClick={() => setSelectedCategory(null)}>Kampnayalar</Button>
+        <Button fluid onClick={() => setSelectedCategoryId(null)}>Kampnayalar</Button>
       </div>
     </div>
   );

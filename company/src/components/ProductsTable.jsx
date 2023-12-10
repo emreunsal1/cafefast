@@ -9,7 +9,7 @@ export default function ProductsTable({ selectedCategory, data }) {
   const { getMenu } = useMenuDetail();
 
   const deleteButtonClikHandler = async (id) => {
-    await CATEGORY_SERVICE.removeProduct(router.query.menuId, selectedCategory._id, id);
+    await CATEGORY_SERVICE.removeProduct(router.query.menuId, selectedCategory, id);
     getMenu();
   };
 

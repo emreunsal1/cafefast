@@ -4,6 +4,7 @@ import {
   createCategory, deleteCategory, updateCategory,
 } from "../services/category";
 import { addCategoryToMenu, getMenuWithId, removeCategoryFromMenu } from "../services/menu";
+import { mapCategory } from "../utils/mappers";
 
 export const createCategoryController = async (req: Request, res: Response, next) => {
   const { menuId } = req.params;
@@ -40,17 +41,18 @@ export const updateCategoryController = async (req: Request, res: Response, next
   try {
     const validatedCategory = await updateCategoryValidator.parseAsync(req.body);
     const menu = await getMenuWithId(menuId);
-    const isExistCategory = menu?.categories.some((category:any) => name.toLowerCase() === category.name.toLowerCase());
-    if (isExistCategory) {
-      return res.status(400).send({ error: "CATEGORY_NAME_MUST_BE_UNIQUE" });
+    if (name) {
+      const isExistCategory = menu?.categories.some((category:any) => name.toLowerCase() === category.name.toLowerCase());
+      if (isExistCategory) {
+        return res.status(400).send({ error: "CATEGORY_NAME_MUST_BE_UNIQUE" });
+      }
     }
 
     const newCategory = await updateCategory(categoryId, validatedCategory);
     if (!newCategory.data || newCategory.error) {
       return res.send(400).send({ error: newCategory.error });
     }
-
-    res.send(newCategory);
+    res.send(mapCategory(newCategory.data.toObject()));
   } catch (error) {
     next(error);
   }

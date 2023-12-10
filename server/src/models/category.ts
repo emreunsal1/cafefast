@@ -4,10 +4,10 @@ import z from "zod";
 export const createCategoryValidator = z.object({
   name: z.string(),
   products: z.array(z.string()).optional(),
-  images: z.array(z.string()).optional(),
+  image: z.string().optional(),
 });
 
-export const updateCategoryValidator = createCategoryValidator.optional();
+export const updateCategoryValidator = createCategoryValidator.partial();
 
 export type ICategory = z.infer<typeof createCategoryValidator>;
 
@@ -18,7 +18,7 @@ const categorySchema = new Schema<ICategory>({
     ref: "product",
     default: [],
   }],
-  images: [{ type: String, default: [] }],
+  image: { type: String },
 });
 
 const categoryModel = mongoose.model("category", categorySchema);
