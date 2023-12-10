@@ -28,7 +28,7 @@ export default function Product() {
 
   useEffect(() => {
     getProducts();
-    if (STORAGE.getLocal("isCompleteMenuBoard")) {
+    if (!STORAGE.getLocal("isCompleteMenuBoard")) {
       setPopupVisible(true);
     }
   }, []);

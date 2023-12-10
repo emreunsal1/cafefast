@@ -38,10 +38,10 @@ export default function Menu() {
 
   const menOnboardingController = async () => {
     const response = await getProducts();
-    if (STORAGE.getLocal("isCompleteMenuBoard") && response.length) {
+    if (!STORAGE.getLocal("isCompleteMenuBoard") && response.length) {
       setIsModalOpen(true);
     }
-    if (STORAGE.getLocal("isCompleteMenuBoard") && !response.length) {
+    if (!STORAGE.getLocal("isCompleteMenuBoard") && !response.length) {
       router.push("/product");
     }
   };

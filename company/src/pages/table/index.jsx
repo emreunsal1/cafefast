@@ -24,7 +24,7 @@ export default function Index() {
 
   const getQrCode = async () => {
     const response = await COMPANY_SERVICE.getQr();
-    if (response.length && STORAGE.getLocal("isCompleteMenuBoard")) {
+    if (response.length && !STORAGE.getLocal("isCompleteMenuBoard")) {
       router.push("/");
     }
     setCompanyTables(response);
