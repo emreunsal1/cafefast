@@ -97,7 +97,6 @@ function Onboarding() {
       }
     } catch (error) {
       if (error instanceof ZodError) {
-        console.log("error :>> ", error);
         const formErrorResult = error.flatten();
         const errors = Object.keys(formErrorResult.fieldErrors).map((item) => formErrorResult.fieldErrors[item][0]);
         setFormError(errors);

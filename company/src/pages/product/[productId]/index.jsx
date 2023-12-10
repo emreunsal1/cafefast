@@ -49,6 +49,8 @@ export default function ProductDetail() {
 
   const renderAttributeDetail = Number.isInteger(selectedAttributeDetailId) || isNewAttributeAddActive;
 
+  const allImagesOnlyUrls = [...(product.images || []), ...imagesToUpload.map((image) => URL.createObjectURL(image))];
+
   const setProductData = (data) => {
     setProduct(data);
     setAttributes(() => data.attributes);
@@ -100,7 +102,7 @@ export default function ProductDetail() {
   }, [router.isReady]);
 
   const imageInputChangeHandler = async (e) => {
-    const maxImageCanBeUploaded = 5 - (product.images?.length || 0 + imagesToUpload);
+    const maxImageCanBeUploaded = 5 - allImagesOnlyUrls.length;
     const _imagesToUpload = [...e.target.files].slice(0, maxImageCanBeUploaded);
     setImagesToUpload([...imagesToUpload, ..._imagesToUpload]);
   };
@@ -156,8 +158,6 @@ export default function ProductDetail() {
     document.querySelector("#add-image-input").click();
   };
 
-  const allImagesOnlyUrls = [...(product.images || []), ...imagesToUpload.map((image) => URL.createObjectURL(image))];
-
   return (
     <div className="product-detail-page">
       {isUpdate ? <h3>Ürününü Düzenle</h3> : <h3>Yeni Ürün Oluştur</h3>}
@@ -178,7 +178,7 @@ export default function ProductDetail() {
               image={URL.createObjectURL(image)}
             />
           ))}
-          {(product.images?.length || 0) + imagesToUpload.length < 5 && (
+          {allImagesOnlyUrls.length < 5 && (
           <div className="product-image-add-item" onClick={openImageInput}>
             <Icon name="edit-outlined" />
           </div>
