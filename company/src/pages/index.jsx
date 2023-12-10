@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import USER_SERVICE from "../services/user";
 import { STORAGE } from "@/utils/browserStorage";
-import Dropdown from "@/components/library/Dropdown";
-import Icon from "@/components/library/Icon";
 
 export default function Index() {
   const menuOnBoardingController = async () => {

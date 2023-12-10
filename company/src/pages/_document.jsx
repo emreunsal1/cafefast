@@ -15,6 +15,7 @@ class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
+          <div id="library-popup-portal" />
         </body>
       </Html>
     );

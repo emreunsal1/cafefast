@@ -1,0 +1,14 @@
+.library-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: rgba($color: #000000, $alpha: 0.1);
+
+  .library-popup {
+  }
+}
