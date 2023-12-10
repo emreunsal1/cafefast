@@ -16,6 +16,7 @@ const login = async (email, password) => {
 const logout = async () => {
   try {
     const response = await instance.post(`${AUTH_PAGE_URL}/logout`);
+    window.location.assign("/auth/login");
     return response;
   } catch (error) {
     return false;
