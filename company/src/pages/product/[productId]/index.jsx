@@ -188,7 +188,7 @@ export default function ProductDetail() {
           ))}
           {allImagesOnlyUrls.length < 5 && (
           <div className="product-image-add-item" onClick={openImageInput}>
-            <Icon name="edit-outlined" />
+            <Icon name="plus" />
           </div>
           )}
         </div>
@@ -214,7 +214,10 @@ export default function ProductDetail() {
         />
       </div>
       <div className="product-attributes">
-        <h6>Ekstra Özellikler</h6>
+        <div className="product-attributes-title">
+          <h6>Ürün Özellikleri</h6>
+          <p>Ürünü sepete eklerken Sos Seçimi, Baharat Seçimi, Promosyon Seçimi gibi alanları buradan girebilirsiniz</p>
+        </div>
         <div className="product-attributes-body">
           <div className="attribute-list">
             {
