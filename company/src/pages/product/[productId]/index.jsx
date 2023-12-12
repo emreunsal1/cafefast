@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useImmer } from "use-immer";
 import classNames from "classnames";
 import Lightbox from "yet-another-react-lightbox";
-import { SAFE_IMAGE_TYPE } from "@/constants";
+import { AWS_CLOUDFRONT_URL, SAFE_IMAGE_TYPE } from "@/constants";
 import PRODUCT_SERVICE from "@/services/product";
 import { CDN_SERVICE } from "@/services/cdn";
 import Input from "../../../components/library/Input";
@@ -13,6 +13,7 @@ import Button from "@/components/library/Button";
 import { useLoading } from "@/context/LoadingContext";
 import { useMessage } from "@/context/GlobalMessage";
 import ProductImageItem from "@/components/ProductImageItem";
+import { SortableProductImages } from "@/components/dnd/SortableProductImages";
 
 const DEFAULT_PRODUCT_ATTRIBUTE_OPTION_DATA = {
   name: "",
@@ -40,7 +41,6 @@ export default function ProductDetail() {
   const [attributeDetailData, setAttributeDetailData] = useImmer(DEFAULT_PRODUCT_ATTRIBUTE_DATA);
   const [selectedAttributeDetailId, setSelectedAttributeDetailId] = useState(null);
   const [isNewAttributeAddActive, setIsNewAttributeAddActive] = useState(false);
-  const [imagesToUpload, setImagesToUpload] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
 
   const lastOption = attributeDetailData.options[attributeDetailData.options.length - 1];
@@ -49,7 +49,7 @@ export default function ProductDetail() {
 
   const renderAttributeDetail = Number.isInteger(selectedAttributeDetailId) || isNewAttributeAddActive;
 
-  const allImagesOnlyUrls = [...(product.images || []), ...imagesToUpload.map((image) => URL.createObjectURL(image))];
+  const allImagesOnlyUrls = product.images || [];
 
   const setProductData = (data) => {
     setProduct(data);
@@ -57,39 +57,32 @@ export default function ProductDetail() {
   };
 
   const getProductData = async () => {
-    setImagesToUpload([]);
     const response = await PRODUCT_SERVICE.getDetail(router.query.productId);
     setProductData(response);
   };
 
-  const uploadProductImages = async () => {
-    if (imagesToUpload.length) {
-      const response = await CDN_SERVICE.uploadMultipleImages(imagesToUpload);
-      return response;
-    }
+  const uploadProductImages = async (files) => {
+    setLoading(true);
+    const response = await CDN_SERVICE.uploadMultipleImages(files);
+    setLoading(false);
+    return response;
   };
 
-  const submitFormHandler = async () => {
+  const updateOrCreateProduct = async () => {
     setLoading(true);
-    const uploadedImages = await uploadProductImages();
     const mockProduct = JSON.parse(JSON.stringify(product));
     mockProduct.price = Number(product.price);
     mockProduct.attributes = attributes;
+    mockProduct.images = mockProduct.images.map((image) => image.split("/").pop());
+
     if (isUpdate) {
-      mockProduct.images = product.images.map((image) => new URL(image).pathname.slice(1));
-      if (uploadedImages?.data) {
-        uploadedImages.data.forEach((item) => {
-          mockProduct.images.push(item);
-        });
-      }
       const response = await PRODUCT_SERVICE.update(mockProduct);
       setProductData(response);
-      setImagesToUpload([]);
       setLoading(false);
       message.success("Ürün başarıyla güncellendi");
       return;
     }
-    mockProduct.images = uploadedImages?.data || [];
+
     try {
       await PRODUCT_SERVICE.create(mockProduct);
       router.push("/product");
@@ -98,6 +91,7 @@ export default function ProductDetail() {
         message.error("Lütfen alanları kurallara göre doldurunuz");
       }
     }
+
     setLoading(false);
   };
 
@@ -110,27 +104,37 @@ export default function ProductDetail() {
 
   const imageInputChangeHandler = async (e) => {
     const maxImageCanBeUploaded = 5 - allImagesOnlyUrls.length;
-    const _imagesToUpload = [...e.target.files].slice(0, maxImageCanBeUploaded);
+    const imagesToUpload = [...e.target.files].slice(0, maxImageCanBeUploaded);
     e.target.value = null;
-    setImagesToUpload([...imagesToUpload, ..._imagesToUpload]);
+    setLoading(true);
+    const { data: fileNames } = await uploadProductImages(imagesToUpload);
+    const productImagesWithoutCFUrls = product.images.map((image) => image.split("/").pop());
+    if (isUpdate) {
+      const response = await PRODUCT_SERVICE.update({ _id: product._id, images: productImagesWithoutCFUrls.concat(fileNames) });
+      setProductData(response);
+    }
+    const filenamesWithCFUrls = fileNames.map((filename) => `${AWS_CLOUDFRONT_URL}/${filename}`);
+    setProduct({ ...product, images: product.images.concat(filenamesWithCFUrls) });
+    setLoading(false);
   };
 
-  const deleteImage = (imageName) => {
-    const newData = product.images.filter((item) => item !== imageName);
-    setProduct({ ...product, images: newData });
+  const deleteImage = async (imageName) => {
+    const filteredImages = product.images.filter((item) => item !== imageName);
+    setLoading(true);
+    const productImagesWithoutCFUrls = filteredImages.map((image) => image.split("/").pop());
+    const response = await PRODUCT_SERVICE.update({ _id: product._id, images: productImagesWithoutCFUrls });
+    setLoading(false);
+    setProductData(response);
   };
 
   const selectAttributeItem = (index) => {
     setSelectedAttributeDetailId(index);
-    // eslint-disable-next-line no-unused-vars
-    setAttributeDetailData(() => attributes[index]);
+    setAttributeDetailData(attributes[index]);
   };
 
-  const openAttributeDetail = (id = null) => {
-    if (id == null) {
-      setIsNewAttributeAddActive(true);
-      setAttributeDetailData(DEFAULT_PRODUCT_ATTRIBUTE_DATA);
-    }
+  const openAttributeDetailAsNewAttribute = () => {
+    setIsNewAttributeAddActive(true);
+    setAttributeDetailData(DEFAULT_PRODUCT_ATTRIBUTE_DATA);
   };
 
   const attributeDetailFieldChangeHandler = (field, data) => {
@@ -166,14 +170,34 @@ export default function ProductDetail() {
     document.querySelector("#add-image-input").click();
   };
 
+  const onSetImages = (newImages) => {
+    setProduct({ ...product, images: newImages });
+  };
+
   return (
     <div className="product-detail-page">
       {isUpdate ? <h3>Ürününü Düzenle</h3> : <h3>Yeni Ürün Oluştur</h3>}
       <div className="product-images">
-        <h6>Ürün Resimleri</h6>
+        <div className="product-images-title">
+          <h6>Ürün Fotografları</h6>
+          <Button onClick={openImageInput} disabled={allImagesOnlyUrls.length === 5}>
+            <span>Fotograf Ekle</span>
+            <Icon name="plus" />
+          </Button>
+        </div>
+
         <div className="divider" />
+        {!!product.images && (
+        <SortableProductImages
+          images={product.images}
+          deleteImage={deleteImage}
+          onSetImages={onSetImages}
+          setIsImagePreviewOpened={setIsImagePreviewOpened}
+          setPreviewIndex={setPreviewIndex}
+        />
+        )}
         <div className="product-images-wrapper">
-          {product.images?.map((image, index) => (
+          {/* {product.images?.map((image, index) => (
             <ProductImageItem
               image={image}
               openPreview={() => { setPreviewIndex(index); setIsImagePreviewOpened(true); }}
@@ -185,12 +209,7 @@ export default function ProductDetail() {
               openPreview={() => { setPreviewIndex((product.images?.length || 0) + index); setIsImagePreviewOpened(true); }}
               image={URL.createObjectURL(image)}
             />
-          ))}
-          {allImagesOnlyUrls.length < 5 && (
-          <div className="product-image-add-item" onClick={openImageInput}>
-            <Icon name="plus" />
-          </div>
-          )}
+          ))} */}
         </div>
       </div>
       <div className="product-detail-inputs">
@@ -233,7 +252,7 @@ export default function ProductDetail() {
                   </div>
                 ))
               }
-            {!renderAttributeDetail && <Button onClick={() => openAttributeDetail(null)}>Ekle</Button>}
+            {!renderAttributeDetail && <Button onClick={openAttributeDetailAsNewAttribute}>Ekle</Button>}
           </div>
           {renderAttributeDetail && (
             <div className="attribute-detail">
@@ -328,22 +347,21 @@ export default function ProductDetail() {
           )}
         </div>
       </div>
-      <Button onClick={submitFormHandler}>
+      <Button onClick={updateOrCreateProduct}>
         {isUpdate ? "Güncelle" : "Oluştur"}
       </Button>
 
       <input type="file" id="add-image-input" accept={SAFE_IMAGE_TYPE} multiple hidden onChange={imageInputChangeHandler} />
-      {(product.images?.length || imagesToUpload.length) && (
-      <Lightbox
-        open={isImagePreviewOpened}
-        index={previewIndex}
-        styles={{ container: { backgroundColor: "rgba(0, 0, 0, .6)" } }}
-        controller={{ closeOnBackdropClick: true }}
-        close={() => { setIsImagePreviewOpened(false); }}
-        slides={allImagesOnlyUrls.map((image) => ({ src: image }))}
-      />
+      {product.images?.length && (
+        <Lightbox
+          open={isImagePreviewOpened}
+          index={previewIndex}
+          styles={{ container: { backgroundColor: "rgba(0, 0, 0, .6)" } }}
+          controller={{ closeOnBackdropClick: true }}
+          close={() => { setIsImagePreviewOpened(false); }}
+          slides={allImagesOnlyUrls.map((image) => ({ src: image }))}
+        />
       )}
-
     </div>
   );
 }

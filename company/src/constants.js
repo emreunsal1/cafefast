@@ -38,5 +38,6 @@ export const PAGE_TITLES = {
 };
 
 export const CLIENT_SIDE_IS_LOGIN_COOKIE_NAME = "is-login";
+export const AWS_CLOUDFRONT_URL = "https://d1w5rwlodabrlm.cloudfront.net";
 
 export const SAFE_IMAGE_TYPE = "image/png,image/jpeg, image/webp, image/heic";
