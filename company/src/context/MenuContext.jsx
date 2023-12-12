@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import { useRouter } from "next/router";
+import { useImmer } from "use-immer";
 import { CATEGORY_SERVICE, MENU_SERVICE } from "../services/menu";
 import { useMessage } from "./GlobalMessage";
 import CAMPAIGN_SERVICE from "@/services/campaign";
@@ -8,9 +9,7 @@ import { useLoading } from "./LoadingContext";
 const Context = createContext({});
 
 export function MenuDetailContext({ children }) {
-  const [menu, setMenu] = useState(null);
-  const [categories, setCategories] = useState([]);
-  const [campaings, setCampaings] = useState([]);
+  const [menu, setMenu] = useImmer(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState();
   const message = useMessage();
 
@@ -20,9 +19,8 @@ export function MenuDetailContext({ children }) {
   const getMenu = async (menuId = router.query.menuId) => {
     setLoading(true);
     const response = await MENU_SERVICE.detail(menuId);
+    console.log("response", response.data);
     setMenu(response.data);
-    setCategories(response.data.categories);
-    setCampaings(response.data.campaigns);
     setLoading(false);
     return response.data;
   };
@@ -30,7 +28,9 @@ export function MenuDetailContext({ children }) {
   const addCategory = async (menuId, categoryName, order) => {
     try {
       const response = await CATEGORY_SERVICE.createCategory(menuId, categoryName, order);
-      setCategories([...categories, response.data]);
+      const newCategories = menu.categories;
+      newCategories.push(response.data);
+      setMenu((_menu) => { _menu.categories = newCategories; });
       return response.data;
     } catch (error) {
       if (error.response.data.error === "CATEGORY_NAME_MUST_BE_UNIQUE") {
@@ -43,10 +43,10 @@ export function MenuDetailContext({ children }) {
     try {
       setLoading(true);
       const response = await CATEGORY_SERVICE.updateCategory(router.query.menuId, data);
-      const foundCategoryIndex = categories.findIndex((_category) => _category._id === data._id);
-      const newCategories = [...categories];
+      const foundCategoryIndex = menu.categories.findIndex((_category) => _category._id === data._id);
+      const newCategories = [...menu.categories];
       newCategories[foundCategoryIndex] = response.data;
-      setCategories(newCategories);
+      setMenu((_menu) => { _menu.categories = newCategories; });
       setLoading(false);
     } catch (error) {
       if (error.response.data.error === "CATEGORY_NAME_MUST_BE_UNIQUE") {
@@ -58,9 +58,9 @@ export function MenuDetailContext({ children }) {
   const deleteCategory = async (categoryId) => {
     setLoading(true);
     await CATEGORY_SERVICE.deleteCategory(router.query.menuId, categoryId);
-    const filteredCategory = categories.filter((category) => category._id !== categoryId);
+    const filteredCategory = menu.categories.filter((category) => category._id !== categoryId);
     setSelectedCategoryId(null);
-    setCategories(filteredCategory);
+    setMenu((_menu) => { _menu.categories = filteredCategory; });
     router.push(`/menu/${router.query.menuId}/`);
     setLoading(false);
   };
@@ -80,10 +80,7 @@ export function MenuDetailContext({ children }) {
   return (
     <Context.Provider value={{
       menu,
-      categories,
-      campaings,
       selectedCategoryId,
-      setCategories,
       addCategory,
       getMenu,
       updateCategory,

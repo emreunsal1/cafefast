@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSearchParams } from "next/navigation";
 import classNames from "classnames";
-import { motion } from "framer-motion";
 import { useMenuDetail } from "../context/MenuContext";
 import { STORAGE } from "@/utils/browserStorage";
 import Button from "./library/Button";
@@ -12,11 +11,11 @@ import { useLoading } from "@/context/LoadingContext";
 
 export default function CategorySideBar() {
   const {
-    categories, addCategory, selectedCategoryId, setSelectedCategoryId,
+    menu, addCategory, selectedCategoryId, setSelectedCategoryId,
   } = useMenuDetail();
   const searchParams = useSearchParams();
 
-  const [newCategory, setNewCategory] = useState({ name: "", order: categories.length + 1 });
+  const [newCategory, setNewCategory] = useState({ name: "", order: menu.categories.length + 1 });
   const [isCreateCategory, setIsCreateCategory] = useState(false);
   const router = useRouter();
   const { setLoading } = useLoading();
@@ -27,7 +26,7 @@ export default function CategorySideBar() {
     const response = await addCategory(id, name, order);
     setLoading(false);
     setIsCreateCategory(false);
-    setNewCategory({ name: "", order: categories.length + 1 });
+    setNewCategory({ name: "", order: menu.categories.length + 1 });
     if (!STORAGE.getLocal("isCompleteMenuBoard")) {
       router.push(`/menu/${router.query.menuId}/category/${response._id}`);
     }
@@ -53,6 +52,7 @@ export default function CategorySideBar() {
     if (searchParams.get("categoryId")) {
       setSelectedCategoryId(searchParams.get("categoryId"));
     }
+    console.log("categories", menu.categories);
   }, [router.isReady]);
 
   return (
@@ -80,7 +80,7 @@ export default function CategorySideBar() {
         </div>
       </div>
       <div className="category-list">
-        {categories.map((item) => (
+        {menu.categories.map((item) => (
           <div
             className={`category-list-item ${selectedCategoryId === item._id ? "active" : ""}`}
             onClick={() => categoryItemClickHandler(item)}

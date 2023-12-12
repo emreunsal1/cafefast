@@ -57,6 +57,7 @@ function MenuDetail() {
 
   useEffect(() => {
     if (router.isReady) {
+      console.log("geldii");
       getMenu(router.query.menuId);
     }
   }, [router.isReady]);
@@ -69,9 +70,9 @@ function MenuDetail() {
 
   return (
     <div className="menu-detail-page">
-      <CategorySideBar />
       {menu && (
       <>
+        <CategorySideBar />
         {selectedCategoryId && (
         <div className="menu-detail-body-wrapper">
           <CategoryDetail />
