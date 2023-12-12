@@ -17,9 +17,14 @@ const app = express();
 const init = async () => {
   dotenv.config();
 
-  await connectDB();
-  await connectToRedis();
-  await checkS3Connection();
+  try {
+    await connectDB();
+    await connectToRedis();
+    await checkS3Connection();
+  } catch (err) {
+    logger.error({ action: "INIT_CONNECTIONS", message: "application killed", stack: err });
+    process.exit();
+  }
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));

@@ -13,6 +13,7 @@ export const connectToRedis = async () => {
     logger.info("Connected to redis");
   } catch (err) {
     logger.error("Error when connecting redis");
+    throw err;
   }
 };
 

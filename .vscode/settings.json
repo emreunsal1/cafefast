@@ -24,5 +24,10 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true
     }
+  },
+  "[javascript][javascriptreact]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    }
   }
 }

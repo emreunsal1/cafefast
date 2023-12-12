@@ -2,24 +2,35 @@ import { unlink } from "fs";
 import { join } from "path";
 import winston from "winston";
 
-const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.combine(
-    winston.format.errors({ stack: true }),
-    winston.format.splat(),
-    winston.format.json(),
-  ),
-  transports: [
-    new winston.transports.File({ filename: "error.log", level: "error" }),
-    new winston.transports.File({ filename: "info.log" }),
-  ],
-});
+const getLogger = () => {
+  if (process.env.NODE_ENV !== "production") {
+    return winston.createLogger({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.printf((fullLog) => {
+          const { action, level, ...otherParams } = fullLog;
+          return `${level} ${action || ""} : ${JSON.stringify(otherParams, null, 2)}`;
+        }),
+      ),
+      transports: [new winston.transports.Console()],
+    });
+  }
 
-if (process.env.NODE_ENV !== "production") {
-  logger.add(new winston.transports.Console({
-    format: winston.format.json(),
-  }));
-}
+  return winston.createLogger({
+    level: "info",
+    format: winston.format.combine(
+      winston.format.errors({ stack: true }),
+      winston.format.splat(),
+      winston.format.json(),
+    ),
+    transports: [
+      new winston.transports.File({ filename: "error.log", level: "error" }),
+      new winston.transports.File({ filename: "info.log" }),
+    ],
+  });
+};
+
+const logger = getLogger();
 
 export const clearLogs = async () => {
   if (process.env.NODE_ENV !== "production") {

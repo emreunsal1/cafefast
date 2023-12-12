@@ -20,6 +20,7 @@ export const checkS3Connection = async () => {
     logger.info({ message: "Connected to s3", buckets: results.Buckets?.map((bck) => bck.Name) });
   } catch (err) {
     logger.error({ message: "Error when connection to s3 cluster", error: err });
+    throw err;
   }
 };
 

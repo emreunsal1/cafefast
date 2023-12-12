@@ -11,6 +11,7 @@ const connectDB = async () => {
     logger.info({ message: "Connected to MongoDB" });
   } catch (err) {
     logger.error({ message: "Error when connecting database", stack: err });
+    throw err;
   }
 };
 
