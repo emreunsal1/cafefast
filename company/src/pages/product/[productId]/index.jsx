@@ -77,7 +77,7 @@ export default function ProductDetail() {
     mockProduct.attributes = attributes;
     if (isUpdate) {
       mockProduct.images = product.images.map((image) => new URL(image).pathname.slice(1));
-      if (uploadedImages) {
+      if (uploadedImages?.data) {
         uploadedImages.data.forEach((item) => {
           mockProduct.images.push(item);
         });
@@ -89,13 +89,20 @@ export default function ProductDetail() {
       message.success("Ürün başarıyla güncellendi");
       return;
     }
-    mockProduct.images = uploadedImages.data;
-    await PRODUCT_SERVICE.create(mockProduct);
-    router.push("/product");
+    mockProduct.images = uploadedImages?.data || [];
+    try {
+      await PRODUCT_SERVICE.create(mockProduct);
+      router.push("/product");
+    } catch (err) {
+      if (err.response.data.type === "VALIDATION_ERROR") {
+        message.error("Lütfen alanları kurallara göre doldurunuz");
+      }
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
-    if (router.query.productId !== "new") {
+    if (router.isReady && router.query.productId !== "new") {
       setIsUpdate(true);
       getProductData();
     }
@@ -104,6 +111,7 @@ export default function ProductDetail() {
   const imageInputChangeHandler = async (e) => {
     const maxImageCanBeUploaded = 5 - allImagesOnlyUrls.length;
     const _imagesToUpload = [...e.target.files].slice(0, maxImageCanBeUploaded);
+    e.target.value = null;
     setImagesToUpload([...imagesToUpload, ..._imagesToUpload]);
   };
 

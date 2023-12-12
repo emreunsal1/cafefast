@@ -1,13 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useEffect, useState } from "react";
-import { Card } from "antd";
-import { PlusCircleOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import { useProduct } from "../../context/ProductContext";
-import { PRODUCT_CARD_ACTIONS } from "../../components/ProductCard";
-import ProductCard from "../../components/ProdcutCard";
-import { PRODUCT_MODAL_ACTIONS } from "../../components/ProductModal";
+import ProductCard from "../../components/ProductCard";
 import Layout from "../../components/Layout";
 import { CDN_SERVICE } from "@/services/cdn";
 import { API_URl, PRODUCT_ROUTE } from "@/constants";
@@ -17,7 +13,7 @@ import Button from "@/components/library/Button";
 
 export default function Product() {
   const {
-    getProducts, products, updateProduct,
+    getProducts, products,
     deleteProduct,
     createProduct,
   } = useProduct();
@@ -84,6 +80,7 @@ export default function Product() {
       <div className="product-list-wrapper">
         {products.map((product) => (
           <ProductCard
+            key={product._id}
             isSelectable={isMultipleEdit}
             selectedProducts={selectedProducts}
             setSelectedProducts={setSelectedProducts}

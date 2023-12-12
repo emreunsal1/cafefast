@@ -40,7 +40,7 @@ export default function Dropdown({
         id="library-dropdown-body"
         className={bodyClassname}
       >
-        {items.map((item) => <div onClick={closeBody} className={itemClassName}>{item}</div>)}
+        {items.map((item, key) => <div key={key} onClick={closeBody} className={itemClassName}>{item}</div>)}
       </motion.div>
     </div>
   );

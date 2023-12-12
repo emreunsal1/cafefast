@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import z from "zod";
 
 export const createCategoryValidator = z.object({
-  name: z.string(),
+  name: z.string().min(1),
   products: z.array(z.string()).optional(),
   image: z.string().optional(),
 });

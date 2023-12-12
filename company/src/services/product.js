@@ -1,14 +1,7 @@
 import { PRODUCT_ROUTE } from "../constants";
 import instance from "../utils/axios";
 
-const create = async (data) => {
-  try {
-    const response = await instance.post(PRODUCT_ROUTE, data);
-    return response;
-  } catch (error) {
-    return false;
-  }
-};
+const create = async (data) => instance.post(PRODUCT_ROUTE, data);
 
 const get = async () => {
   try {

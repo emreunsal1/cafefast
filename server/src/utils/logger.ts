@@ -5,12 +5,21 @@ import winston from "winston";
 const getLogger = () => {
   if (process.env.NODE_ENV !== "production") {
     return winston.createLogger({
+      levels: {
+        error: 0,
+        warn: 1,
+        info: 2,
+      },
       format: winston.format.combine(
         winston.format.colorize(),
+        winston.format.splat(),
+        winston.format.json(),
         winston.format.printf((fullLog) => {
           const { action, level, ...otherParams } = fullLog;
           const actionIfExists = action ? ` ${action}` : "";
-          return `${level}${actionIfExists}: ${JSON.stringify(otherParams)}`;
+          const otherParamsAsLog = typeof otherParams.message === "string" ? otherParams : { ...otherParams.message };
+
+          return `${level}${actionIfExists}: ${JSON.stringify(otherParamsAsLog)}`;
         }),
       ),
       transports: [new winston.transports.Console()],
@@ -18,7 +27,6 @@ const getLogger = () => {
   }
 
   return winston.createLogger({
-    level: "info",
     format: winston.format.combine(
       winston.format.errors({ stack: true }),
       winston.format.splat(),

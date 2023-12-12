@@ -1,78 +1,64 @@
-import React, { useState } from "react";
-import { Card } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import ProductModal, { PRODUCT_MODAL_ACTIONS } from "./ProductModal";
-
-const { Meta } = Card;
-
-export const PRODUCT_CARD_ACTIONS = {
-  UPDATE: "update",
-  DELETE: "delete",
-  CANCEL: "cancel",
-};
+import Checkbox from "./library/Checkbox";
+import { useProduct } from "@/context/ProductContext";
+import Icon from "./library/Icon";
 
 export default function ProductCard({
-  isMultipleEdit, product, onAction, selectedProducts, setSelectedProducts,
+  data, isSelectable, selectedProducts, setSelectedProducts,
 }) {
-  const [isEdit, setIsEdit] = useState(false);
+  const [isSelected, setIsSelected] = useState(false);
+  useEffect(() => {
+    setIsSelected(selectedProducts.includes(data._id));
+  }, [selectedProducts]);
 
   const router = useRouter();
-
-  const editHandler = () => {
-    router.push(`/product/${product._id}`);
-  };
-
-  const deleteHandler = () => {
-    onAction({ action: PRODUCT_CARD_ACTIONS.DELETE, data: product });
-  };
-
-  const modalActionHandler = ({ action, data }) => {
-    if (action === PRODUCT_MODAL_ACTIONS.UPDATE) {
-      onAction({ action: PRODUCT_CARD_ACTIONS.UPDATE, data });
-    }
-
-    if (action === PRODUCT_MODAL_ACTIONS.CANCEL) {
-      // Cancel Action kullanırsak diye
-    }
-    setIsEdit(false);
-  };
+  const {
+    deleteProduct,
+  } = useProduct();
 
   const checkboxOnchangeHandler = (e) => {
     if (e.target.checked) {
-      setSelectedProducts((prev) => [...prev, product._id]);
+      setSelectedProducts((prev) => [...prev, data._id]);
       return;
     }
-    const filteredSelectedProducts = selectedProducts.filter((item) => item !== product._id);
+    const filteredSelectedProducts = selectedProducts.filter((item) => item !== data._id);
     setSelectedProducts(filteredSelectedProducts);
   };
-
   return (
-    <div id="ProductCard">
-      {isMultipleEdit && (
-      <input
-        type="checkbox"
-        onChange={(e) => checkboxOnchangeHandler(e)}
-      />
-      )}
-      <Card
-        hoverable
-        style={{
-          width: 240,
-        }}
-        cover={<img alt="example" src={product.images[0]} />}
-        actions={[
-          <EditOutlined onClick={editHandler} key="edit" />,
-          <DeleteOutlined key="delete" onClick={deleteHandler} />,
-        ]}
-      >
-        <Meta title={product.name} description={product.description} />
-      </Card>
-      {isEdit && (
-        <div className="create-product-modal-wrapper">
-          <ProductModal data={product} onAction={modalActionHandler} action={PRODUCT_MODAL_ACTIONS.UPDATE} />
+    <div className="product-card">
+      <div className="product-card-container">
+        {isSelectable && (
+        <div className="selectable">
+          <Checkbox onChange={(e) => checkboxOnchangeHandler(e)} value={isSelected} />
         </div>
-      )}
+        )}
+        <div className="content" onClick={() => router.push(`/product/${data._id}`)}>
+          <div className="image-wrapper">
+            <img src={data.images[0]} alt={data.name} />
+          </div>
+          <div className="info">
+            <div className="name">
+              {data.name}
+            </div>
+            <div className="price">
+              FİYAT:
+              <span>{data.priceAsText}</span>
+            </div>
+            <div className="description">
+              {data.description}
+            </div>
+          </div>
+        </div>
+        <div className="actions">
+          <div className="item edit" onClick={() => router.push(`/product/${data._id}`)}>
+            <Icon name="edit-outlined" />
+          </div>
+          <div className="item delete" onClick={() => deleteProduct(data._id)}>
+            <Icon name="delete-outlined" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

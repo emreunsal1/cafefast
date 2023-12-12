@@ -18,8 +18,8 @@ export const productAttributeValidator = z.object({
 });
 
 export const createProductValidator = z.object({
-  name: z.string(),
-  description: z.string(),
+  name: z.string().min(1),
+  description: z.string().min(5),
   price: z.number(),
   images: z.array(z.string()),
   attributes: productAttributeValidator.array(),

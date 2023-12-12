@@ -117,6 +117,7 @@
         padding: 10px;
         border-right: 1px solid $border-gray;
         &-item {
+          height: 40px;
           padding: 12px 8px;
           border-radius: 4px;
           cursor: pointer;
@@ -149,8 +150,15 @@
           margin-bottom: 20px;
           h4 {
           }
-          .attribute-options-header {
+          .attribute-options-header,
+          .attribute-option {
             display: flex;
+            gap: 10px;
+            &:not(:last-child) {
+              margin-bottom: 10px;
+            }
+          }
+          .attribute-options-header {
             font-weight: bold;
 
             .name-title {
@@ -161,7 +169,6 @@
             }
           }
           .attribute-option {
-            display: flex;
             .option-name {
               width: 100%;
             }

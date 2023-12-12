@@ -48,7 +48,7 @@ export default function Header({ sideBarButtonClickHandler, sideBarIsOpened }) {
           </div>
           <div className="header-center">
             <div className="header-company-icon-wrapper" onClick={() => router.push("/")}>
-              <Image src={cafeFastIcon} />
+              <Image src={cafeFastIcon} alt="cafefast-icon" />
             </div>
           </div>
           <div className="header-right">
