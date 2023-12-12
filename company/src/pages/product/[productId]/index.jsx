@@ -12,7 +12,6 @@ import Icon from "@/components/library/Icon";
 import Button from "@/components/library/Button";
 import { useLoading } from "@/context/LoadingContext";
 import { useMessage } from "@/context/GlobalMessage";
-import ProductImageItem from "@/components/ProductImageItem";
 import { SortableProductImages } from "@/components/dnd/SortableProductImages";
 
 const DEFAULT_PRODUCT_ATTRIBUTE_OPTION_DATA = {
@@ -170,8 +169,10 @@ export default function ProductDetail() {
     document.querySelector("#add-image-input").click();
   };
 
-  const onSetImages = (newImages) => {
+  const changeImageSort = async (newImages) => {
+    const productImagesWithoutCFUrls = newImages.map((image) => image.split("/").pop());
     setProduct({ ...product, images: newImages });
+    await PRODUCT_SERVICE.update({ _id: product._id, images: productImagesWithoutCFUrls });
   };
 
   return (
@@ -191,7 +192,7 @@ export default function ProductDetail() {
         <SortableProductImages
           images={product.images}
           deleteImage={deleteImage}
-          onSetImages={onSetImages}
+          onSort={changeImageSort}
           setIsImagePreviewOpened={setIsImagePreviewOpened}
           setPreviewIndex={setPreviewIndex}
         />

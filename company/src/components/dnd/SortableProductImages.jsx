@@ -17,13 +17,13 @@ import { SortableItem } from "./SortableItem";
 import ProductImageItem from "../ProductImageItem";
 
 export function SortableProductImages({
-  images, onSetImages, deleteImage, setPreviewIndex, setIsImagePreviewOpened,
+  images, onSort, deleteImage, setPreviewIndex, setIsImagePreviewOpened,
 }) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        delay: 300,
-        tolerance: 300,
+        delay: 100,
+        tolerance: 100,
       },
     }),
   );
@@ -34,7 +34,7 @@ export function SortableProductImages({
     if (active.id !== over.id) {
       const oldIndex = images.indexOf(active.id);
       const newIndex = images.indexOf(over.id);
-      onSetImages(arrayMove(images, oldIndex, newIndex));
+      onSort(arrayMove(images, oldIndex, newIndex));
     }
   }
 
