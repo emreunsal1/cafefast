@@ -9,7 +9,8 @@ const getLogger = () => {
         winston.format.colorize(),
         winston.format.printf((fullLog) => {
           const { action, level, ...otherParams } = fullLog;
-          return `${level} ${action || ""} : ${JSON.stringify(otherParams, null, 2)}`;
+          const actionIfExists = action ? ` ${action}` : "";
+          return `${level}${actionIfExists}: ${JSON.stringify(otherParams)}`;
         }),
       ),
       transports: [new winston.transports.Console()],
