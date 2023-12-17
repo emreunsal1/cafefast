@@ -2,14 +2,16 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useSearchParams } from "next/navigation";
 import classNames from "classnames";
-import { useMenuDetail } from "../context/MenuContext";
+
+import { useLoading } from "@/context/LoadingContext";
+import { useClickOutSide } from "@/hooks";
 import { STORAGE } from "@/utils/browserStorage";
+import { useMenuDetail } from "@/context/MenuContext";
+
 import Button from "./library/Button";
 import Input from "./library/Input";
 import Icon from "./library/Icon";
-import { useLoading } from "@/context/LoadingContext";
 import SortableMenuCategories from "./dnd/SortableMenuCategories";
-import { useClickOutSide } from "@/hooks";
 
 export default function CategorySideBar() {
   const {
@@ -55,7 +57,6 @@ export default function CategorySideBar() {
     if (searchParams.get("categoryId")) {
       setSelectedCategoryId(searchParams.get("categoryId"));
     }
-    console.log("categories", menu.categories);
   }, [router.isReady]);
 
   useClickOutSide(addCategoryButtonRef, () => setIsCreateCategory(false));

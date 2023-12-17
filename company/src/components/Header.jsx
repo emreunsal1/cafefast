@@ -3,8 +3,8 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import classNames from "classnames";
-import cafeFastIcon from "../public/images/cafeFastIcon.png";
 import AUTH_SERVICE from "@/services/auth";
+import cafeFastIcon from "../public/images/cafeFastIcon.png";
 import Icon from "./library/Icon";
 import Dropdown from "./library/Dropdown";
 
@@ -40,9 +40,9 @@ export default function Header({ sideBarButtonClickHandler, sideBarIsOpened }) {
           <div className="header-left">
             <div className="button-wrapper" onClick={sideBarButtonClickHandler}>
               <motion.div animate={{ transform: sideBarIsOpened ? "rotate(180deg)" : "rotate(0deg)" }}>
-                <Icon name="right-arrow" />
-                <Icon name="right-arrow" />
-                <Icon name="right-arrow" />
+                <Icon name="right-chevron" />
+                <Icon name="right-chevron" />
+                <Icon name="right-chevron" />
               </motion.div>
             </div>
           </div>

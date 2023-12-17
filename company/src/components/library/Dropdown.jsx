@@ -1,20 +1,24 @@
 import React, { useRef, useState } from "react";
 import {
+  AnimatePresence,
   motion,
 } from "framer-motion";
 import classNames from "classnames";
 import { useClickOutSide } from "@/hooks";
+import Icon from "./Icon";
 
 export default function Dropdown({
   className,
   buttonContent,
   items,
   menuPosition = "lefttoright",
+  chevron = true,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const bodyRef = useRef(null);
   const wrapperClassname = classNames("library-dropdown", {
     [className]: !!className,
+    opened: isOpen,
   });
   const bodyClassname = classNames("library-dropdown-body", {
     [`menu-position-${menuPosition}`]: true,
@@ -30,18 +34,22 @@ export default function Dropdown({
       <motion.div
         whileTap={{ scale: 0.95 }}
         className={triggerClassName}
-        id="library-dropdown-trigger"
         onClick={() => setIsOpen(!isOpen)}
       >
         {buttonContent}
+        {chevron && <Icon name="up-chevron" />}
       </motion.div>
-      <motion.div
-        animate={{ opacity: isOpen ? 1 : 0, visibility: isOpen ? "visible" : "hidden" }}
-        id="library-dropdown-body"
-        className={bodyClassname}
-      >
-        {items.map((item, key) => <div key={key} onClick={closeBody} className={itemClassName}>{item}</div>)}
-      </motion.div>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, transform: "translate(0, -10px)", visibility: "hidden" }}
+            animate={{ opacity: 1, transform: "translate(0, 0)", visibility: "visible" }}
+            className={bodyClassname}
+          >
+            {items.map((item, key) => <div key={key} onClick={closeBody} className={itemClassName}>{item}</div>)}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

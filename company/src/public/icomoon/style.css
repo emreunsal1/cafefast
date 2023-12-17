@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?jghlpu');
-  src:  url('fonts/icomoon.eot?jghlpu#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?jghlpu') format('truetype'),
-    url('fonts/icomoon.woff?jghlpu') format('woff'),
-    url('fonts/icomoon.svg?jghlpu#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?vd7k1e');
+  src:  url('fonts/icomoon.eot?vd7k1e#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?vd7k1e') format('truetype'),
+    url('fonts/icomoon.woff?vd7k1e') format('woff'),
+    url('fonts/icomoon.svg?vd7k1e#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,13 +25,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-plus:before {
-  content: "\e90d";
+.icon-up-chevron:before {
+  content: "\e90e";
 }
-.icon-checkmark:before {
-  content: "\ea10";
-}
-.icon-right-arrow:before {
+.icon-right-chevron:before {
   content: "\e90c";
 }
 .icon-cancel:before {
@@ -69,4 +66,10 @@
 }
 .icon-sidemenu:before {
   content: "\e907";
+}
+.icon-plus:before {
+  content: "\e90d";
+}
+.icon-checkmark:before {
+  content: "\ea10";
 }

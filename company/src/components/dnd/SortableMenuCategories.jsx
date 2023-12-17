@@ -6,7 +6,6 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  MouseSensor,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -22,12 +21,6 @@ export default function SortableMenuCategories({
 }) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: {
-        delay: 100,
-        tolerance: 100,
-      },
-    }),
-    useSensor(MouseSensor, {
       activationConstraint: {
         delay: 100,
         tolerance: 100,
@@ -63,7 +56,7 @@ export default function SortableMenuCategories({
                 onClick={() => categoryItemClickHandler(category)}
               >
                 {category.name}
-                <Icon name="right-arrow" />
+                <Icon name="right-chevron" />
               </div>
             </SortableItem>
           ))}
