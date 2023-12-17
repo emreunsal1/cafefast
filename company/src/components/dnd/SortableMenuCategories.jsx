@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-import React from "react";
+import React, { useMemo } from "react";
 import {
   DndContext,
   closestCenter,
@@ -38,6 +38,8 @@ export default function SortableMenuCategories({
     }
   }
 
+  const itemIds = useMemo(() => categories.map((item) => item._id), [categories]);
+
   return (
     <DndContext
       sensors={sensors}
@@ -45,7 +47,7 @@ export default function SortableMenuCategories({
       onDragEnd={handleDragEnd}
     >
       <SortableContext
-        items={categories}
+        items={itemIds}
         strategy={verticalListSortingStrategy}
       >
         <div className="category-list">

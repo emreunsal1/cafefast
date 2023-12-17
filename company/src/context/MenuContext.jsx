@@ -54,11 +54,17 @@ export function MenuDetailContext({ children }) {
     }
   };
 
-  const updateCategories = async (newCategories) => {
-    const categoryIds = newCategories.map((_category) => _category._id);
+  const sortMenuCategoriesWithIds = async (newCategories) => {
+    const oldCategories = menu.categories;
+    setMenu((_menu) => { _menu.categories = newCategories; });
     setLoading(true);
-    await MENU_SERVICE.update(router.query.menuId, { categories: categoryIds });
-    await getMenu();
+    try {
+      const categoryIds = newCategories.map((_category) => _category._id);
+      await MENU_SERVICE.update(router.query.menuId, { categories: categoryIds });
+      await getMenu();
+    } catch (err) {
+      setMenu((_menu) => { _menu.categories = oldCategories; });
+    }
     setLoading(false);
   };
 
@@ -91,7 +97,7 @@ export function MenuDetailContext({ children }) {
       addCategory,
       getMenu,
       updateCategory,
-      updateCategories,
+      sortMenuCategoriesWithIds,
       deleteCategory,
       removeCampaings,
       setSelectedCategoryId,

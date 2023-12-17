@@ -15,7 +15,7 @@ import SortableMenuCategories from "./dnd/SortableMenuCategories";
 
 export default function CategorySideBar() {
   const {
-    menu, addCategory, selectedCategoryId, setSelectedCategoryId, updateCategories,
+    menu, addCategory, selectedCategoryId, setSelectedCategoryId, sortMenuCategoriesWithIds,
   } = useMenuDetail();
   const searchParams = useSearchParams();
 
@@ -62,7 +62,7 @@ export default function CategorySideBar() {
   useClickOutSide(addCategoryButtonRef, () => setIsCreateCategory(false));
 
   const onSortCategories = async (newCategories) => {
-    updateCategories(newCategories);
+    sortMenuCategoriesWithIds(newCategories);
   };
 
   return (
