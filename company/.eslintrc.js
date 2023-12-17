@@ -3,11 +3,22 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: ["next", "plugin:react/recommended", "airbnb"],
+  extends: ["plugin:react/recommended", "airbnb", "next"],
+  plugins: ["import"],
+  settings: {
+    "import/resolver": {
+      alias: {
+        extensions: [".js", ".jsx"],
+        map: [
+          ["@", "./src"],
+        ],
+      },
+    },
+  },
   rules: {
     quotes: ["error", "double"],
     camelcase: "off",
-    "max-len": ["error", { code: 150 }], // default 80miş de formatlamıyor 150 yaptım,
+    "max-len": ["error", { code: 150 }],
     "react/prop-types": "off",
     "react/jsx-props-no-spreading": "off",
     "import/prefer-default-export": "off",
