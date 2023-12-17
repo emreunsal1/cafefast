@@ -15,6 +15,7 @@ import {
 import { moveItemInArray } from "@/utils/common";
 import { useMenuDetail } from "@/context/MenuDetailContext";
 import { useRouter } from "next/router";
+import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { SortableItem } from "./SortableItem";
 import Icon from "../library/Icon";
 
@@ -58,6 +59,7 @@ export default function SortableMenuCategories() {
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
+      modifiers={[restrictToVerticalAxis, restrictToParentElement]}
     >
       <SortableContext
         items={itemIds}

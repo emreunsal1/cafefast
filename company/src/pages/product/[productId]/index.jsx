@@ -74,7 +74,7 @@ export default function ProductDetail() {
     const mockProduct = JSON.parse(JSON.stringify(product));
     mockProduct.price = Number(product.price);
     mockProduct.attributes = attributes;
-    mockProduct.images = mockProduct.images.map((image) => image.split("/").pop());
+    delete mockProduct.images;
 
     if (isUpdate) {
       const response = await PRODUCT_SERVICE.update(mockProduct);
@@ -199,21 +199,6 @@ export default function ProductDetail() {
           setPreviewIndex={setPreviewIndex}
         />
         )}
-        <div className="product-images-wrapper">
-          {/* {product.images?.map((image, index) => (
-            <ProductImageItem
-              image={image}
-              openPreview={() => { setPreviewIndex(index); setIsImagePreviewOpened(true); }}
-              onDeleteImage={() => deleteImage(image)}
-            />
-          ))}
-          {imagesToUpload?.map((image, index) => (
-            <ProductImageItem
-              openPreview={() => { setPreviewIndex((product.images?.length || 0) + index); setIsImagePreviewOpened(true); }}
-              image={URL.createObjectURL(image)}
-            />
-          ))} */}
-        </div>
       </div>
       <div className="product-detail-inputs">
         <Input
@@ -245,6 +230,7 @@ export default function ProductDetail() {
             {
                 attributes.map((attribute, index) => (
                   <div
+                    key={index}
                     className={classNames({
                       "attribute-list-item": true,
                       selected: index === selectedAttributeDetailId,
@@ -336,9 +322,9 @@ export default function ProductDetail() {
                   </div>
                 ))}
                 {isLastOptionValid && (
-                <div className="add-attribute-option-button">
-                  <Button onClick={addAttributeOptionHandler}>Ekle</Button>
-                </div>
+                  <div className="add-attribute-option-button">
+                    <Button onClick={addAttributeOptionHandler}>Ekle</Button>
+                  </div>
                 )}
               </div>
               <div className="attribute-actions">

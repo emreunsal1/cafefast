@@ -6,11 +6,16 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+
 } from "@dnd-kit/core";
 import {
   SortableContext,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import {
+  restrictToHorizontalAxis,
+  restrictToParentElement,
+} from "@dnd-kit/modifiers";
 
 import { moveItemInArray } from "@/utils/common";
 import { SortableItem } from "./SortableItem";
@@ -43,6 +48,7 @@ export function SortableProductImages({
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
+      modifiers={[restrictToHorizontalAxis, restrictToParentElement]}
     >
       <SortableContext
         items={images}
