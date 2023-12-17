@@ -1,6 +1,6 @@
 // Base
 @import "./colors";
-@import "./variables.scss";
+@import "./variables";
 @import "./reset";
 @import "normalize.css";
 @import "../public/icomoon/style.css";
@@ -22,8 +22,8 @@
 @import "./components/header";
 @import "./components/category-sidebar";
 @import "./components/qr-generator-form";
-@import "./components/category-detail.scss";
-@import "./components//menu-campaing-detail.scss";
+@import "./components/category-detail";
+@import "./components//menu-campaing-detail";
 
 // Pages
 @import "./pages/homepage";
@@ -35,4 +35,5 @@
 @import "./pages//menu-detail-page";
 @import "./pages/table-page";
 @import "./pages/campaigns-page";
-@import "./pages//menu-detail-page.scss";
+@import "./pages//menu-detail-page";
+@import "./pages//order-detail-page";

@@ -2,15 +2,16 @@ import React from "react";
 import { Space, Table } from "antd";
 import { ORDER_STATUSES, ORDER_STATUS_TEXTS } from "@/constants";
 import COMPANY_SERVICE from "@/services/company";
-import { copyText } from "@/utils/common";
 import { useDate } from "@/context/DateContext";
-import { useMessage } from "@/context/GlobalMessage";
+import { useRouter } from "next/router";
 import Button from "./library/Button";
 import Select from "./library/Select";
+import Icon from "./library/Icon";
 
 export default function OrderList({ data, onUpdate }) {
   const { formatDate } = useDate();
-  const message = useMessage();
+  const router = useRouter();
+
   const statusOnChangeHandler = async (orderId, status) => {
     const updated = await COMPANY_SERVICE.updateOrder(orderId, { status });
     onUpdate(orderId, updated.data);
@@ -23,13 +24,13 @@ export default function OrderList({ data, onUpdate }) {
       key: "_id",
       width: 150,
       align: "center",
-      render: (id) => (
+      render: (orderId) => (
         <Button onClick={() => {
-          message.success("Sipariş numarası kopyalandı.");
-          copyText(id);
+          router.push(`/kitchen/${orderId}`);
         }}
         >
-          Kopyala
+          Detay
+          <Icon name="right-chevron" />
         </Button>
       ),
     },
@@ -41,7 +42,7 @@ export default function OrderList({ data, onUpdate }) {
     {
       title: "Ürünler",
       dataIndex: "products",
-      render: (productData) => productData.map((item) => <Space key={item.product._id}>{item.product.name}</Space>),
+      render: (productData) => productData.map((item) => <Space key={item._id}>{item.name}</Space>),
       key: "products",
     },
     {

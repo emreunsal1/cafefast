@@ -3,8 +3,8 @@ import { companyDesksValidator, updateCompanyValidator } from "../models/company
 import {
   getCompany, getCompanyActiveMenu, getDesks, updateCompany, updateCompanyDesks,
 } from "../services/company";
-import { findAndUpdateCompanyOrder, getOrders } from "../services/order";
-import { mapMenu, mapOrders } from "../utils/mappers";
+import { findAndUpdateCompanyOrder, getOrderDetail, getOrders } from "../services/order";
+import { mapMenu, mapOrder, mapOrders } from "../utils/mappers";
 import { updateOrderValidator } from "../models/order";
 
 export const getCompanyController = async (req: Request, res: Response) => {
@@ -16,6 +16,21 @@ export const getCompanyController = async (req: Request, res: Response) => {
   }
 
   res.send(companyData);
+};
+
+export const getOrderDetailController = async (req: Request, res: Response, next) => {
+  try {
+    const { company } = req.user;
+    const { orderId } = req.params;
+    const orderDetail = await getOrderDetail(company, orderId);
+
+    if (!orderDetail) {
+      return res.status(404);
+    }
+    res.send(mapOrder(orderDetail));
+  } catch (error: any) {
+    next(error);
+  }
 };
 
 export const getCompanyOrdersController = async (req: Request, res: Response, next) => {
@@ -118,7 +133,6 @@ export const updateCompanyController = async (req: Request, res: Response, next)
     const result = await updateCompany({ _id: company }, validatedCompany);
 
     res.send(result);
-    return;
   } catch (error) {
     next(error);
   }

@@ -27,31 +27,29 @@ const mapShopperInfoForOrders = (shopper, cardId) => {
   };
 };
 
-export const mapOrders = (orders: Array<any>) => {
-  const mappedOrders = orders.map((order) => {
-    const foundInfo = mapShopperInfoForOrders(order.shopper, order.cardId);
-    const basketInfo = mapBasket({ basket: { campaigns: order.campaigns, products: order.products } });
+export const mapOrder = (order) => {
+  const foundInfo = mapShopperInfoForOrders(order.shopper, order.cardId);
+  const basketInfo = mapBasket({ basket: { campaigns: order.campaigns, products: order.products } });
 
-    return {
-      _id: order._id,
-      shopper: foundInfo,
-      desk: order.desk,
-      cardId: order.cardId,
-      products: order.products,
-      campaigns: order.campaigns,
-      status: order.status,
-      approved: order.approved,
-      isDeleted: order.isDeleted,
-      totalPrice: basketInfo.totalPrice,
-      totalPriceText: basketInfo.totalPriceText,
-      totalPriceSymbolText: basketInfo.totalPriceSymbolText,
-      createdAt: order.createdAt,
-      updatedAt: order.updatedAt,
-    };
-  });
-
-  return mappedOrders;
+  return {
+    _id: order._id,
+    shopper: foundInfo,
+    desk: order.desk,
+    cardId: order.cardId,
+    products: basketInfo.products,
+    campaigns: order.campaigns,
+    status: order.status,
+    approved: order.approved,
+    isDeleted: order.isDeleted,
+    totalPrice: basketInfo.totalPrice,
+    totalPriceText: basketInfo.totalPriceText,
+    totalPriceSymbolText: basketInfo.totalPriceSymbolText,
+    createdAt: order.createdAt,
+    updatedAt: order.updatedAt,
+  };
 };
+
+export const mapOrders = (orders: Array<any>) => orders.map(mapOrder);
 
 export const mapProduct = (_product) => ({
   ..._product,

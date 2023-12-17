@@ -15,6 +15,8 @@ const getOrders = async () => {
   return response.data;
 };
 
+const getOrderDetail = async (orderId) => instance.get(`${COMPANY_ROUTE}/orders/${orderId}`);
+
 const updateOrder = async (orderId, data) => instance.put(`${COMPANY_ROUTE}/orders/${orderId}`, data);
 
 const getQr = async () => {
@@ -34,6 +36,7 @@ const deleteQr = async () => {
 const COMPANY_SERVICE = {
   update,
   getOrders,
+  getOrderDetail,
   getQr,
   updateQr,
   deleteQr,

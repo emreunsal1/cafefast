@@ -31,6 +31,10 @@ export const getOrders = async (companyId, sortOptions: { createdAt: ORDER_BY } 
   }
 };
 
+export const getOrderDetail = async (companyId, orderId) => orderModel
+  .findOne({ company: companyId, _id: orderId })
+  .populate("shopper");
+
 export const findAndUpdateCompanyOrder = async ({ companyId, orderId, data }) => {
   try {
     const result = await orderModel.findOneAndUpdate({ _id: orderId, company: companyId }, data, { new: true })
