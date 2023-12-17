@@ -13,11 +13,7 @@ export const TABLE_PAGE_STEPS = {
 };
 
 export default function Index() {
-  const steps = [{
-    title: "Masalarınızı Oluşturun",
-  }, {
-    title: "Ön İzleme",
-  }];
+  const steps = [{ title: "Masalarınızı Oluşturun" }, { title: "Ön İzleme" }];
   const [currentStep, setCurrentStep] = useState(TABLE_PAGE_STEPS.CREATE);
   const [newTables, setNewTables] = useState([]);
   const [companyTables, setCompanyTables] = useState(false);

@@ -4,7 +4,6 @@ import {
   Modal, Input,
 } from "antd";
 import { useRouter } from "next/router";
-import { MENU_SERVICE } from "../../services/menu";
 import COMPANY_SERVICE from "@/services/company";
 import { STORAGE } from "@/utils/browserStorage";
 import { useProduct } from "@/context/ProductContext";
@@ -14,6 +13,7 @@ import Checkbox from "@/components/library/Checkbox";
 import { useMessage } from "@/context/GlobalMessage";
 import Icon from "@/components/library/Icon";
 import { useLoading } from "@/context/LoadingContext";
+import { MENU_SERVICE } from "../../services/menu";
 
 export default function Menu() {
   const [menus, setMenus] = useState([]);
@@ -60,10 +60,23 @@ export default function Menu() {
   };
 
   const deleteMenu = async ({ menuId, menuIds }) => {
-    console.log("menuId :>> ", menuId);
-    console.log("menuIds :>> ", menuIds);
+    setLoading(true);
+    setSelectModeActive(false);
+    setSelectedMenuIds([]);
     await MENU_SERVICE.deleteMenu({ menuId, menuIds });
     getCompanyMenus();
+    setLoading(false);
+  };
+
+  const deleteSelectedMenus = async () => {
+    setLoading(true);
+    const selectedMenus = selectedMenuIds;
+    setSelectModeActive(false);
+    setSelectedMenuIds([]);
+
+    await MENU_SERVICE.deleteMenu({ menuIds: selectedMenus });
+    await getCompanyMenus();
+    setLoading(false);
   };
 
   const updateClickHandler = async () => {
@@ -88,9 +101,9 @@ export default function Menu() {
       return;
     }
     const response = await MENU_SERVICE.create(name, desc);
-    setLoading(false);
     if (response.status !== 200) {
       message.error("Menü oluşturulamadı");
+      setLoading(false);
       return;
     }
     message.success("Menü oluşturuldu");
@@ -100,6 +113,7 @@ export default function Menu() {
       const { data } = response;
       router.push(`/menu/${data._id}`);
     }
+    setLoading(false);
   };
 
   const activeMenuChangeHandler = async (menuId) => {
@@ -120,13 +134,11 @@ export default function Menu() {
     getCompanyMenus();
   }, []);
 
-  // TODO: Tekli menü silme bozuk
-  // TODO: Seç çoklu sil butonları state'leri bozuk
   return (
     <div className="menus-page">
       <h2 className="menus-page-title">Menüler</h2>
       <Button onClick={() => setSelectModeActive(!selectModeActive)}>Seç</Button>
-      {selectModeActive && <Button onClick={() => deleteMenu({ menuIds: selectedMenuIds })}>Seçili Menüleri Sil</Button>}
+      {selectModeActive && <Button onClick={deleteSelectedMenus}>Seçili Menüleri Sil</Button>}
       <div>
         <Table
           loading={loading}

@@ -6,7 +6,7 @@ import Checkbox from "./library/Checkbox";
 export default function QrGeneratorForm({
   onSubmit,
 }) {
-  const [formData, setFormData] = useState([]);
+  const [formData, setFormData] = useState([{ key: "", count: 0 }]);
   const [isDesksWithKeyActive, setIsDesksWithKeyActive] = useState(false);
 
   const inputOnChangeHandler = (e, index) => {

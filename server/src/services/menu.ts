@@ -101,14 +101,7 @@ export const deleteMenu = async (menuId) => {
 
 export const deleteMultipleMenus = (menuIds) => menuModel.deleteMany({ _id: { $in: menuIds } }).exec();
 
-type UpdateMenuParams = {
-  query: {
-    menuId: any;
-  };
-  data: any;
-};
-
-export const updateMenu = async ({ query, data }: UpdateMenuParams) => {
+export const updateMenu = async ({ query, data }) => {
   try {
     const result = await menuModel.findOneAndUpdate({ _id: query.menuId }, data, { new: true });
     return { data: result };

@@ -1,5 +1,6 @@
 import React from "react";
 import classNames from "classnames";
+import { motion } from "framer-motion";
 
 export default function Button({
   variant, hmtlType, onClick, children, disabled, size, fluid, className,
@@ -11,13 +12,14 @@ export default function Button({
     [className]: !!className,
   });
   return (
-    <button
+    <motion.button
+      whileTap={{ scale: 0.94 }}
       type={hmtlType || "button"}
       className={classname}
       disabled={disabled}
       onClick={onClick}
     >
       {children}
-    </button>
+    </motion.button>
   );
 }

@@ -29,7 +29,8 @@ export const MENU_EXISTS_MIDDLEWARE = async (req: Request, res: Response, next: 
   const companyMenuIds = companyInfo.menus.map((_menu) => _menu._id.toString());
   try {
     if (menuId || menuIdFromBody) {
-      const isMenuExists = companyMenuIds.some((_menuId) => _menuId === menuId);
+      const singleMenuId = menuId || menuIdFromBody;
+      const isMenuExists = companyMenuIds.some((_menuId) => _menuId === singleMenuId);
       if (!isMenuExists) {
         return res.status(404).send({
           message: "[MENU_EXISTS_MIDDLEWARE] menu not found",

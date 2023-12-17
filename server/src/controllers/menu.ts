@@ -63,7 +63,7 @@ export const deleteMenuController = async (req: Request, res: Response, next) =>
   const { company } = req.user;
   const { menuId, menuIds } = req.body;
   try {
-    if (menuId && menuIds.length) {
+    if (menuId && menuIds?.length) {
       return res.status(400).send({
         message: "menuId and menuIds body params can not be used at the same time",
       });
