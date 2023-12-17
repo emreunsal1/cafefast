@@ -2,10 +2,10 @@ import React from "react";
 import { Space, Table } from "antd";
 import { ORDER_STATUSES, ORDER_STATUS_TEXTS } from "@/constants";
 import COMPANY_SERVICE from "@/services/company";
-import { copyText } from "@/utils/copy";
+import { copyText } from "@/utils/common";
 import { useDate } from "@/context/DateContext";
-import Button from "./library/Button";
 import { useMessage } from "@/context/GlobalMessage";
+import Button from "./library/Button";
 import Select from "./library/Select";
 
 export default function OrderList({ data, onUpdate }) {

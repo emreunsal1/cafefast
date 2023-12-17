@@ -8,11 +8,11 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import {
-  arrayMove,
   SortableContext,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
+import { moveItemInArray } from "@/utils/common";
 import { SortableItem } from "./SortableItem";
 import ProductImageItem from "../ProductImageItem";
 
@@ -34,7 +34,7 @@ export function SortableProductImages({
     if (active.id !== over.id) {
       const oldIndex = images.indexOf(active.id);
       const newIndex = images.indexOf(over.id);
-      onSort(arrayMove(images, oldIndex, newIndex));
+      onSort(moveItemInArray(images, oldIndex, newIndex));
     }
   }
 

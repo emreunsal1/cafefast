@@ -6,7 +6,7 @@ import classNames from "classnames";
 import { useLoading } from "@/context/LoadingContext";
 import { useClickOutSide } from "@/hooks";
 import { STORAGE } from "@/utils/browserStorage";
-import { useMenuDetail } from "@/context/MenuContext";
+import { useMenuDetail } from "@/context/MenuDetailContext";
 
 import Button from "./library/Button";
 import Input from "./library/Input";
@@ -15,7 +15,7 @@ import SortableMenuCategories from "./dnd/SortableMenuCategories";
 
 export default function CategorySideBar() {
   const {
-    menu, addCategory, selectedCategoryId, setSelectedCategoryId, sortMenuCategoriesWithIds,
+    menu, addCategory, setSelectedCategoryId,
   } = useMenuDetail();
   const searchParams = useSearchParams();
 
@@ -45,11 +45,6 @@ export default function CategorySideBar() {
     addCategoryHandler(router.query.menuId);
   };
 
-  const categoryItemClickHandler = (item) => {
-    router.push(`/menu/${router.query.menuId}/?categoryId=${item._id}`);
-    setSelectedCategoryId(item._id);
-  };
-
   useEffect(() => {
     if (!STORAGE.getLocal("isCompleteMenuBoard")) {
       setIsCreateCategory(true);
@@ -60,10 +55,6 @@ export default function CategorySideBar() {
   }, [router.isReady]);
 
   useClickOutSide(addCategoryButtonRef, () => setIsCreateCategory(false));
-
-  const onSortCategories = async (newCategories) => {
-    sortMenuCategoriesWithIds(newCategories);
-  };
 
   return (
     <div className="category-side-bar-container">
@@ -90,12 +81,7 @@ export default function CategorySideBar() {
           </div>
         </div>
       </div>
-      <SortableMenuCategories
-        categories={menu.categories}
-        categoryItemClickHandler={categoryItemClickHandler}
-        onSort={onSortCategories}
-        selectedCategoryId={selectedCategoryId}
-      />
+      <SortableMenuCategories />
       <div className="add-campaign-button">
         <Button fluid onClick={() => setSelectedCategoryId(null)}>Kampnayalar</Button>
       </div>

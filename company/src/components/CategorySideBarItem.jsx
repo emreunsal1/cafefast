@@ -4,7 +4,7 @@ import {
 } from "antd";
 import { EditOutlined, SaveOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
-import { useMenuDetail } from "../context/MenuContext";
+import { useMenuDetail } from "../context/MenuDetailContext";
 import { CATEGORY_SERVICE } from "../services/menu";
 
 export default function CategorySideBarItem({ data, selectedCategoryId, onClick }) {

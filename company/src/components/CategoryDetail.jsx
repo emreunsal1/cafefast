@@ -4,11 +4,11 @@ import { Table } from "antd";
 import PRODUCT_SERVICE from "@/services/product";
 import { CATEGORY_SERVICE } from "@/services/menu";
 import { STORAGE } from "@/utils/browserStorage";
-import { useMenuDetail } from "@/context/MenuContext";
+import { useMenuDetail } from "@/context/MenuDetailContext";
+import { CDN_SERVICE } from "@/services/cdn";
 import Button from "./library/Button";
 import Icon from "./library/Icon";
 import Input from "./library/Input";
-import { CDN_SERVICE } from "@/services/cdn";
 
 export default function CategoryDetail() {
   const router = useRouter();
@@ -99,7 +99,7 @@ export default function CategoryDetail() {
       render: (_, record) => (
         <div className="product-images-list">
           {record.images.slice(0, 3).map((item, index) => (
-            <div className="images-item">
+            <div key={index} className="images-item">
               <img src={item} alt="kategori" />
             </div>
           ))}

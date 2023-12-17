@@ -61,7 +61,6 @@ export function MenuDetailContext({ children }) {
     try {
       const categoryIds = newCategories.map((_category) => _category._id);
       await MENU_SERVICE.update(router.query.menuId, { categories: categoryIds });
-      await getMenu();
     } catch (err) {
       setMenu((_menu) => { _menu.categories = oldCategories; });
     }

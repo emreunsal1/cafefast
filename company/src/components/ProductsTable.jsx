@@ -2,7 +2,7 @@ import { Button, Table } from "antd";
 import React from "react";
 import { useRouter } from "next/router";
 import { CATEGORY_SERVICE } from "@/services/menu";
-import { useMenuDetail } from "@/context/MenuContext";
+import { useMenuDetail } from "@/context/MenuDetailContext";
 
 export default function ProductsTable({ selectedCategory, data }) {
   const router = useRouter();

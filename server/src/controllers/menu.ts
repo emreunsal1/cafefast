@@ -54,7 +54,6 @@ export const createMenuController = async (req: Request, res: Response, next) =>
       });
     }
     res.send(createdMenu.data);
-    return;
   } catch (err) {
     next(err);
   }
@@ -126,7 +125,6 @@ export const updateMenuController = async (req: Request, res: Response, next) =>
       return;
     }
     res.send(updatedMenu.data);
-    return;
   } catch (err) {
     next(err);
   }

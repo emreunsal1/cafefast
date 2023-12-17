@@ -8,17 +8,24 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import {
-  arrayMove,
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
+import { moveItemInArray } from "@/utils/common";
+import { useMenuDetail } from "@/context/MenuDetailContext";
+import { useRouter } from "next/router";
 import { SortableItem } from "./SortableItem";
 import Icon from "../library/Icon";
 
-export default function SortableMenuCategories({
-  categories, onSort, selectedCategoryId, categoryItemClickHandler,
-}) {
+export default function SortableMenuCategories() {
+  const router = useRouter();
+  const {
+    sortMenuCategoriesWithIds, setSelectedCategoryId, selectedCategoryId, menu,
+  } = useMenuDetail();
+
+  const { categories } = menu;
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -28,16 +35,25 @@ export default function SortableMenuCategories({
     }),
   );
 
+  const categoryItemClickHandler = (item) => {
+    router.push(`/menu/${router.query.menuId}/?categoryId=${item._id}`);
+    setSelectedCategoryId(item._id);
+  };
+
   function handleDragEnd(event) {
     const { active, over } = event;
+    if (!active || !over) {
+      return;
+    }
 
     if (active.id !== over.id) {
       const oldIndex = categories.findIndex((_category) => _category._id === active.id);
       const newIndex = categories.findIndex((_category) => _category._id === over.id);
-      onSort(arrayMove(categories, oldIndex, newIndex));
+      const newCategories = moveItemInArray(categories, oldIndex, newIndex);
+
+      sortMenuCategoriesWithIds(newCategories);
     }
   }
-
   const itemIds = useMemo(() => categories.map((item) => item._id), [categories]);
 
   return (
