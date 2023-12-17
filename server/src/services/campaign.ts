@@ -13,7 +13,7 @@ export const createCampaign = async (data) => {
 
 export const updateCampaign = async (campaignId, data) => {
   try {
-    const result = await campaignModel.findOneAndUpdate({ _id: campaignId }, data, { new: true });
+    const result = await campaignModel.findOneAndUpdate({ _id: campaignId }, data, { new: true }).populate("products");
     return { data: result };
   } catch (error) {
     return { error: (error as any).message || error };

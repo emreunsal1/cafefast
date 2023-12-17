@@ -4,7 +4,7 @@ import z from "zod";
 export const createCampaignVerifier = z.object({
   name: z.string().min(3).max(255),
   price: z.number().positive(),
-  image: z.string().url(),
+  image: z.string(),
   description: z.string().min(1).max(500),
   products: z.array(z.string()),
   applicable: z.object({

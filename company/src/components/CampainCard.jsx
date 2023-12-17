@@ -20,10 +20,13 @@ export default function CampainCard({
       />
       )}
       <Card
-        title={data.name}
+        style={{
+          width: 240,
+        }}
         bordered={false}
+        cover={<img alt="example" src={data.image} />}
         actions={[
-          <EditOutlined key="edit" onClick={() => router.push(`campaigns/${data._id}`)} />,
+          <EditOutlined key="edit" onClick={() => router.push(`campaigns/campaign/${data._id}`)} />,
           <DeleteTwoTone key="delete" onClick={() => deleteCampain(data._id)} />,
         ]}
       >

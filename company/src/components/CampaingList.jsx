@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Row, FloatButton, Col } from "antd";
 import CAMPAIGN_SERVICE from "@/services/campaign";
+import { useRouter } from "next/router";
 import CampainCard from "./CampainCard";
 
 export default function CampainList() {
@@ -9,6 +10,8 @@ export default function CampainList() {
   const [isUpdate, setIsUpdate] = useState(false);
   const [campaignsToDelete, setCampaingstoDelete] = useState([]);
   const [isMultipleDeleteActive, setIsMultipleDeleteActive] = useState(false);
+
+  const router = useRouter();
 
   const getCampaings = async () => {
     const response = await CAMPAIGN_SERVICE.get();
@@ -21,8 +24,7 @@ export default function CampainList() {
   }, [isCreate, isUpdate]);
 
   const floatButtonClickHandler = () => {
-    setIsUpdate(false);
-    setIsCreate(true);
+    router.push("/campaigns/campaign");
   };
 
   const deleteCampain = async (id) => {
