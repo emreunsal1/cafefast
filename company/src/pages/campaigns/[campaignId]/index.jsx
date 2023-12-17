@@ -7,42 +7,49 @@ import {
 } from "antd";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import PRODUCT_SERVICE from "../services/product";
-import CAMPAIGN_SERVICE from "../services/campaign";
+import PRODUCT_SERVICE from "@/services/product";
+import CAMPAIGN_SERVICE from "@/services/campaign";
+import Input from "@/components/library/Input";
 import { useMessage } from "@/context/GlobalMessage";
-import Input from "./library/Input";
 
 const DAYS = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
 const DEFAULT_DAYS_VALUE = DAYS.map((_, i) => i);
 const HOURS = Array(24).fill(null).map((_, i) => i + 1);
 
-const PRODUCT_COLUMNS = [
-  {
-    title: "Name",
-    dataIndex: "name",
-  },
-  {
-    title: "Description",
-    dataIndex: "description",
-  },
-];
-
-function CampaignDetail({ action }) {
+function CampaignDetail() {
   const [data, setData] = useState({ name: "", description: "", price: 0 });
   const [allProducts, setAllProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [applicable, setApplicable] = useState({ days: DEFAULT_DAYS_VALUE });
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpdate, setIsUpdate] = useState(false);
   const router = useRouter();
   const message = useMessage();
 
-  const campaing = action.key === "update" ? action.value : false;
+  const PRODUCT_COLUMNS = [
+    {
+      title: "Name",
+      dataIndex: "name",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+    },
+  ];
 
   const fetchProducts = async () => {
     setIsLoading(true);
     const response = await PRODUCT_SERVICE.get();
+    console.log("working fetch products", response);
     setAllProducts(response);
     setIsLoading(false);
+  };
+
+  const getCampaign = async () => {
+    const response = await CAMPAIGN_SERVICE.getCampaignDetail(router.query.campaignId);
+    setData(response);
+    const activeProductIds = response.products.map((product) => product._id);
+    setSelectedProducts(activeProductIds);
   };
 
   const setCurrentCampaign = (currentData) => {
@@ -58,13 +65,15 @@ function CampaignDetail({ action }) {
   };
 
   useEffect(() => {
-    fetchProducts();
-    setData({ name: "", description: "", price: 0 });
-    setApplicable({ days: DEFAULT_DAYS_VALUE });
-    if (campaing) {
-      setCurrentCampaign(action.value);
+    if (router.isReady) {
+      fetchProducts();
+      setApplicable({ days: DEFAULT_DAYS_VALUE });
+      if (router.query.campaignId) {
+        setIsUpdate(true);
+        getCampaign();
+      }
     }
-  }, [action]);
+  }, [router.isReady]);
 
   const onSubmitSuccess = async () => {
     const submitData = {
@@ -74,20 +83,18 @@ function CampaignDetail({ action }) {
       products: selectedProducts,
     };
 
-    if (!campaing) {
+    if (!isUpdate) {
       const response = await CAMPAIGN_SERVICE.create(submitData);
       if (response) {
         message.success("Kampanya başarıyla oluşturuldu!");
-        action.updateState(false);
       }
       return;
     }
 
-    const response = await CAMPAIGN_SERVICE.update(campaing._id, submitData);
+    const response = await CAMPAIGN_SERVICE.update(router.query.campaignId, submitData);
     if (response) {
       setCurrentCampaign(response.data);
       message.success("Güncelleme başarılı!");
-      action.updateState(false);
     }
   };
 
@@ -205,9 +212,8 @@ function CampaignDetail({ action }) {
         wrapperCol={{ offset: 8, span: 16 }}
       >
         <Button type="primary" htmlType="submit">
-          {campaing ? "Kaydet" : "Oluştur"}
+          {isUpdate ? "Kaydet" : "Oluştur"}
         </Button>
-        <Button type="danger" onClick={() => action.updateState(false)}>Vazgeç</Button>
       </Form.Item>
     </Form>
   );

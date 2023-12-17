@@ -1,5 +1,7 @@
 import campaignModel from "../models/campaign";
 
+export const getCampaign = async (campaignId) => campaignModel.findOne({ _id: campaignId }).populate("products");
+
 export const createCampaign = async (data) => {
   try {
     const result = await campaignModel.create(data);

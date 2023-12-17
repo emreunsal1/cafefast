@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Row, FloatButton, Col } from "antd";
 import CAMPAIGN_SERVICE from "@/services/campaign";
 import CampainCard from "./CampainCard";
-import AddCampaign from "./AddCampaign";
 
 export default function CampainList() {
   const [campaings, setCampaings] = useState([]);
@@ -70,7 +69,6 @@ export default function CampainList() {
           <Col key={campain._id} span={8}>
             <CampainCard
               deleteCampain={deleteCampain}
-              setIsUpdate={setIsUpdate}
               campaignsToDelete={campaignsToDelete}
               isMultipleDeleteActive={isMultipleDeleteActive}
               onMultipleSelectCheckboxClick={onMultipleSelectCheckboxClick}
@@ -79,14 +77,6 @@ export default function CampainList() {
           </Col>
         ))}
       </Row>
-      {(isCreate || isUpdate) && (
-        <AddCampaign action={{
-          key: isUpdate ? "update" : "create",
-          value: isUpdate,
-          updateState: (value) => (isUpdate ? setIsUpdate(value) : setIsCreate(value)),
-        }}
-        />
-      )}
       <FloatButton onClick={floatButtonClickHandler} tooltip={<div>Add Campain</div>} />
     </div>
   );

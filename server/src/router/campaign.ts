@@ -6,6 +6,7 @@ import {
 import {
   createCampaignController,
   deleteCampaignController,
+  getCampaignDetailController,
   getCompanyCampaignsController,
   updateCampaignController,
 } from "../controllers/campaign";
@@ -18,6 +19,14 @@ router.get(
   ADMIN_PERMISSON_MIDDLEWARE,
   getCompanyCampaignsController,
 );
+router.get(
+  "/:campaignId",
+  ADMIN_PERMISSON_MIDDLEWARE,
+  COMPANY_MIDDLEWARE,
+  CAMPAIGN_EXISTS_IN_COMPANY_MIDDLEWARE,
+  getCampaignDetailController,
+);
+
 router.post(
   "/",
   ADMIN_PERMISSON_MIDDLEWARE,

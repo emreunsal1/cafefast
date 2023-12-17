@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 import {
-  createCampaign, deleteCampaign, deleteMultipleCampaign, updateCampaign,
+  createCampaign, deleteCampaign, deleteMultipleCampaign, getCampaign, updateCampaign,
 } from "../services/campaign";
 import { createCampaignVerifier, updateCampaignVerifier } from "../models/campaign";
 import { removeMultipleCampaignFromMenus } from "../services/menu";
 import {
   addCampaignToCompany, getCompanyCampaigns, removeCampaignsFromCompany,
 } from "../services/company";
-import { mapCampaigns } from "../utils/mappers";
+import { mapCampaign, mapCampaigns } from "../utils/mappers";
 
 export const getCompanyCampaignsController = async (req: Request, res: Response, next) => {
   try {
@@ -22,6 +22,12 @@ export const getCompanyCampaignsController = async (req: Request, res: Response,
   } catch (error) {
     next(error);
   }
+};
+
+export const getCampaignDetailController = async (req:Request, res:Response, next) => {
+  const { campaignId } = req.params;
+  const response = await getCampaign(campaignId);
+  res.send(mapCampaign(response?.toObject()));
 };
 
 export const createCampaignController = async (req: Request, res: Response, next) => {

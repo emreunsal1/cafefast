@@ -14,7 +14,7 @@ export default function SideBar({ isOpened }) {
     { key: "Ürünler", route: "/product", icon: "product" },
     { key: "Mutfak", route: "/kitchen", icon: "kitchen" },
     { key: "Masalar", route: "/table", icon: "qr-icon" },
-    { key: "Kampanyalar", route: "/campaings", icon: "campain" },
+    { key: "Kampanyalar", route: "/campaigns", icon: "campain" },
   ];
 
   const placeholderClassname = classNames("sidebar-placeholder", { closed: !isOpened });

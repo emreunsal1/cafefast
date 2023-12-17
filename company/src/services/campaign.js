@@ -3,6 +3,11 @@ import instance from "../utils/axios";
 
 const get = () => instance.get(`${CAMPAING_ROUTE}`);
 
+const getCampaignDetail = async (campaignId) => {
+  const response = await instance.get(`${CAMPAING_ROUTE}/${campaignId}`);
+  return response.data;
+};
+
 const create = async (data) => {
   try {
     const response = await instance.post(`${CAMPAING_ROUTE}/`, data);
@@ -39,6 +44,7 @@ const removeCampaingFromMenu = async (menuID, campainID) => instance.delete(`${M
 
 const CAMPAIGN_SERVICE = {
   get,
+  getCampaignDetail,
   create,
   update,
   deleteCampain,
