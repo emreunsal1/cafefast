@@ -2,22 +2,24 @@ import React, { useState, useEffect } from "react";
 import { Steps } from "antd";
 import { useRouter } from "next/router";
 import QrGeneratorForm from "@/components/QrGeneratorForm";
-import TableStepPreview from "@/components/TableStepPreview";
+import TableStepPreview from "@/components/TablePreview";
 import COMPANY_SERVICE from "@/services/company";
-import QrList from "@/components/QrList";
 import { STORAGE } from "@/utils/browserStorage";
-import Button from "@/components/library/Button";
+
+export const TABLE_PAGE_STEPS = {
+  CREATE: 0,
+  PREVIEW: 1,
+  DONE: 2,
+};
 
 export default function Index() {
   const steps = [{
-    title: "a",
-    description: "masa alanları ve masa numaraları",
+    title: "Masalarınızı Oluşturun",
   }, {
-    title: "b",
-    description: "ön izleme",
+    title: "Ön İzleme",
   }];
-  const [currentStep, setCurrentStep] = useState(0);
-  const [data, setData] = useState([{ key: "", count: 0 }]);
+  const [currentStep, setCurrentStep] = useState(TABLE_PAGE_STEPS.CREATE);
+  const [newTables, setNewTables] = useState([]);
   const [companyTables, setCompanyTables] = useState(false);
 
   const router = useRouter();
@@ -29,52 +31,40 @@ export default function Index() {
     }
     setCompanyTables(response);
   };
+
   useEffect(() => {
     getQrCode();
   }, []);
 
-  const doneClickHandler = () => {
-    if (typeof data === "string") {
-      const senderData = Array.from({ length: data }).map((item, index) => index);
-      COMPANY_SERVICE.updateQr(senderData);
-      return;
-    }
-    let dataWithKey = [];
-    data.forEach((table) => {
-      if (table.count && table.key.length) {
-        const a = Array.from({ length: table.count }).map((_, _index) => `${table.key.toUpperCase()}${_index + 1}`);
-        dataWithKey = dataWithKey.concat(a);
-      }
-    });
-    COMPANY_SERVICE.updateQr(dataWithKey);
+  const formSubmitHandler = (data) => {
+    setNewTables(data);
+    setCurrentStep(TABLE_PAGE_STEPS.PREVIEW);
+  };
+
+  const previewSubmitHandler = () => {
+    setCompanyTables(newTables);
   };
 
   return (
     <div className="table-page">
       <h3>Masalarım</h3>
-      {companyTables.length < 1 && (
-      <>
-        <div className="step-container">
-          <div className="steps-wrapper">
-            <Steps current={currentStep} items={steps.map((item) => ({ key: item.title, description: item.description }))} />
-          </div>
-          {currentStep === 0 && (
-          <QrGeneratorForm
-            setCurrentStep={setCurrentStep}
-            setData={setData}
-            data={data}
-          />
-          )}
-          {currentStep === 1 && <TableStepPreview data={data} />}
+      {companyTables.length === 0 && (
+      <div className="step-container">
+        <div className="steps-wrapper">
+          <Steps current={currentStep} items={steps} />
         </div>
-        {currentStep === 1 && <Button onClick={doneClickHandler}>Done</Button> }
-      </>
-      )}
-      {companyTables
-      && (
-      <div className="list-wrapper">
-        <QrList data={companyTables} />
+          {currentStep === TABLE_PAGE_STEPS.CREATE && (
+            <QrGeneratorForm
+              onSubmit={formSubmitHandler}
+            />
+          )}
+          {currentStep === TABLE_PAGE_STEPS.PREVIEW && <TableStepPreview allowToSave data={newTables} onSave={previewSubmitHandler} />}
       </div>
+      )}
+      {companyTables.length > 0 && (
+        <div className="list-wrapper">
+          <TableStepPreview data={companyTables} />
+        </div>
       )}
     </div>
   );
