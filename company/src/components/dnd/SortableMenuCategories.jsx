@@ -42,9 +42,6 @@ export default function SortableMenuCategories() {
 
   function handleDragEnd(event) {
     const { active, over } = event;
-    if (!active || !over) {
-      return;
-    }
 
     if (active.id !== over.id) {
       const oldIndex = categories.findIndex((_category) => _category._id === active.id);

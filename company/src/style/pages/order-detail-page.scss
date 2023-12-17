@@ -23,6 +23,13 @@
     }
   }
 
+  &-order-status {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 10px;
+  }
+
   &-products {
     padding: 20px;
     border-radius: 8px;

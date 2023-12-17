@@ -17,9 +17,11 @@ export default function OrderList({ data, onUpdate }) {
     onUpdate(orderId, updated.data);
   };
 
+  const createStatusItem = (status) => ({ value: status, label: ORDER_STATUS_TEXTS[status] });
+
   const columns = [
     {
-      title: "Sipariş Numarası",
+      title: "",
       dataIndex: "_id",
       key: "_id",
       width: 150,
@@ -62,9 +64,9 @@ export default function OrderList({ data, onUpdate }) {
       width: 200,
       render: (statusValue, _record) => (
         <Select
-          value={{ value: statusValue, label: ORDER_STATUS_TEXTS[statusValue] }}
+          value={createStatusItem(statusValue)}
           onChange={(selectedOption) => statusOnChangeHandler(_record._id, selectedOption.value)}
-          options={ORDER_STATUSES.map((status) => ({ value: status, label: ORDER_STATUS_TEXTS[status] }))}
+          options={ORDER_STATUSES.map(createStatusItem)}
         />
       ),
     },

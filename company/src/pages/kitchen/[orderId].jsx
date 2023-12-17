@@ -1,11 +1,16 @@
+import Select from "@/components/library/Select";
+import { ORDER_STATUSES, ORDER_STATUS_TEXTS } from "@/constants";
+import { useMessage } from "@/context/GlobalMessage";
 import { useLoading } from "@/context/LoadingContext";
 import COMPANY_SERVICE from "@/services/company";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useImmer } from "use-immer";
 
 export default function OrderDetail() {
   const router = useRouter();
-  const [order, setOrder] = useState(null);
+  const [order, setOrder] = useImmer(null);
+  const message = useMessage();
 
   const { setLoading } = useLoading();
 
@@ -13,6 +18,26 @@ export default function OrderDetail() {
     setLoading(true);
     const response = await COMPANY_SERVICE.getOrderDetail(router.query.orderId);
     setOrder(response.data);
+    setLoading(false);
+  };
+
+  const statusOnChangeHandler = async (status) => {
+    if (status === order.status) {
+      return;
+    }
+    setLoading(true);
+    await COMPANY_SERVICE.updateOrder(order._id, { status });
+    setOrder((_order) => { _order.status = status; });
+    const successMessage = (
+      <div>
+        Sipariş durumunuz
+        {" "}
+        <b>{ORDER_STATUS_TEXTS[status]}</b>
+        {" "}
+        olarak güncellendi
+      </div>
+    );
+    message.success(successMessage);
     setLoading(false);
   };
 
@@ -26,6 +51,8 @@ export default function OrderDetail() {
     return null;
   }
 
+  const createStatusItem = (status) => ({ value: status, label: ORDER_STATUS_TEXTS[status] });
+
   return (
     <div className="order-detail-page">
       <div className="order-detail-page-header">
@@ -35,6 +62,15 @@ export default function OrderDetail() {
           <p>Sipariş Numarası:</p>
           <span>{order._id}</span>
         </div>
+      </div>
+
+      <div className="order-detail-page-order-status">
+        <h6>Sipariş Durumu</h6>
+        <Select
+          value={createStatusItem(order.status)}
+          onChange={(status) => statusOnChangeHandler(status.value)}
+          options={ORDER_STATUSES.map((status) => createStatusItem(status))}
+        />
       </div>
 
       <div className="order-detail-page-products">
