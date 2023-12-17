@@ -34,7 +34,7 @@ export const createMenuVerifier = z.object({
   categories: z.array(z.string()).optional(),
 });
 
-export const updateMenuVerifier = createMenuVerifier.pick({ name: true, description: true });
+export const updateMenuVerifier = createMenuVerifier.pick({ name: true, description: true, categories: true }).partial();
 
 const menuModel = mongoose.model("menu", menuSchema);
 

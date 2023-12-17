@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useImmer } from "use-immer";
 import classNames from "classnames";
@@ -6,8 +6,8 @@ import Lightbox from "yet-another-react-lightbox";
 import { AWS_CLOUDFRONT_URL, SAFE_IMAGE_TYPE } from "@/constants";
 import PRODUCT_SERVICE from "@/services/product";
 import { CDN_SERVICE } from "@/services/cdn";
-import Input from "../../../components/library/Input";
-import Checkbox from "../../../components/library/Checkbox";
+import Input from "@/components/library/Input";
+import Checkbox from "@/components/library/Checkbox";
 import Icon from "@/components/library/Icon";
 import Button from "@/components/library/Button";
 import { useLoading } from "@/context/LoadingContext";
@@ -56,7 +56,9 @@ export default function ProductDetail() {
   };
 
   const getProductData = async () => {
+    setLoading(true);
     const response = await PRODUCT_SERVICE.getDetail(router.query.productId);
+    setLoading(false);
     setProductData(response);
   };
 

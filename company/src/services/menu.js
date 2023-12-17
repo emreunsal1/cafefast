@@ -24,12 +24,9 @@ const create = async (name, desc) => {
   }
 };
 
-const update = async (id, { name, description }) => {
+const update = async (id, data) => {
   try {
-    const resposne = instance.put(`${MENU_ROUTE}/${id}`, {
-      name,
-      description,
-    });
+    const resposne = instance.put(`${MENU_ROUTE}/${id}`, data);
     return resposne;
   } catch (error) {
     return false;

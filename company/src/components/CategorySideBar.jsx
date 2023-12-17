@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useSearchParams } from "next/navigation";
 import classNames from "classnames";
@@ -8,16 +8,19 @@ import Button from "./library/Button";
 import Input from "./library/Input";
 import Icon from "./library/Icon";
 import { useLoading } from "@/context/LoadingContext";
+import SortableMenuCategories from "./dnd/SortableMenuCategories";
+import { useClickOutSide } from "@/hooks";
 
 export default function CategorySideBar() {
   const {
-    menu, addCategory, selectedCategoryId, setSelectedCategoryId,
+    menu, addCategory, selectedCategoryId, setSelectedCategoryId, updateCategories,
   } = useMenuDetail();
   const searchParams = useSearchParams();
 
   const [newCategory, setNewCategory] = useState({ name: "", order: menu.categories.length + 1 });
   const [isCreateCategory, setIsCreateCategory] = useState(false);
   const router = useRouter();
+  const addCategoryButtonRef = useRef();
   const { setLoading } = useLoading();
 
   const addCategoryHandler = async (id) => {
@@ -55,6 +58,12 @@ export default function CategorySideBar() {
     console.log("categories", menu.categories);
   }, [router.isReady]);
 
+  useClickOutSide(addCategoryButtonRef, () => setIsCreateCategory(false));
+
+  const onSortCategories = async (newCategories) => {
+    updateCategories(newCategories);
+  };
+
   return (
     <div className="category-side-bar-container">
       <div className="category-side-bar-container-title">
@@ -67,6 +76,7 @@ export default function CategorySideBar() {
         </Button>
       </div>
       <div
+        ref={addCategoryButtonRef}
         className={classNames("add-category-button", {
           active: isCreateCategory,
         })}
@@ -79,17 +89,12 @@ export default function CategorySideBar() {
           </div>
         </div>
       </div>
-      <div className="category-list">
-        {menu.categories.map((item) => (
-          <div
-            className={`category-list-item ${selectedCategoryId === item._id ? "active" : ""}`}
-            onClick={() => categoryItemClickHandler(item)}
-          >
-            {item.name}
-            <Icon name="right-arrow" />
-          </div>
-        ))}
-      </div>
+      <SortableMenuCategories
+        categories={menu.categories}
+        categoryItemClickHandler={categoryItemClickHandler}
+        onSort={onSortCategories}
+        selectedCategoryId={selectedCategoryId}
+      />
       <div className="add-campaign-button">
         <Button fluid onClick={() => setSelectedCategoryId(null)}>Kampnayalar</Button>
       </div>

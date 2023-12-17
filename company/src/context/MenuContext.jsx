@@ -19,7 +19,6 @@ export function MenuDetailContext({ children }) {
   const getMenu = async (menuId = router.query.menuId) => {
     setLoading(true);
     const response = await MENU_SERVICE.detail(menuId);
-    console.log("response", response.data);
     setMenu(response.data);
     setLoading(false);
     return response.data;
@@ -55,6 +54,14 @@ export function MenuDetailContext({ children }) {
     }
   };
 
+  const updateCategories = async (newCategories) => {
+    const categoryIds = newCategories.map((_category) => _category._id);
+    setLoading(true);
+    await MENU_SERVICE.update(router.query.menuId, { categories: categoryIds });
+    await getMenu();
+    setLoading(false);
+  };
+
   const deleteCategory = async (categoryId) => {
     setLoading(true);
     await CATEGORY_SERVICE.deleteCategory(router.query.menuId, categoryId);
@@ -84,6 +91,7 @@ export function MenuDetailContext({ children }) {
       addCategory,
       getMenu,
       updateCategory,
+      updateCategories,
       deleteCategory,
       removeCampaings,
       setSelectedCategoryId,
