@@ -57,14 +57,12 @@ export function MenuDetailContext({ children }) {
   const sortMenuCategoriesWithIds = async (newCategories) => {
     const oldCategories = menu.categories;
     setMenu((_menu) => { _menu.categories = newCategories; });
-    setLoading(true);
     try {
       const categoryIds = newCategories.map((_category) => _category._id);
       await MENU_SERVICE.update(router.query.menuId, { categories: categoryIds });
     } catch (err) {
       setMenu((_menu) => { _menu.categories = oldCategories; });
     }
-    setLoading(false);
   };
 
   const deleteCategory = async (categoryId) => {

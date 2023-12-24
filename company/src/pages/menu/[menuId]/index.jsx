@@ -14,7 +14,6 @@ function MenuDetail() {
     removeCampaings,
     selectedCategoryId,
     menu,
-
   } = useMenuDetail();
 
   const [isAddCampaing, setIsAddCampaing] = useState(false);
@@ -63,10 +62,10 @@ function MenuDetail() {
   }, [router.isReady]);
 
   useEffect(() => {
-    if (isAddCampaing) {
+    if (isAddCampaing && selectedCategoryId === null) {
       getCampaings();
     }
-  }, [isAddCampaing]);
+  }, [isAddCampaing, selectedCategoryId]);
 
   return (
     <div className="menu-detail-page">
