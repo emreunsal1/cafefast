@@ -133,20 +133,42 @@
         padding: 10px;
         border-right: 1px solid $border-gray;
         &-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
           height: 40px;
-          padding: 12px 8px;
+          padding: 0 8px;
+
           border-radius: 4px;
           cursor: pointer;
+
+          .library-icon.icon-delete-outlined {
+            width: 22px;
+            height: 22px;
+            font-size: 14px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            &:hover {
+              background-color: $red;
+              color: white;
+            }
+          }
+
           &:not(:last-child) {
             margin-bottom: 6px;
+          }
+          &:hover {
+            background-color: rgba($color: $primary, $alpha: 0.2);
           }
           &.selected {
             background-color: $primary;
             color: #fff;
             font-weight: 600;
-          }
-          &:hover {
-            background-color: rgba($color: $primary, $alpha: 0.2);
+            &:hover {
+              background-color: $primary;
+            }
           }
         }
       }
@@ -160,12 +182,13 @@
             min-width: 120px;
           }
           &-value {
+            width: 100%;
           }
         }
         .attribute-options {
           margin-bottom: 20px;
           h6 {
-            margin-bottom: 10px;
+            margin-bottom: 20px;
           }
           .attribute-options-header,
           .attribute-option {
@@ -177,6 +200,7 @@
           }
           .attribute-options-header {
             font-weight: bold;
+            padding-left: 24px;
 
             .name-title {
               width: 100%;
@@ -186,6 +210,11 @@
             }
           }
           .attribute-option {
+            .option-index {
+              width: 15px;
+              padding-top: 10px;
+              font-weight: bold;
+            }
             .option-name {
               width: 100%;
             }

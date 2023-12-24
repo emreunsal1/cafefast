@@ -42,8 +42,9 @@ export default function Dropdown({
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, transform: "translate(0, -10px)", visibility: "hidden" }}
-            animate={{ opacity: 1, transform: "translate(0, 0)", visibility: "visible" }}
+            initial={{ opacity: 0, transform: "translate(0, -10px)" }}
+            animate={{ opacity: 1, transform: "translate(0, 0)" }}
+            exit={{ opacity: 0, transform: "translate(0, -10px)", pointerEvents: "none" }}
             className={bodyClassname}
           >
             {items.map((item, key) => <div key={key} onClick={closeBody} className={itemClassName}>{item}</div>)}

@@ -20,6 +20,15 @@ export const productSaveValidator = z.object({
   price: z.number().min(1, "Fiyat bilgisine en az 1 girebilirsiniz"),
 });
 
+export const productAttributeValidator = z.object({
+  title: z.string().min(1, "Minimum 1 karakter girilmelidir").max(255),
+  description: z.string().min(1, "Minimum 1 karakter girilmelidir").max(255),
+  options: z.array(z.object({
+    name: z.string().min(1, "Seçenek ismi en az 1 (bir) karakter olmalı").max(255),
+    price: z.number(),
+  })),
+});
+
 export const mapZodErrorObject = (zodError) => {
   const flattenErrors = zodError.flatten().fieldErrors;
 

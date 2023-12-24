@@ -13,9 +13,9 @@ export function GlobalLoadingContext({ children }) {
       <AnimatePresence exi>
         {loading && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          initial={{ opacity: 0, scale: 1.7 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.7 }}
           className="global-loading"
         >
           <Image src={loadingSvg} width="100" height="100" />

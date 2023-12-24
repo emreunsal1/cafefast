@@ -13,7 +13,7 @@ import Button from "@/components/library/Button";
 import { useLoading } from "@/context/LoadingContext";
 import { useMessage } from "@/context/GlobalMessage";
 import { SortableProductImages } from "@/components/dnd/SortableProductImages";
-import { mapZodErrorObject, productSaveValidator } from "@/utils/validations";
+import { mapZodErrorObject, productAttributeValidator, productSaveValidator } from "@/utils/validations";
 import { ZodError } from "zod";
 
 const DEFAULT_PRODUCT_ATTRIBUTE_OPTION_DATA = {
@@ -35,6 +35,7 @@ export default function ProductDetail() {
   const [isImagePreviewOpened, setIsImagePreviewOpened] = useState(false);
   const [previewIndex, setPreviewIndex] = useState(0);
   const [validationErrors, setValidationErrors] = useState({});
+  const [attributeValidationErrors, setAttributeValidationErrors] = useState({});
 
   const [product, setProduct] = useState({
     name: "", price: "", description: "", images: [],
@@ -44,10 +45,6 @@ export default function ProductDetail() {
   const [selectedAttributeDetailId, setSelectedAttributeDetailId] = useState(null);
   const [isNewAttributeAddActive, setIsNewAttributeAddActive] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
-
-  const lastOption = attributeDetailData.options[attributeDetailData.options.length - 1];
-  const isLastOptionValid = lastOption?.name.length > 0 && lastOption?.price > 0;
-  const isWholeAttributeValid = isLastOptionValid;
 
   const renderAttributeDetail = Number.isInteger(selectedAttributeDetailId) || isNewAttributeAddActive;
 
@@ -65,17 +62,6 @@ export default function ProductDetail() {
     setProductData(response);
   };
 
-  const validateProduct = () => {
-    try {
-      productSaveValidator.parse(product);
-      setValidationErrors({});
-    } catch (err) {
-      if (err instanceof ZodError) {
-        setValidationErrors(mapZodErrorObject(err));
-      }
-    }
-  };
-
   const uploadProductImages = async (files) => {
     setLoading(true);
     const response = await CDN_SERVICE.uploadMultipleImages(files);
@@ -83,8 +69,24 @@ export default function ProductDetail() {
     return response;
   };
 
+  const saveAttributeHandler = () => {
+    if (isNewAttributeAddActive) {
+      setAttributes((_attributes) => { _attributes.push(attributeDetailData); });
+      setIsNewAttributeAddActive(false);
+      return;
+    }
+
+    setAttributes((_attributes) => { _attributes[selectedAttributeDetailId] = attributeDetailData; });
+    // eslint-disable-next-line no-unused-vars
+    setAttributeDetailData((_attributeDetailData) => { _attributeDetailData = DEFAULT_PRODUCT_ATTRIBUTE_DATA; });
+    setSelectedAttributeDetailId(null);
+  };
+
   const updateOrCreateProduct = async () => {
     setLoading(true);
+    if (renderAttributeDetail) {
+      saveAttributeHandler();
+    }
     const mockProduct = JSON.parse(JSON.stringify(product));
     mockProduct.price = Number(product.price);
     mockProduct.attributes = attributes;
@@ -148,6 +150,15 @@ export default function ProductDetail() {
     setAttributeDetailData(attributes[index]);
   };
 
+  const deleteAttributeItem = (e, index) => {
+    e.stopPropagation();
+    setSelectedAttributeDetailId(null);
+    if (selectedAttributeDetailId === index) {
+      setAttributeDetailData(null);
+    }
+    setAttributes(() => attributes.filter((_, _index) => _index !== index));
+  };
+
   const openAttributeDetailAsNewAttribute = () => {
     setIsNewAttributeAddActive(true);
     setAttributeDetailData(DEFAULT_PRODUCT_ATTRIBUTE_DATA);
@@ -158,28 +169,11 @@ export default function ProductDetail() {
   };
 
   const addAttributeOptionHandler = () => {
-    if (!lastOption || !isLastOptionValid) {
-      return;
-    }
-
     setAttributeDetailData((_attributeDetailData) => { _attributeDetailData.options.push(DEFAULT_PRODUCT_ATTRIBUTE_OPTION_DATA); });
   };
 
   const updateAttributeOptionData = ({ index, field, data }) => {
     setAttributeDetailData((_attributeDetailData) => { _attributeDetailData.options[index][field] = data; });
-  };
-
-  const saveAttributeHandler = () => {
-    if (isNewAttributeAddActive) {
-      setAttributes((_attributes) => { _attributes.push(attributeDetailData); });
-      setIsNewAttributeAddActive(false);
-      return;
-    }
-
-    setAttributes((_attributes) => { _attributes[selectedAttributeDetailId] = attributeDetailData; });
-    // eslint-disable-next-line no-unused-vars
-    setAttributeDetailData((_attributeDetailData) => { _attributeDetailData = DEFAULT_PRODUCT_ATTRIBUTE_DATA; });
-    setSelectedAttributeDetailId(null);
   };
 
   const openImageInput = () => {
@@ -192,9 +186,39 @@ export default function ProductDetail() {
     await PRODUCT_SERVICE.update({ _id: product._id, images: productImagesWithoutCFUrls });
   };
 
+  const validateProduct = () => {
+    try {
+      productSaveValidator.parse(product);
+      setValidationErrors({});
+    } catch (err) {
+      if (err instanceof ZodError) {
+        setValidationErrors(mapZodErrorObject(err));
+      }
+    }
+  };
+
+  const validateProductAttributes = () => {
+    try {
+      const a = productAttributeValidator.parse(attributeDetailData);
+      setAttributeValidationErrors({});
+    } catch (err) {
+      if (err instanceof ZodError) {
+        setAttributeValidationErrors(mapZodErrorObject(err));
+      }
+    }
+  };
+
   useEffect(() => {
     validateProduct();
   }, [product]);
+
+  useEffect(() => {
+    validateProductAttributes();
+  }, [attributeDetailData]);
+
+  const hasAttributeValidationErrors = renderAttributeDetail && Object.keys(attributeValidationErrors).length > 0;
+  const hasValidationErrors = Object.keys(validationErrors).length > 0;
+  const isSaveButtonDisabled = hasAttributeValidationErrors || hasValidationErrors;
 
   return (
     <div className="product-detail-page">
@@ -259,7 +283,8 @@ export default function ProductDetail() {
                     })}
                     onClick={() => selectAttributeItem(index)}
                   >
-                    {attribute.title}
+                    <span>{attribute.title}</span>
+                    <Icon name="delete-outlined" onClick={(e) => deleteAttributeItem(e, index)} />
                   </div>
                 ))
               }
@@ -273,6 +298,7 @@ export default function ProductDetail() {
                     type="text"
                     placeholder="Sos Seçimi"
                     label="Özellik İsmi"
+                    error={attributeValidationErrors.title}
                     value={attributeDetailData.title}
                     onChange={(e) => attributeDetailFieldChangeHandler("title", e.target.value)}
                   />
@@ -283,6 +309,7 @@ export default function ProductDetail() {
                   <Input
                     type="text"
                     label="Özellik Açıklaması"
+                    error={attributeValidationErrors.description}
                     value={attributeDetailData.description}
                     onChange={(e) => attributeDetailFieldChangeHandler("description", e.target.value)}
                   />
@@ -316,9 +343,14 @@ export default function ProductDetail() {
                 </div>
                 {attributeDetailData.options.map((option, index) => (
                   <div className="attribute-option" key={index}>
+                    <div className="option-index">
+                      {index + 1}
+                      .
+                    </div>
                     <div className="option-name">
                       <Input
                         type="text"
+                        error={!option.name.length && attributeValidationErrors.options}
                         onChange={(e) => updateAttributeOptionData({
                           field: "name",
                           data: e.target.value,
@@ -333,6 +365,7 @@ export default function ProductDetail() {
                       <Input
                         type="number"
                         placeholder="50"
+                        error={!option.name.length && !!attributeValidationErrors.options}
                         onChange={(e) => updateAttributeOptionData({
                           field: "price",
                           data: Number(e.target.value),
@@ -343,7 +376,7 @@ export default function ProductDetail() {
                     </div>
                   </div>
                 ))}
-                {isLastOptionValid && (
+                {!hasAttributeValidationErrors && (
                   <div className="add-attribute-option-button">
                     <Button onClick={addAttributeOptionHandler}>Ekle</Button>
                   </div>
@@ -351,14 +384,14 @@ export default function ProductDetail() {
               </div>
               <div className="attribute-actions">
                 <div className="save-attribute-button">
-                  <Button onClick={saveAttributeHandler} disabled={!isWholeAttributeValid}>Özelliği Kaydet</Button>
+                  <Button onClick={saveAttributeHandler} disabled={hasAttributeValidationErrors}>Özelliği Kaydet</Button>
                 </div>
               </div>
             </div>
           )}
         </div>
       </div>
-      <Button onClick={updateOrCreateProduct}>
+      <Button disabled={isSaveButtonDisabled} onClick={updateOrCreateProduct}>
         {isUpdate ? "Güncelle" : "Oluştur"}
       </Button>
 
