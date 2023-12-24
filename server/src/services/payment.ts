@@ -3,11 +3,13 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const iyzipay = new Iyzipay({
-  apiKey: process.env.IYZIPAY_API,
-  secretKey: process.env.IYZIPAY_SECRET,
-  uri: process.env.IYZIPAY_API,
-});
+// const iyzipay = new Iyzipay({
+//   apiKey: process.env.IYZIPAY_API,
+//   secretKey: process.env.IYZIPAY_SECRET,
+//   uri: process.env.IYZIPAY_API,
+// });
+
+const iyzipay = {} as any;
 
 export const payment3d = ({
   conversationId,
