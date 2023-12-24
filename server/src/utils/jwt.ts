@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { CookieOptions, Response } from "express";
 import { IUserWithoutPassword } from "../models/user";
 import { ONE_YEAR_AS_MS } from "../constants";
+import logger from "./logger";
 
 dotenv.config();
 const secretKey = process.env.JWT_SECRET_KEY as string;
@@ -15,7 +16,7 @@ export const generateJwt = async (user) => {
     });
     return generatedJWT;
   } catch (error: Error | unknown) {
-    console.log("[generateJwt] => ", error);
+    logger.error({ action: "GENERATE_JWT_ERROR", message: "not created", errorStack: error });
     return false;
   }
 };
@@ -29,7 +30,7 @@ export const verifyJwt = (token: string): IUserWithoutPassword | false => {
     }
     return payload as IUserWithoutPassword;
   } catch (err) {
-    console.log("[verifyJwt]", err);
+    logger.error({ action: "JWT_VERIFY_ERROR", message: "not verified", errorStack: err });
     return false;
   }
 };
@@ -45,8 +46,6 @@ export const setCookie = (res: Response, cookieName: string, cookieValue: string
   maxAge: ONE_YEAR_AS_MS,
 }) => {
   const isProduction = process.env.NODE_ENV === "production";
-  console.log("process.env.NODE_ENV :>> ", process.env.NODE_ENV);
-  console.log("isProduction :>> ", isProduction);
 
   const cookieOptions: CookieOptions = {
     maxAge: options.maxAge,
