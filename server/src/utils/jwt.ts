@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { Response } from "express";
+import { CookieOptions, Response } from "express";
 import { IUserWithoutPassword } from "../models/user";
 import { ONE_YEAR_AS_MS } from "../constants";
 
@@ -44,5 +44,15 @@ export const verifyPasswordHash = async (inputPassword, userHashedPassword) => b
 export const setCookie = (res: Response, cookieName: string, cookieValue: string, options = {
   maxAge: ONE_YEAR_AS_MS,
 }) => {
-  res.cookie(cookieName, cookieValue, { httpOnly: !!process.env.ENVIRONMENT, maxAge: options.maxAge });
+  const isProduction = process.env.NODE_ENV === "production";
+
+  const cookieOptions: CookieOptions = {
+    maxAge: options.maxAge,
+  };
+
+  if (isProduction) {
+    cookieOptions.httpOnly = true;
+    cookieOptions.sameSite = "none";
+  }
+  res.cookie(cookieName, cookieValue, cookieOptions);
 };
