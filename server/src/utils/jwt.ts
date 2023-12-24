@@ -49,6 +49,7 @@ export const setCookie = (res: Response, cookieName: string, cookieValue: string
 
   const cookieOptions: CookieOptions = {
     maxAge: options.maxAge,
+    domain: "http://localhost:3000",
   };
 
   if (isProduction) {
