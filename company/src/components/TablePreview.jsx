@@ -1,8 +1,8 @@
 import React from "react";
-import { QRCode } from "antd";
 import COMPANY_SERVICE from "@/services/company";
 import { useMessage } from "@/context/GlobalMessage";
 import Button from "./library/Button";
+import QRCode from "./QRCode";
 
 export default function TableStepPreview({ data, allowToSave, onSave }) {
   const message = useMessage();
@@ -16,15 +16,9 @@ export default function TableStepPreview({ data, allowToSave, onSave }) {
     <div className="table-preview">
       {allowToSave && <p>QR'lar oluştuğunda bu şekilde gözükecek</p>}
       <div className="table-preview-tables">
-        {data.map((item, index) => (
+        {data.map((item) => (
           <div key={item} className="table-qr-item">
-            <QRCode
-              key={index}
-              className="table-qr-item-qr-image"
-              errorLevel="H"
-              value="https://ant.design/"
-              icon="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
-            />
+            <QRCode className="table-qr-item-qr-image" desk={item} />
             <p>{item}</p>
           </div>
         ))}

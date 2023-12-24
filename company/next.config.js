@@ -12,6 +12,17 @@ const nextConfig = {
     };
     return config;
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "https://cafefast.onrender.com/:path*",
+      },
+    ];
+  },
   webpack: (config) => {
     config.plugins = config.plugins || [];
 

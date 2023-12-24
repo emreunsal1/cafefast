@@ -13,6 +13,8 @@ import Button from "@/components/library/Button";
 import { useLoading } from "@/context/LoadingContext";
 import { useMessage } from "@/context/GlobalMessage";
 import { SortableProductImages } from "@/components/dnd/SortableProductImages";
+import { mapZodErrorObject, productSaveValidator } from "@/utils/validations";
+import { ZodError } from "zod";
 
 const DEFAULT_PRODUCT_ATTRIBUTE_OPTION_DATA = {
   name: "",
@@ -32,6 +34,7 @@ export default function ProductDetail() {
   const message = useMessage();
   const [isImagePreviewOpened, setIsImagePreviewOpened] = useState(false);
   const [previewIndex, setPreviewIndex] = useState(0);
+  const [validationErrors, setValidationErrors] = useState({});
 
   const [product, setProduct] = useState({
     name: "", price: "", description: "", images: [],
@@ -62,6 +65,17 @@ export default function ProductDetail() {
     setProductData(response);
   };
 
+  const validateProduct = () => {
+    try {
+      productSaveValidator.parse(product);
+      setValidationErrors({});
+    } catch (err) {
+      if (err instanceof ZodError) {
+        setValidationErrors(mapZodErrorObject(err));
+      }
+    }
+  };
+
   const uploadProductImages = async (files) => {
     setLoading(true);
     const response = await CDN_SERVICE.uploadMultipleImages(files);
@@ -74,9 +88,9 @@ export default function ProductDetail() {
     const mockProduct = JSON.parse(JSON.stringify(product));
     mockProduct.price = Number(product.price);
     mockProduct.attributes = attributes;
-    delete mockProduct.images;
 
     if (isUpdate) {
+      delete mockProduct.images;
       const response = await PRODUCT_SERVICE.update(mockProduct);
       setProductData(response);
       setLoading(false);
@@ -84,6 +98,7 @@ export default function ProductDetail() {
       return;
     }
 
+    mockProduct.images = mockProduct.images.map((image) => image.split("/").pop());
     try {
       await PRODUCT_SERVICE.create(mockProduct);
       router.push("/product");
@@ -177,6 +192,10 @@ export default function ProductDetail() {
     await PRODUCT_SERVICE.update({ _id: product._id, images: productImagesWithoutCFUrls });
   };
 
+  useEffect(() => {
+    validateProduct();
+  }, [product]);
+
   return (
     <div className="product-detail-page">
       {isUpdate ? <h3>Ürününü Düzenle</h3> : <h3>Yeni Ürün Oluştur</h3>}
@@ -204,6 +223,7 @@ export default function ProductDetail() {
         <Input
           placeholder="name"
           label="Ürün İsmi"
+          error={validationErrors.name}
           value={product.name}
           onChange={(e) => setProduct({ ...product, name: e.target.value })}
         />
@@ -211,12 +231,14 @@ export default function ProductDetail() {
           type="number"
           label="Fiyat Bilgisi"
           value={product.price}
+          error={validationErrors.price}
           placeholder="50 TL"
-          onChange={(e) => setProduct({ ...product, price: e.target.value })}
+          onChange={(e) => setProduct({ ...product, price: Number(e.target.value) })}
         />
         <Input
           label="Ürün Açıklaması"
           value={product.description}
+          error={validationErrors.description}
           onChange={(e) => setProduct({ ...product, description: e.target.value })}
         />
       </div>
@@ -341,7 +363,7 @@ export default function ProductDetail() {
       </Button>
 
       <input type="file" id="add-image-input" accept={SAFE_IMAGE_TYPE} multiple hidden onChange={imageInputChangeHandler} />
-      {product.images?.length && (
+      {product.images?.length > 0 && (
         <Lightbox
           open={isImagePreviewOpened}
           index={previewIndex}

@@ -1,4 +1,5 @@
-export const API_URl = "http://localhost:4000";
+export const API_URl = "http://localhost:3000/api";
+export const MENU_URL = "http://localhost:3001";
 export const THREED_START_PAGE = "/payment/3d-start";
 export const PRODUCT_ROUTE = "/product";
 export const AUTH_TOKEN_NAME = "auth_token";

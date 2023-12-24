@@ -22,7 +22,7 @@ export default function Payment() {
         }],
       });
       redirectToPayment(response.data);
-    } catch (err: AxiosError | unknown) {
+    } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data);
       }

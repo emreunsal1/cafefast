@@ -18,6 +18,9 @@
         align-items: center;
         &-qr-image {
           margin-bottom: 10px;
+          canvas {
+            width: 100%;
+          }
         }
         p {
           font-size: $text-medium;

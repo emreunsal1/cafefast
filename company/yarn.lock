@@ -1129,6 +1129,11 @@ dom-helpers@^5.0.1:
     "@babel/runtime" "^7.8.7"
     csstype "^3.0.2"
 
+easyqrcodejs@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/easyqrcodejs/-/easyqrcodejs-4.6.0.tgz#df4d887af6ebda36e59f4c88e0f207f3149e58c6"
+  integrity sha512-bTDKgMhlBElqpYNeXlpbVa/Zs47AJX+UXn1/T0wsLByA7tri52GeNvlvljrAslnFD+Hz1YxfcqL4M7mddygpuA==
+
 emoji-regex@^9.2.2:
   version "9.2.2"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-9.2.2.tgz#840c8803b0d8047f4ff0cf963176b32d4ef3ed72"
