@@ -56,6 +56,7 @@ export default function Header({ sideBarButtonClickHandler, sideBarIsOpened }) {
               menuPosition="righttoleft"
               buttonContent={<Icon name="profile" />}
               items={dropdownItems}
+              chevron={false}
             />
           </div>
         </div>

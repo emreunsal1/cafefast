@@ -24,7 +24,7 @@ export default function CampainList() {
   }, [isCreate, isUpdate]);
 
   const floatButtonClickHandler = () => {
-    router.push("/campaigns/campaign");
+    router.push("/campaigns/campaign/new");
   };
 
   const deleteCampain = async (id) => {

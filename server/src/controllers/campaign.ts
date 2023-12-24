@@ -74,10 +74,12 @@ export const deleteCampaignController = async (req: Request, res: Response, next
   const { campaigns } = req.body;
 
   try {
-    if (campaigns?.length && campaignId && campaignId !== "multiple") {
-      return res.status(400).send({
-        message: "you can not send campaigns and campaignId same time",
-      });
+    if (campaigns) {
+      if (campaigns?.length && campaignId && campaignId !== "multiple") {
+        return res.status(400).send({
+          message: "you can not send campaigns and campaignId same time",
+        });
+      }
     }
 
     if (campaigns && campaignId === "multiple") {
@@ -88,11 +90,11 @@ export const deleteCampaignController = async (req: Request, res: Response, next
         return res.status(400).send({ message: "error when deleting campaign", error: campaignResponse.error });
       }
     }
-
-    const campaingsToDelete = campaigns.length ? campaigns : [campaignId];
-
-    await removeCampaignsFromCompany(company, campaingsToDelete);
-    await removeMultipleCampaignFromMenus(campaingsToDelete);
+    if (campaigns) {
+      const campaingsToDelete = campaigns.length ? campaigns : [campaignId];
+      await removeCampaignsFromCompany(company, campaingsToDelete);
+      await removeMultipleCampaignFromMenus(campaingsToDelete);
+    }
 
     res.status(200).send({ success: true });
   } catch (error) {

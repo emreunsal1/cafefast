@@ -6,7 +6,7 @@ import {
 } from "antd";
 
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PRODUCT_SERVICE from "@/services/product";
 import CAMPAIGN_SERVICE from "@/services/campaign";
 import Input from "@/components/library/Input";
@@ -15,6 +15,7 @@ import Button from "@/components/library/Button";
 import LibSelect from "@/components/library/Select";
 import Icon from "@/components/library/Icon";
 import { CDN_SERVICE } from "@/services/cdn";
+import { AWS_CLOUDFRONT_URL } from "@/constants";
 
 const DAYS = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
 const DEFAULT_DAYS_VALUE = DAYS.map((_, i) => i);
@@ -27,6 +28,7 @@ function CampaignDetail() {
   const [applicable, setApplicable] = useState({ days: DEFAULT_DAYS_VALUE });
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
+
   const router = useRouter();
   const message = useMessage();
 
@@ -75,7 +77,9 @@ function CampaignDetail() {
 
   const onSubmitSuccess = async () => {
     const mockData = data;
-    delete mockData.image;
+    if (isUpdate) {
+      delete mockData.image;
+    }
     const submitData = {
       ...mockData,
       applicable,
@@ -124,15 +128,17 @@ function CampaignDetail() {
   const campaignImageClickHandler = () => {
     document.querySelector("#campaign-image-input").click();
   };
+
   const fileInputChangeHandler = async (e) => {
     const image = e.target.files[0];
     const cdnImage = await CDN_SERVICE.uploadImage(image);
-    const newImageUrl = URL.createObjectURL(image);
-    setData((_campaignData) => ({ ..._campaignData, image: newImageUrl }));
+    setData((_campaignData) => ({ ..._campaignData, image: `${AWS_CLOUDFRONT_URL}/${cdnImage.data.fileName}` }));
     e.target.value = null;
-    const response = await CAMPAIGN_SERVICE.update(router.query.campaignId, { image: cdnImage.data.fileName });
-    if (response) {
-      message.success("Güncelleme başarılı!");
+    if (isUpdate) {
+      const response = await CAMPAIGN_SERVICE.update(router.query.campaignId, { image: cdnImage.data.fileName });
+      if (response) {
+        message.success("Güncelleme başarılı!");
+      }
     }
   };
 
@@ -140,7 +146,7 @@ function CampaignDetail() {
     if (router.isReady) {
       fetchProducts();
       setApplicable({ days: DEFAULT_DAYS_VALUE });
-      if (router.query.campaignId) {
+      if (router.query.campaignId !== "new") {
         setIsUpdate(true);
         getCampaign();
       }
@@ -163,7 +169,7 @@ function CampaignDetail() {
         autoComplete="off"
       >
         <div className="title-wrapper">
-          <h3>Kampanyanı Düzenle!</h3>
+          {isUpdate ? <h3>Kampanyanı Düzenle!</h3> : <h3>Kampanyanı Oluştur!</h3> }
         </div>
         <div className="form-row">
           <Input
