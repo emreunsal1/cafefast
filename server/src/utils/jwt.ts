@@ -53,7 +53,7 @@ export const setCookie = (res: Response, cookieName: string, cookieValue: string
   if (isProduction) {
     cookieOptions.httpOnly = false;
     cookieOptions.sameSite = "none";
-    cookieOptions.secure = false;
+    cookieOptions.secure = true;
   }
   res.cookie(cookieName, cookieValue, cookieOptions);
 };
