@@ -45,6 +45,8 @@ export const setCookie = (res: Response, cookieName: string, cookieValue: string
   maxAge: ONE_YEAR_AS_MS,
 }) => {
   const isProduction = process.env.NODE_ENV === "production";
+  console.log("process.env.NODE_ENV :>> ", process.env.NODE_ENV);
+  console.log("isProduction :>> ", isProduction);
 
   const cookieOptions: CookieOptions = {
     maxAge: options.maxAge,
