@@ -28,6 +28,9 @@ export const createProductValidator = z.object({
 });
 
 export const updateProductValidator = createProductValidator.partial();
+export const updateBulkProductValidator = z.array(createProductValidator.pick({
+  name: true, description: true, price: true, inStock: true,
+}));
 export const bulkUpdateCreateValidator = createProductValidator.pick({ name: true, description: true, price: true });
 
 export type IProduct = z.infer<typeof createProductValidator>;

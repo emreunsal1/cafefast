@@ -30,6 +30,8 @@ const update = async (data) => {
   }
 };
 
+const bulkUpdate = async (data) => instance.put(`${PRODUCT_ROUTE}/bulk-update`, data);
+
 const deleteProduct = async (id) => {
   try {
     const response = await instance.delete(`${PRODUCT_ROUTE}/${id}`);
@@ -49,6 +51,7 @@ const PRODUCT_SERVICE = {
   get,
   getDetail,
   update,
+  bulkUpdate,
   deleteProduct,
   multiDeleteProduct,
 };

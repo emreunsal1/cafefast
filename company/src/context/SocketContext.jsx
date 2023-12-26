@@ -3,7 +3,7 @@ import React, {
 } from "react";
 import { io } from "socket.io-client";
 import { useRouter } from "next/router";
-import { API_URl, LOCAL_COMPANY_ID_KEY } from "@/constants";
+import { LOCAL_COMPANY_ID_KEY, SOCKET_API_URL } from "@/constants";
 
 const Context = createContext({});
 
@@ -19,7 +19,7 @@ export function SocketContext({ children }) {
       return;
     }
     const companyId = localStorage.getItem(LOCAL_COMPANY_ID_KEY);
-    const socketInstance = io(API_URl);
+    const socketInstance = io(SOCKET_API_URL);
     setSocket(socketInstance);
     socketInstance.emit("join:company", { companyId });
   };

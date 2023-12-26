@@ -84,9 +84,6 @@ export default function ProductDetail() {
 
   const updateOrCreateProduct = async () => {
     setLoading(true);
-    if (renderAttributeDetail) {
-      saveAttributeHandler();
-    }
     const mockProduct = JSON.parse(JSON.stringify(product));
     mockProduct.price = Number(product.price);
     mockProduct.attributes = attributes;
@@ -218,7 +215,7 @@ export default function ProductDetail() {
 
   const hasAttributeValidationErrors = renderAttributeDetail && Object.keys(attributeValidationErrors).length > 0;
   const hasValidationErrors = Object.keys(validationErrors).length > 0;
-  const isSaveButtonDisabled = hasAttributeValidationErrors || hasValidationErrors;
+  const isSaveButtonDisabled = renderAttributeDetail || hasAttributeValidationErrors || hasValidationErrors;
 
   return (
     <div className="product-detail-page">
@@ -378,7 +375,7 @@ export default function ProductDetail() {
                 ))}
                 {!hasAttributeValidationErrors && (
                   <div className="add-attribute-option-button">
-                    <Button onClick={addAttributeOptionHandler}>Ekle</Button>
+                    <Button onClick={addAttributeOptionHandler}><Icon name="plus" /></Button>
                   </div>
                 )}
               </div>

@@ -1,4 +1,5 @@
-export const API_URl = "http://localhost:3000/api";
+export const API_URl = "http://localhost:4000";
+export const SOCKET_API_URL = "https://cafefast.onrender.com";
 export const MENU_URL = "http://localhost:3001";
 export const THREED_START_PAGE = "/payment/3d-start";
 export const PRODUCT_ROUTE = "/product";
@@ -34,7 +35,7 @@ export const PAGE_TITLES = {
   menu: "Yönetim Paneli | Menüler",
   kitchen: "Yönetim Paneli | Mutfak",
   table: "Yönetim Paneli | Masalar",
-  campaings: "Yönetim Paneli | Kampanyalar",
+  campaigns: "Yönetim Paneli | Kampanyalar",
   profile: "Yönetim Paneli | Profil Bilgileri",
 };
 

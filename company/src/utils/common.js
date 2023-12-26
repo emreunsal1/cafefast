@@ -12,3 +12,17 @@ export function moveItemInArray(arr, old_index, new_index) {
   newArray.splice(new_index, 0, newArray.splice(old_index, 1)[0]);
   return newArray; // for testing
 }
+
+export const formatPrice = (price) => {
+  try {
+    const priceAsString = String(price);
+    if (!priceAsString.includes(".")) {
+      return price;
+    }
+
+    const [before, after] = priceAsString.split(".");
+    return Number(`${before}.${after.slice(0, 2)}`);
+  } catch (err) {
+    return price;
+  }
+};

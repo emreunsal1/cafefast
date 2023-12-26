@@ -194,7 +194,7 @@ export default function Menu() {
                   Detay
                   <Icon name="menu" />
                 </Button>
-                <Button onClick={() => setIsUpdate(record._id)}>
+                <Button onClick={() => { setIsUpdate(record._id); setIsModalOpen(true); }}>
                   Düzenle
                   <Icon name="edit-outlined" />
                 </Button>

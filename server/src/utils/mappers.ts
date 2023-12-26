@@ -98,3 +98,17 @@ export const mapSavedCards = (cards) => cards.map((card) => ({
   name: `${card.name.substring(0, 3)}***`,
   type: creditCardType(card.cardNo)[0]?.niceType || null,
 }));
+
+export const formatPrice = (price) => {
+  try {
+    const priceAsString = String(price);
+    if (!priceAsString.includes(".")) {
+      return price;
+    }
+
+    const [before, after] = priceAsString.split(".");
+    return Number(`${before}.${after.slice(0, 2)}`);
+  } catch (err) {
+    return price;
+  }
+};
