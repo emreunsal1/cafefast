@@ -1,4 +1,4 @@
-export const API_URl = "http://localhost:4000";
+export const API_URl = "http://localhost:3000/api";
 export const SOCKET_API_URL = "https://cafefast.onrender.com";
 export const MENU_URL = "http://localhost:3001";
 export const THREED_START_PAGE = "/payment/3d-start";
