@@ -60,6 +60,15 @@
       .options-line {
         margin-top: 15px;
       }
+      .options-line-time {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        .row {
+          align-items: center;
+          display: flex;
+        }
+      }
     }
     .sub-info {
       color: $primary;

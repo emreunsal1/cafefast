@@ -1,12 +1,11 @@
+import React, { useEffect, useState } from "react";
 import {
   Form,
   Space,
   Table,
   Select as AntdSelect,
 } from "antd";
-
 import { useRouter } from "next/router";
-import React, { useEffect, useRef, useState } from "react";
 import PRODUCT_SERVICE from "@/services/product";
 import CAMPAIGN_SERVICE from "@/services/campaign";
 import Input from "@/components/library/Input";
@@ -16,21 +15,34 @@ import LibSelect from "@/components/library/Select";
 import Icon from "@/components/library/Icon";
 import { CDN_SERVICE } from "@/services/cdn";
 import { AWS_CLOUDFRONT_URL } from "@/constants";
+import z, { ZodError } from "zod";
+import { useImmer } from "use-immer";
 
 const DAYS = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
 const DEFAULT_DAYS_VALUE = DAYS.map((_, i) => i);
-const HOURS = Array(24).fill(null).map((_, i) => i + 1);
+const HOURS = Array(23).fill(null).map((_, i) => i + 1);
+const MINUTES = Array(5).fill(null).map((_, i) => (i + 1) * 10);
 
 function CampaignDetail() {
-  const [data, setData] = useState({ name: "", description: "", price: 0 });
+  const [data, setData] = useImmer({
+    name: "",
+    description: "",
+    price: 0,
+    applicable: { time: { start: "", end: "" }, days: DEFAULT_DAYS_VALUE },
+  });
   const [allProducts, setAllProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [applicable, setApplicable] = useState({ days: DEFAULT_DAYS_VALUE });
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
 
   const router = useRouter();
   const message = useMessage();
+
+  const campaignVerifier = z.object({
+    name: z.string(),
+    description: z.string().min(3).max(255),
+    price: z.literal(7),
+  });
 
   const PRODUCT_COLUMNS = [
     {
@@ -72,17 +84,12 @@ function CampaignDetail() {
 
     const productIds = currentData.products.map((product) => product._id || product);
     setSelectedProducts(productIds);
-    setApplicable(currentData.applicable);
   };
 
   const onSubmitSuccess = async () => {
     const mockData = data;
-    if (isUpdate) {
-      delete mockData.image;
-    }
     const submitData = {
       ...mockData,
-      applicable,
       products: selectedProducts,
     };
 
@@ -108,14 +115,20 @@ function CampaignDetail() {
     });
   };
 
-  const timeHandler = (field, value) => {
-    setApplicable({
-      ...applicable,
-      time: {
-        ...applicable.time,
-        [field]: Number(value),
-      },
-    });
+  const timeHandler = (field, type, value) => {
+    if (field === "start") {
+      const [hour, minute] = data.applicable.time.start.split(":");
+      const currentHour = type === "hour" ? value : hour;
+      const currentMinute = type === "minute" ? value : minute;
+      setData((_data) => { _data.applicable.time.start = `${currentHour}:${currentMinute}`; });
+    }
+
+    if (field === "end") {
+      const [hour, minute] = data.applicable.time.end.split(":");
+      const currentHour = type === "hour" ? value : hour;
+      const currentMinute = type === "minute" ? value : minute;
+      setData((_data) => { _data.applicable.time.end = `${currentHour}:${currentMinute}`; });
+    }
   };
 
   const inputChangeHandler = (key, value) => {
@@ -145,7 +158,7 @@ function CampaignDetail() {
   useEffect(() => {
     if (router.isReady) {
       fetchProducts();
-      setApplicable({ days: DEFAULT_DAYS_VALUE });
+      setData((_data) => { _data.applicable.days = DEFAULT_DAYS_VALUE; });
       if (router.query.campaignId !== "new") {
         setIsUpdate(true);
         getCampaign();
@@ -193,19 +206,37 @@ function CampaignDetail() {
           />
         </div>
         <div className="form-row">
-          <div className="options-line">
-            <LibSelect
-              label="Aktif Olacağı tarih Başlangıçı"
-              value={{ label: applicable.time?.start, value: applicable.time?.start }}
-              onChange={(start) => timeHandler("start", start.value)}
-              options={HOURS.map((hour) => ({ label: hour, value: hour }))}
-            />
+          <div className="options-line-time">
+            <div className="row">
+              <LibSelect
+                label="Aktif Olacağı Saat"
+                onChange={(start) => timeHandler("start", "hour", start.value)}
+                options={HOURS.map((hour) => ({ label: hour, value: hour }))}
+                name="startTime"
+              />
+              <LibSelect
+                onChange={(end) => timeHandler("start", "minute", end.value)}
+                options={MINUTES.map((hour) => ({ label: hour, value: hour }))}
+                name="startMınute"
+              />
+            </div>
+            <div className="row">
+              <LibSelect
+                label="Bitiş Saat"
+                onChange={(start) => timeHandler("end", "hour", start.value)}
+                options={HOURS.map((hour) => ({ label: hour, value: hour }))}
+                name="startTime"
+              />
+              <LibSelect
+                onChange={(end) => timeHandler("end", "minute", end.value)}
+                options={MINUTES.map((hour) => ({ label: hour, value: hour }))}
+                name="endTime"
+              />
+            </div>
           </div>
           <div className="options-line">
             <LibSelect
               label="Bitiş Tarihi"
-              disabled={!applicable.time?.start}
-              value={{ label: applicable.time?.end, value: applicable.time?.end }}
               onChange={(end) => timeHandler("end", end.value)}
               options={HOURS.map((hour) => ({ label: hour, value: hour }))}
             />
@@ -221,7 +252,7 @@ function CampaignDetail() {
           <AntdSelect
             mode="multiple"
             style={{ width: "100%" }}
-            value={applicable.days}
+            value={data.applicable?.days}
             onChange={daysChangeHandler}
           >
             {DAYS.map((day, i) => (

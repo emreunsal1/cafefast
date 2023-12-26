@@ -50,6 +50,7 @@ export default function CampainList() {
     setCampaingstoDelete([...campaignsToDelete, id]);
   };
 
+  // bu özellik tamam ui çizilerek buton felan koyulacak
   const multipleSelectButtonHandler = () => {
     if (isMultipleDeleteActive) {
       setIsMultipleDeleteActive(false);
@@ -63,7 +64,6 @@ export default function CampainList() {
   return (
     <div className="list-wrapper">
       <div className="actions-wrapper">
-        <button onClick={multipleSelectButtonHandler}>{isMultipleDeleteActive ? "Seçimi Kaldır" : "Seç"}</button>
         {campaignsToDelete.length > 0 && <button onClick={deleteMultipleCampaign}>Seçilileri Sil</button>}
       </div>
       <Row gutter={16}>

@@ -2,14 +2,14 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useProduct } from "../../context/ProductContext";
-import ProductCard from "../../components/ProductCard";
-import Layout from "../../components/Layout";
 import { CDN_SERVICE } from "@/services/cdn";
 import { API_URl, PRODUCT_ROUTE } from "@/constants";
 import { STORAGE } from "@/utils/browserStorage";
 import PRODUCT_SERVICE from "@/services/product";
 import Button from "@/components/library/Button";
+import Layout from "../../components/Layout";
+import ProductCard from "../../components/ProductCard";
+import { useProduct } from "../../context/ProductContext";
 
 export default function Product() {
   const {
@@ -78,7 +78,7 @@ export default function Product() {
         </div>
       </div>
       <div className="product-list-wrapper">
-        {products.map((product) => (
+        {products && products.map((product) => (
           <ProductCard
             key={product._id}
             isSelectable={isMultipleEdit}
