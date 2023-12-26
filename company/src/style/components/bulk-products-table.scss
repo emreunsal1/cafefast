@@ -1,0 +1,50 @@
+.bulk-products-table {
+  &-new-product {
+    .new-product-title {
+      margin-bottom: 10px;
+    }
+    .new-product-inputs {
+      display: flex;
+      gap: 10px;
+
+      button {
+        i {
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+
+  .divider {
+    height: 1px;
+    background-color: $border-gray;
+    margin: 40px 0;
+  }
+
+  &-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    h3 {
+    }
+    &-actions {
+      button {
+        i {
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+
+  .excel-wrapper {
+    height: 500px;
+    width: 100%;
+    margin-bottom: 30px;
+  }
+
+  &-actions {
+    display: flex;
+    gap: 10px;
+  }
+}

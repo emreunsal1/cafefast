@@ -16,7 +16,7 @@ export const registerValidationSchema = Yup.object().shape({
 
 export const productSaveValidator = z.object({
   name: z.string().min(1, "Minimum 1 karakter girilmelidir"),
-  description: z.string().min(5, "Minimum 5 karakter girilmelidir"),
+  description: z.string(),
   price: z.number().min(1, "Fiyat bilgisine en az 1 girebilirsiniz"),
 });
 

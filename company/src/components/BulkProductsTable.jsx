@@ -7,7 +7,12 @@ import { useLoading } from "@/context/LoadingContext";
 import { useMessage } from "@/context/GlobalMessage";
 import { useImmer } from "use-immer";
 import { formatPrice } from "@/utils/common";
+
+import { mapZodErrorObject, productSaveValidator } from "@/utils/validations";
+import { ZodError } from "zod";
 import Button from "./library/Button";
+import Icon from "./library/Icon";
+import Input from "./library/Input";
 
 registerAllModules();
 
@@ -19,15 +24,26 @@ const mapProductForUpdate = (products) => products.map((product) => ({
   inStock: product.inStock,
 }));
 
+const BULK_PRODUCTS_ADD_NEW_PRODUCT_DEFAULT_DATA = {
+  name: "",
+  description: "",
+  price: 0,
+};
+
 export default function BulkProductsTable() {
   const hotRef = useRef();
   const changedIndexes = useRef(new Set());
   const initialValues = useRef("{}");
+  const isNewProductInputsChangedBefore = useRef(false);
 
   const [products, setProducts] = useImmer([]);
+  const [newProductData, setNewProductData] = useImmer(BULK_PRODUCTS_ADD_NEW_PRODUCT_DEFAULT_DATA);
   const { setLoading } = useLoading();
   const message = useMessage();
   const [isUndoAvailable, setIsUndoAvailable] = useState(false);
+  const [newProductValidationErrors, setNewProductValidationErrors] = useState({});
+
+  const addProductButtonDisabled = Object.keys(newProductValidationErrors).length > 0;
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -56,7 +72,6 @@ export default function BulkProductsTable() {
     }
     setLoading(false);
     await fetchProducts();
-    hotRef.current?.hotInstance.render();
   };
 
   const descriptionValidator = (value, callback) => {
@@ -81,8 +96,102 @@ export default function BulkProductsTable() {
     hotRef.current.hotInstance.undo();
   };
 
+  const newProductChangeHandler = (field, value) => {
+    isNewProductInputsChangedBefore.current = true;
+    setNewProductData((_newProductData) => { _newProductData[field] = value; });
+  };
+
+  const validateProduct = () => {
+    try {
+      productSaveValidator.parse(newProductData);
+      setNewProductValidationErrors({});
+    } catch (err) {
+      if (err instanceof ZodError) {
+        setNewProductValidationErrors(mapZodErrorObject(err));
+      }
+    }
+  };
+
+  const createProduct = async () => {
+    setLoading(true);
+    isNewProductInputsChangedBefore.current = false;
+    try {
+      await PRODUCT_SERVICE.create(newProductData);
+      setNewProductValidationErrors({});
+      setNewProductData(BULK_PRODUCTS_ADD_NEW_PRODUCT_DEFAULT_DATA);
+      fetchProducts();
+    // eslint-disable-next-line no-empty
+    } catch {
+      setLoading(false);
+    }
+  };
+
+  const inputEnterHandler = () => {
+    if (addProductButtonDisabled) {
+      message.error("Ürün eklemek için alanları geçerli şekilde doldurmalısınız!");
+      return;
+    }
+    createProduct();
+  };
+
+  const inputOnClickHandler = () => {
+    isNewProductInputsChangedBefore.current = false;
+    validateProduct();
+  };
+
+  useEffect(() => {
+    if (isNewProductInputsChangedBefore.current) {
+      validateProduct();
+    }
+  }, [newProductData]);
+
   return (
     <div className="bulk-products-table">
+      <div className="bulk-products-table-new-product">
+        <div className="new-product-title">
+          <h6>Hızlı Ürün Ekle</h6>
+        </div>
+        <div className="new-product-inputs">
+          <Input
+            label="Ürün İsmi"
+            onChange={(e) => newProductChangeHandler("name", e.target.value)}
+            value={newProductData.name}
+            error={newProductValidationErrors.name}
+            onEnterKeyPress={inputEnterHandler}
+            onClick={inputOnClickHandler}
+          />
+          <Input
+            label="Ürün Açıklaması"
+            onChange={(e) => newProductChangeHandler("description", e.target.value)}
+            value={newProductData.description}
+            error={newProductValidationErrors.description}
+            onEnterKeyPress={inputEnterHandler}
+            onClick={inputOnClickHandler}
+          />
+          <Input
+            label="Fiyat"
+            onChange={(e) => newProductChangeHandler("price", Number(e.target.value))}
+            value={newProductData.price}
+            error={newProductValidationErrors.price}
+            type="number"
+            onEnterKeyPress={inputEnterHandler}
+            onClick={inputOnClickHandler}
+          />
+          <Button disabled={addProductButtonDisabled} onClick={createProduct}>
+            Ekle
+            <Icon name="plus" />
+          </Button>
+        </div>
+      </div>
+
+      <div className="divider" />
+      <div className="bulk-products-table-title">
+        <h3>Toplu Ürün Düzenleme</h3>
+        <div className="bulk-products-table-actions">
+          <Button onClick={saveClickHandler} disabled={!isUndoAvailable}>Kaydet</Button>
+          <Button onClick={undoButtonHandler} disabled={!isUndoAvailable} variant="outlined">Geri Al</Button>
+        </div>
+      </div>
       <div className="excel-wrapper">
         <HotTable
           ref={hotRef}
@@ -144,10 +253,6 @@ export default function BulkProductsTable() {
           height="100%"
           licenseKey="non-commercial-and-evaluation"
         />
-      </div>
-      <div className="excel-actions">
-        <Button onClick={saveClickHandler} disabled={!isUndoAvailable}>Kaydet</Button>
-        <Button onClick={undoButtonHandler} disabled={!isUndoAvailable} variant="outlined">Geri Al</Button>
       </div>
     </div>
   );

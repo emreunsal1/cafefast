@@ -5,6 +5,8 @@ export default function Input({
   label, description, type,
   onChange, value, className,
   placeholder, error, readOnly, name,
+  onEnterKeyPress,
+  onClick,
 }) {
   const ref = useRef();
   const [focus, setFocus] = useState(false);
@@ -25,6 +27,12 @@ export default function Input({
     });
   }
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      onEnterKeyPress();
+    }
+  };
+
   return (
     <div className={classname}>
       {label && <div className="library-input-label">{label}</div>}
@@ -33,6 +41,8 @@ export default function Input({
           placeholder={placeholder}
           name={name}
           ref={ref}
+          onClick={onClick}
+          onKeyDown={handleKeyPress}
           readOnly={readOnly}
           value={value}
           onChange={onChange}

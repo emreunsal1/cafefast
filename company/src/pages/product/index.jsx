@@ -54,12 +54,8 @@ export default function Product() {
     setIsMultipleEdit(true);
   };
 
-  const exportProductsButtonClickHandler = () => {
-    window.open(`${API_URl}${PRODUCT_ROUTE}/export`, "_blank");
-  };
-
-  const importProductsButtonClickHandler = () => {
-    document.querySelector("#import-products").click();
+  const redirectToBulkUpdate = () => {
+    router.push("/product/bulk-update");
   };
 
   return (
@@ -67,8 +63,7 @@ export default function Product() {
       <div className="products-page-header">
         <h3>Ürünlerim</h3>
         <div className="products-page-header-actions">
-          <Button variant="outlined" onClick={exportProductsButtonClickHandler}>Ürünleri Dışa Aktar</Button>
-          <Button variant="outlined" onClick={importProductsButtonClickHandler}>Excel ile içe aktar</Button>
+          <Button variant="outlined" onClick={redirectToBulkUpdate}>Toplu Ürün Düzenle</Button>
           <Button onClick={() => selectedButtonClickHandler()}>
             {!isMultipleEdit ? "Seç" : "Sil"}
           </Button>

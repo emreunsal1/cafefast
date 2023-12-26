@@ -11,7 +11,6 @@ const BulkProductsTable = dynamic(
 export default function BulkUpdate() {
   return (
     <div className="bulk-update">
-      <h3>Toplu Ürün Düzenleme</h3>
       <BulkProductsTable />
     </div>
   );

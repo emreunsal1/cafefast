@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import { useClickOutSide } from "@/hooks";
+import { AnimatePresence, motion } from "framer-motion";
 import Portal from "./Portal";
 
 export default function Popup({
@@ -47,17 +48,28 @@ export default function Popup({
     }
   }, [show]);
 
-  if (!show) {
-    return null;
-  }
-
   return (
     <Portal selector="#library-popup-portal">
-      <div className={overlayClassname}>
-        <div ref={popupRef} className={bodyClassname}>
-          {children}
-        </div>
-      </div>
+      <AnimatePresence>
+        {show && (
+        <motion.div
+          className={overlayClassname}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, pointerEvents: "none" }}
+        >
+          <motion.div
+            initial={{ opacity: 0, transform: "translate(0, -20px)" }}
+            animate={{ opacity: 1, transform: "translate(0, 0)" }}
+            exit={{ opacity: 0, transform: "translate(0, -20px)", pointerEvents: "none" }}
+            ref={popupRef}
+            className={bodyClassname}
+          >
+            {children}
+          </motion.div>
+        </motion.div>
+        )}
+      </AnimatePresence>
     </Portal>
   );
 }
