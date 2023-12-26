@@ -19,10 +19,10 @@ export const productAttributeValidator = z.object({
 
 export const createProductValidator = z.object({
   name: z.string().min(1),
-  description: z.string().min(5),
+  description: z.string().optional(),
   price: z.number(),
-  images: z.array(z.string()),
-  attributes: productAttributeValidator.array(),
+  images: z.array(z.string()).optional(),
+  attributes: productAttributeValidator.array().optional(),
   menuPrices: z.array(z.object({ menuId: z.string(), price: z.number().positive() })).optional(),
   inStock: z.boolean().optional(),
 });
@@ -37,7 +37,7 @@ export type IProduct = z.infer<typeof createProductValidator>;
 
 const productSchema = new Schema<IProduct>({
   name: String,
-  description: String,
+  description: { type: String, default: null },
   price: Number,
   images: [{ type: String, default: [] }],
   attributes: { type: [], _id: false },
