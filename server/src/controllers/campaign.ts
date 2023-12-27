@@ -55,13 +55,11 @@ export const updateCampaignController = async (req: Request, res: Response, next
   const { campaignId } = req.params;
   try {
     const verifiedCampaign = await updateCampaignVerifier.parseAsync(req.body);
-    console.log("verified", verifiedCampaign);
 
     const campaignResponse = await updateCampaign(campaignId, verifiedCampaign);
     if (!campaignResponse.data || campaignResponse.error) {
       return res.status(400).send(campaignResponse.error);
     }
-    console.log("campaignResponse.data.toObject()", campaignResponse.data.toObject());
     res.status(200).send(mapCampaign(campaignResponse.data.toObject()));
   } catch (error) {
     next(error);

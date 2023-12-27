@@ -3,10 +3,8 @@ import userModel from "../models/user";
 export const createUser = async (data) => {
   try {
     const newUser = await userModel.create(data);
-    console.log("newUser :>> ", newUser);
     return { data: newUser };
   } catch (error) {
-    console.log("newUserError :>> ", error);
     return { error: (error as any).message || error };
   }
 };

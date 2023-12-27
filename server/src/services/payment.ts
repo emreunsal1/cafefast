@@ -100,7 +100,6 @@ export const init3d = ({
   return new Promise((resolve) => {
     iyzipay.threedsInitialize.create(paymentInfo, (error, result) => {
       if (error || result.errorCode) {
-        console.log("Error when iyzicoPayment => ", error, result);
         resolve({
           error: {
             stack: error,

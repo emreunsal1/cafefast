@@ -44,39 +44,58 @@
       }
     }
   }
-  form {
-    margin: 0 auto;
-    .title-wrapper {
-      text-align: center;
+
+  .form-row {
+    margin: 20px 0px;
+    margin-bottom: 0px;
+    .title {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 10px;
     }
-    .form-row {
-      margin: 20px 0px;
-      margin-bottom: 0px;
-      .title {
-        font-size: 14px;
-        font-weight: 500;
-        margin-bottom: 10px;
+
+    &.campaign-hours {
+      .campaign-hours-header {
+        margin-bottom: 20px;
+        p {
+          margin-top: 10px;
+        }
       }
-      .options-line {
-        margin-top: 15px;
-      }
-      .options-line-time {
+      .campaign-hours-body {
         display: flex;
-        align-items: center;
-        justify-content: space-evenly;
-        .row {
-          align-items: center;
-          display: flex;
+        gap: 10px;
+        .hours-wrapper {
+          width: 100%;
+          &-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+          }
+          &-inputs {
+            .library-time-picker {
+              width: 100%;
+            }
+            display: flex;
+          }
         }
       }
     }
-    .sub-info {
-      color: $primary;
+  }
+  .sub-info {
+    color: $primary;
+  }
+  .table-wrapper {
+    margin-top: 20px;
+    .products-table-row {
+      height: 60px;
+      .ant-table-cell {
+        img {
+          width: 50px;
+          height: 50px;
+          object-fit: cover;
+        }
+      }
     }
-    .table-wrapper {
-      margin-top: 20px;
-    }
-    .button-wrapper {
-    }
+  }
+  .button-wrapper {
   }
 }
