@@ -1,0 +1,8 @@
+.library-date-picker {
+  &-picker-dialog {
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0px 24px 48px -12px rgba(16, 24, 40, 0.18);
+    z-index: 10;
+  }
+}

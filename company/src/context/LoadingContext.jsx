@@ -10,7 +10,7 @@ export function GlobalLoadingContext({ children }) {
 
   return (
     <Context.Provider value={{ loading, setLoading }}>
-      <AnimatePresence exi>
+      <AnimatePresence>
         {loading && (
         <motion.div
           initial={{ opacity: 0, scale: 1.7 }}

@@ -20,6 +20,7 @@ import { useLoading } from "@/context/LoadingContext";
 import TimePicker from "@/components/library/TimePicker";
 import { useDate } from "@/context/DateContext";
 import { AnimatePresence, motion } from "framer-motion";
+import DatePicker from "@/components/library/DatePicker";
 
 const DAYS = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
 const DEFAULT_DAYS_VALUE = DAYS.map((_, i) => i);
@@ -236,10 +237,9 @@ function CampaignDetail() {
               </div>
             </div>
           </div>
-          <div className="form-row">
-            <LibSelect
-              label="Bitiş Tarihi"
-            />
+          <div className="form-row date-picker">
+            <div className="date-picker-title">Kampanya Bitiş Tarihi</div>
+            <DatePicker onChange={(_data) => { console.log("data :>> ", _data); }} />
           </div>
           <div className="form-row">
             <div className="title">

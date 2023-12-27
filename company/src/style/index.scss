@@ -5,6 +5,7 @@
 @import "normalize.css";
 @import "../public/icomoon/style.css";
 @import "yet-another-react-lightbox/styles.css";
+@import "react-day-picker/dist/style.css";
 @import "common";
 @import "./layout/index";
 
@@ -16,6 +17,7 @@
 @import "./library/dropdown";
 @import "./library/popup";
 @import "./library/time-picker";
+@import "./library/date-picker";
 
 //components
 @import "./components/sidebar";
