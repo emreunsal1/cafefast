@@ -34,7 +34,7 @@ export default function SideBar({ isOpened }) {
             {
           MenuItems.map((item, index) => (
             <div
-              className={classNames("menu-item", { selected: router.pathname === item.route })}
+              className={classNames("menu-item", { selected: router.pathname.includes(item.route) })}
               key={index}
               onClick={() => {
                 if (item.clicked) {

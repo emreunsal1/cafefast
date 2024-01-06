@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import USER_SERVICE from "../services/user";
 import { STORAGE } from "@/utils/browserStorage";
+import USER_SERVICE from "../services/user";
 
 export default function Index() {
   const menuOnBoardingController = async () => {
@@ -18,7 +18,7 @@ export default function Index() {
   }, []);
   return (
     <div className="homepage">
-      <h3>ANASAYFA</h3>
+      <h3>Anasayfa</h3>
     </div>
   );
 }

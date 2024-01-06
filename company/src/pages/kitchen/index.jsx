@@ -35,7 +35,7 @@ export default function Index() {
 
   return (
     <div className="kitchen-page">
-      <h2>Mutfak</h2>
+      <h3>Mutfak</h3>
       <div className="orders-table">
         {!loading && <OrderList data={orders} onUpdate={onUpdate} />}
         {!loading && orders.length === 0 && <div>Hiç siparişiniz bulunmamaktadır</div>}
