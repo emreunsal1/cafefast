@@ -35,18 +35,24 @@ export default function Button({
   const [popperElement, setPopperElement] = useState(null);
   const [arrowElement, setArrowElement] = useState(null);
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    modifiers: [{ name: "arrow", options: { element: arrowElement } }, {
-      name: "offset",
-      options: {
-        offset: [0, 4],
+    placement: "bottom-start",
+    modifiers: [
+      {
+        name: "arrow",
+        options: { element: arrowElement },
       },
-    },
-    {
-      name: "preventOverflow",
-      options: {
-        padding: 15,
+      {
+        name: "offset",
+        options: {
+          offset: [0, 4],
+        },
       },
-    },
+      {
+        name: "preventOverflow",
+        options: {
+          padding: 15,
+        },
+      },
     ],
   });
 

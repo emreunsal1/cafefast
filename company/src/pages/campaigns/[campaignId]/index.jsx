@@ -37,7 +37,7 @@ const DEFAULT_CAMPAIGN_DATA = {
   description: "",
   image: "",
   price: 0,
-  applicable: { time: { start: "", end: "" }, end: "", days: DEFAULT_DAYS_VALUE },
+  applicable: { time: { start: "", end: "" }, end: 0, days: DEFAULT_DAYS_VALUE },
   products: [],
 };
 
@@ -100,7 +100,9 @@ function CampaignDetail() {
       return;
     }
 
-    const response = await CAMPAIGN_SERVICE.update(router.query.campaignId, data);
+    const cloneData = JSON.parse(JSON.stringify(data));
+    delete cloneData.image;
+    const response = await CAMPAIGN_SERVICE.update(router.query.campaignId, cloneData);
     if (response) {
       setCurrentCampaign(response.data);
       message.success("Güncelleme başarılı!");
@@ -116,6 +118,11 @@ function CampaignDetail() {
     const selectedMinute = momentObject.minute();
 
     setData((_data) => { _data.applicable.time[field] = `${selectedHour}:${selectedMinute}`; });
+  };
+
+  const changeCampaignEndDate = (_moment) => {
+    const selectedDate = moment(_moment).valueOf();
+    setData((_data) => { _data.applicable.end = selectedDate; });
   };
 
   const createMomentFromApplicableTime = (applicableTime) => {
@@ -205,41 +212,48 @@ function CampaignDetail() {
               onChange={(e) => inputChangeHandler("price", Number(e.target.value))}
             />
           </div>
-          <div className="form-row campaign-hours">
-            <div className="campaign-hours-header">
-              <h5>Aktif Olacağı Saat Aralığı</h5>
-              <p>Kampanyanız seçiceğiniz saat aralığında aktif olacaktır.</p>
-            </div>
-            <div className="campaign-hours-body">
-              <div className="hours-wrapper">
-                <div className="hours-wrapper-title">
-                  Başlangıç
+          <div className="divider" />
+          <div className="form-row">
+            <div className="campaign-hours">
+              <div className="campaign-hours-header">
+                <h5>Kampanya Tarih Ayarları</h5>
+                <p>Kampanyanız seçiceğiniz saat aralığında aktif olacaktır.</p>
+              </div>
+              <div className="campaign-hours-body">
+                <div className="hours-wrapper">
+                  <div className="hours-wrapper-title">
+                    Başlangıç
+                  </div>
+                  <div className="hours-wrapper-inputs">
+                    <TimePicker
+                      showSecond={false}
+                      value={createMomentFromApplicableTime(data.applicable.time.start)}
+                      onChange={(value) => timeHandler("start", value)}
+                    />
+                  </div>
                 </div>
-                <div className="hours-wrapper-inputs">
-                  <TimePicker
-                    showSecond={false}
-                    value={createMomentFromApplicableTime(data.applicable.time.start)}
-                    onChange={(value) => timeHandler("start", value)}
-                  />
+                <div className="hours-wrapper">
+                  <div className="hours-wrapper-title">
+                    Bitiş
+                  </div>
+                  <div className="hours-wrapper-inputs">
+                    <TimePicker
+                      showSecond={false}
+                      value={createMomentFromApplicableTime(data.applicable.time.end)}
+                      onChange={(value) => timeHandler("end", value)}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="hours-wrapper">
-                <div className="hours-wrapper-title">
-                  Bitiş
-                </div>
-                <div className="hours-wrapper-inputs">
-                  <TimePicker
-                    showSecond={false}
-                    value={createMomentFromApplicableTime(data.applicable.time.end)}
-                    onChange={(value) => timeHandler("end", value)}
-                  />
-                </div>
-              </div>
             </div>
-          </div>
-          <div className="form-row date-picker">
-            <div className="date-picker-title">Kampanya Bitiş Tarihi</div>
-            <DatePicker onChange={(_data) => { console.log("data :>> ", _data); }} />
+            <div className="campaign-end-date-picker">
+              <DatePicker
+                value={data.applicable.end}
+                label="Kampanya Bitiş Tarihi"
+                description="Kampanyanız aşağıda seçiceğiniz tarihte sona erecektir."
+                onChange={changeCampaignEndDate}
+              />
+            </div>
           </div>
           <div className="form-row">
             <div className="title">
@@ -258,7 +272,9 @@ function CampaignDetail() {
               ))}
             </AntdSelect>
           </div>
+          <div className="divider" />
           <div className="table-wrapper">
+            <h5>Kampanya Ürünleri</h5>
             <Table
               rowKey="_id"
               loading={isProductsLoading}

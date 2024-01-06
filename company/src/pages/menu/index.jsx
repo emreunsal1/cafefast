@@ -148,13 +148,16 @@ export default function Menu() {
             align="center"
             render={(_, record) => {
               if (record._id === activeMenuId) {
-                return "✅";
+                return <Button disabled key="activeMenuDisabledButton" fluid>Aktif</Button>;
               }
               return (
-                <Button confirmOptions={{
-                  confirmText: "Sitenizde gözüken menünüz artık bu menü olacak onaylıyor musunuz?",
-                  onOkClick: () => changeActiveMenu(record._id),
-                }}
+                <Button
+                  fluid
+                  key="activeMenuActiveButton"
+                  confirmOptions={{
+                    confirmText: "Sitenizde gözüken menünüz artık bu menü olacak onaylıyor musunuz?",
+                    onOkClick: () => changeActiveMenu(record._id),
+                  }}
                 >
                   Aktif Et
                 </Button>

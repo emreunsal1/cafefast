@@ -1,16 +1,17 @@
-import React, { useRef, useState } from "react";
-import { isValid } from "date-fns";
+import React, { useEffect, useRef, useState } from "react";
 import { tr } from "date-fns/locale";
 
 import { DayPicker } from "react-day-picker";
 import { usePopper } from "react-popper";
 
 import { useDate } from "@/context/DateContext";
+import { useClickOutSide } from "@/hooks";
 import Input from "./Input";
 
-export default function DatePicker({ onChange }) {
-  const [selected, setSelected] = useState();
-  const { formatDate, parseDate, moment } = useDate();
+export default function DatePicker({
+  onChange, value, label, description,
+}) {
+  const { moment } = useDate();
   const [inputValue, setInputValue] = useState("");
   const [isPopperOpen, setIsPopperOpen] = useState(false);
 
@@ -19,45 +20,46 @@ export default function DatePicker({ onChange }) {
     null,
   );
 
-  const closePopper = () => {
-    setIsPopperOpen(false);
+  const togglePopper = () => {
+    setIsPopperOpen((_value) => !_value);
   };
 
   const popper = usePopper(popperRef.current, popperElement, {
     placement: "bottom-start",
+    modifiers: [
+      {
+        name: "offset",
+        options: {
+          offset: [0, 4],
+        },
+      },
+      {
+        name: "preventOverflow",
+        options: {
+          padding: 15,
+        },
+      },
+    ],
   });
 
-  const handleInputChange = (e) => {
-    setInputValue(e.currentTarget.value);
-    const date = parseDate(e.currentTarget.value, "LL");
-    if (isValid(date)) {
-      setSelected(date);
-    } else {
-      setSelected(undefined);
+  useEffect(() => {
+    const formattedDate = moment(value);
+    if (formattedDate.isValid()) {
+      setInputValue(formattedDate.format("LL"));
     }
-  };
-
-  const handleButtonClick = () => {
-    setIsPopperOpen(true);
-  };
+  }, [value]);
 
   const handleDaySelect = (date) => {
-    setSelected(date);
-    if (date) {
-      onChange(moment(date));
-      setInputValue(formatDate(date, "LL"));
-      closePopper();
-    } else {
-      setInputValue("");
-    }
+    onChange(date);
+    togglePopper();
   };
 
-  // useClickOutSide(popperElement, closePopper);
+  useClickOutSide(popperElement, togglePopper);
 
   return (
     <div className="library-date-picker">
       <div ref={popperRef}>
-        <Input readOnly value={inputValue} onChange={handleInputChange} onClick={handleButtonClick} />
+        <Input readOnly label={label} value={inputValue} description={description} onClick={togglePopper} />
       </div>
       {isPopperOpen && (
         <div
@@ -73,8 +75,8 @@ export default function DatePicker({ onChange }) {
             initialFocus={isPopperOpen}
             mode="single"
             locale={tr}
-            defaultMonth={selected}
-            selected={selected}
+            defaultMonth={value}
+            selected={value}
             onSelect={handleDaySelect}
           />
         </div>

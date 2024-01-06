@@ -24,7 +24,7 @@ export default function CampainList() {
   }, [isCreate, isUpdate]);
 
   const floatButtonClickHandler = () => {
-    router.push("/campaigns/campaign/new");
+    router.push("/campaigns/new");
   };
 
   const deleteCampain = async (id) => {
@@ -67,7 +67,7 @@ export default function CampainList() {
         {campaignsToDelete.length > 0 && <button onClick={deleteMultipleCampaign}>Seçilileri Sil</button>}
       </div>
       <Row gutter={16}>
-        {campaings.length && campaings.map((campain) => (
+        {campaings.length > 0 && campaings.map((campain) => (
           <Col key={campain._id} span={8}>
             <CampainCard
               deleteCampain={deleteCampain}
