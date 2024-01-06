@@ -25,7 +25,7 @@ export default function Button({
 }) {
   const classname = classNames("library-button", {
     [`variant-${variant}`]: variant, // filled (default) | outlined | red
-    [`size-${size}`]: size,
+    [`size-${size}`]: size, // small (default)
     fluid: !!fluid,
     [className]: !!className,
   });

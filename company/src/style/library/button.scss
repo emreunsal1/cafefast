@@ -1,8 +1,7 @@
 .library-button {
   display: inline-block;
-  padding: 10px 16px;
+  padding: 8px 16px;
   font-size: $text-xsmall;
-  font-weight: 600;
   line-height: 20px;
   background-color: $primary;
   color: white;
@@ -37,7 +36,7 @@
   &.variant-red {
     color: #fff;
     border-radius: 8px;
-    border: 1px solid var(--gray-300, $border-gray);
+    border: 1px solid var(--gray-300, rgba($red, 0.5));
     background-color: $red;
     box-shadow: 0px 1px 2px 0px rgba($red, 0.05);
     &:hover {
@@ -61,25 +60,16 @@
   &.size-xsmall {
     padding: 5px 10px;
     font-size: $text-xxsmall;
-    font-weight: 600;
   }
   &.size-small {
-    padding: 8px 14px;
-    font-size: $text-xsmall;
-    font-weight: 600;
-    line-height: 20px;
   }
   &.size-medium {
-    padding: 10px 16px;
+    padding: 8px 16px;
     font-size: $text-xsmall;
-    font-weight: 600;
-    line-height: 20px;
   }
   &.size-large {
-    padding: 12px 20px;
+    padding: 10px 20px;
     font-size: $text-small;
-    font-weight: 600;
-    line-height: 24px;
   }
 
   &:hover {
