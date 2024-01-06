@@ -7,7 +7,7 @@
   .divider {
     height: 1px;
     width: 100%;
-    margin: 30px 0;
+    margin: 60px 0;
     background-color: $border-gray;
   }
 
@@ -61,9 +61,8 @@
       margin-bottom: 10px;
     }
 
-    .campaign-hours {
-      margin-bottom: 30px;
-      .campaign-hours-header {
+    &.date-settings {
+      .date-settings-header {
         margin-bottom: 20px;
         p {
           font-size: $text-xsmall;
@@ -71,25 +70,73 @@
           margin-top: 10px;
         }
       }
-      .campaign-hours-body {
-        display: flex;
-        gap: 10px;
-        .hours-wrapper {
-          width: 100%;
-          &-title {
-            margin-bottom: 10px;
+
+      .campaign-hours {
+        margin-bottom: 20px;
+        background-color: #f0f4fe;
+        border-radius: 10px;
+        padding: 10px;
+        .campaign-hours-header {
+          margin-bottom: 5px;
+          p {
+            font-weight: bold;
+            font-size: $text-medium;
           }
-          &-inputs {
-            .library-time-picker {
-              width: 100%;
+        }
+        .campaign-hours-body {
+          display: flex;
+          gap: 10px;
+          .hours-wrapper {
+            width: 100%;
+            &-title {
+              margin-bottom: 10px;
+              p {
+                font-size: $text-xsmall;
+              }
             }
-            display: flex;
+            &-inputs {
+              .library-time-picker {
+                width: 100%;
+              }
+              display: flex;
+            }
           }
         }
       }
-    }
-    .campaign-end-date-picker {
-      margin-bottom: 30px;
+      .campaign-end-date-picker {
+        margin-bottom: 20px;
+        background-color: #f0f4fe;
+        border-radius: 10px;
+        padding: 10px;
+        &-title {
+          font-weight: bold;
+          font-size: $text-medium;
+          margin-bottom: 10px;
+          margin-left: 5px;
+        }
+        &-footer {
+          margin-top: 5px;
+          margin-left: 5px;
+          font-size: $text-xxsmall;
+        }
+      }
+
+      .campaign-days-picker {
+        background-color: #f0f4fe;
+        border-radius: 10px;
+        padding: 10px;
+        &-title {
+          font-weight: bold;
+          font-size: $text-medium;
+          margin-bottom: 10px;
+          margin-left: 5px;
+        }
+        &-footer {
+          margin-top: 5px;
+          margin-left: 5px;
+          font-size: $text-xxsmall;
+        }
+      }
     }
   }
   .sub-info {

@@ -59,7 +59,7 @@ export default function DatePicker({
   return (
     <div className="library-date-picker">
       <div ref={popperRef}>
-        <Input readOnly label={label} value={inputValue} description={description} onClick={togglePopper} />
+        <Input label={label} value={inputValue} description={description} onClick={togglePopper} />
       </div>
       {isPopperOpen && (
         <div

@@ -213,16 +213,19 @@ function CampaignDetail() {
             />
           </div>
           <div className="divider" />
-          <div className="form-row">
+          <div className="form-row date-settings">
+            <div className="date-settings-header">
+              <h5>Kampanya Tarih Ayarları</h5>
+              <p>Kampanyanız aşağıda seçeceğiniz tarih ayarlarına göre satın alınabilir olacaktır.</p>
+            </div>
             <div className="campaign-hours">
               <div className="campaign-hours-header">
-                <h5>Kampanya Tarih Ayarları</h5>
-                <p>Kampanyanız seçiceğiniz saat aralığında aktif olacaktır.</p>
+                <p>Saat Aralığı</p>
               </div>
               <div className="campaign-hours-body">
                 <div className="hours-wrapper">
                   <div className="hours-wrapper-title">
-                    Başlangıç
+                    <p>Başlangıç</p>
                   </div>
                   <div className="hours-wrapper-inputs">
                     <TimePicker
@@ -234,7 +237,7 @@ function CampaignDetail() {
                 </div>
                 <div className="hours-wrapper">
                   <div className="hours-wrapper-title">
-                    Bitiş
+                    <p>Bitiş</p>
                   </div>
                   <div className="hours-wrapper-inputs">
                     <TimePicker
@@ -247,30 +250,37 @@ function CampaignDetail() {
               </div>
             </div>
             <div className="campaign-end-date-picker">
+              <div className="campaign-end-date-picker-title">
+                <p>Bitiş Tarihi</p>
+              </div>
               <DatePicker
                 value={data.applicable.end}
-                label="Kampanya Bitiş Tarihi"
-                description="Kampanyanız aşağıda seçiceğiniz tarihte sona erecektir."
                 onChange={changeCampaignEndDate}
               />
+              <div className="campaign-end-date-picker-footer">
+                <p>*Seçtiğiniz tarihten sonra kampanyanız satın alınamaz olacaktır.</p>
+              </div>
             </div>
-          </div>
-          <div className="form-row">
-            <div className="title">
-              Kampanyanın Aktif Olduğu Günler (Kampanyanız sadece seçtiğiniz günler için geçerli olacaktır.)
+            <div className="campaign-days-picker">
+              <div className="campaign-days-picker-title">
+                Kampanyanın Aktif Olduğu Günler
+              </div>
+              <AntdSelect
+                mode="multiple"
+                style={{ width: "100%" }}
+                value={data.applicable?.days}
+                onChange={daysChangeHandler}
+              >
+                {DAYS.map((day, i) => (
+                  <AntdSelect.Option key={day} value={i} label={day}>
+                    <Space>{day}</Space>
+                  </AntdSelect.Option>
+                ))}
+              </AntdSelect>
+              <div className="campaign-days-picker-footer">
+                *Kampanyanız sadece seçtiğiniz günlerde gözükecektir.
+              </div>
             </div>
-            <AntdSelect
-              mode="multiple"
-              style={{ width: "100%" }}
-              value={data.applicable?.days}
-              onChange={daysChangeHandler}
-            >
-              {DAYS.map((day, i) => (
-                <AntdSelect.Option key={day} value={i} label={day}>
-                  <Space>{day}</Space>
-                </AntdSelect.Option>
-              ))}
-            </AntdSelect>
           </div>
           <div className="divider" />
           <div className="table-wrapper">
