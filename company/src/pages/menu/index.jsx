@@ -126,7 +126,13 @@ export default function Menu() {
 
   return (
     <div className="menus-page">
-      <h2 className="menus-page-title">Menüler</h2>
+      <div className="menus-page-header">
+        <h3>Menüler</h3>
+        <Button variant="outlined" onClick={() => setIsModalOpen(true)}>
+          Yeni Menü Oluştur
+          <Icon name="plus" />
+        </Button>
+      </div>
       <div className="menus-page-actions">
         <Button onClick={deleteSelectedMenus} disabled={selectedMenuIds.length === 0}>Seçili Menüleri Sil</Button>
       </div>
@@ -211,9 +217,6 @@ export default function Menu() {
           />
 
         </Table>
-      </div>
-      <div className="create-menu">
-        <Button variant="outlined" onClick={() => setIsModalOpen(true)}>Yeni Menü Oluştur</Button>
       </div>
       <Modal
         title="Basic Modal"

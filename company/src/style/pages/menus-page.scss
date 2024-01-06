@@ -1,7 +1,15 @@
 .menus-page {
   padding: 30px;
-  h2 {
+  &-header {
     margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    button {
+      i {
+        margin-left: 5px;
+      }
+    }
   }
   &-actions {
     margin-bottom: 10px;
