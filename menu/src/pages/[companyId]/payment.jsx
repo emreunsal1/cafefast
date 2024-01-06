@@ -148,7 +148,6 @@ export default function Payment() {
         </button>
         {savedCardId !== null && <button type="button" onClick={otpController}>Yeni kart ile Ödemeyi Tamamla</button>}
       </div>
-
       )}
       {needOtp && <OtpModal setModalIsOpen={setNeedOtp} submitClickHandler={otpController} />}
     </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
+import NavigationBar from "./NavigationBar";
 
 export default function Layout({ children }) {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function Layout({ children }) {
         Basket
       </div>
       <main>{children}</main>
+      <NavigationBar />
     </div>
   );
 }
