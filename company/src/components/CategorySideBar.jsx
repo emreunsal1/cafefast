@@ -54,7 +54,7 @@ export default function CategorySideBar() {
     }
   }, [router.isReady]);
 
-  useClickOutSide(addCategoryButtonRef, () => setIsCreateCategory(false));
+  useClickOutSide(addCategoryButtonRef.current, () => setIsCreateCategory(false));
 
   return (
     <div className="category-side-bar-container">

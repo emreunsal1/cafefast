@@ -19,7 +19,6 @@ export default function Menu() {
   const [menus, setMenus] = useState([]);
   const [activeMenuId, setActiveMenuId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectModeActive, setSelectModeActive] = useState(false);
   const [selectedMenuIds, setSelectedMenuIds] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
   const [newMenu, setNewMenu] = useState({ name: "", description: "" });
@@ -61,7 +60,6 @@ export default function Menu() {
 
   const deleteMenu = async ({ menuId, menuIds }) => {
     setLoading(true);
-    setSelectModeActive(false);
     setSelectedMenuIds([]);
     await MENU_SERVICE.deleteMenu({ menuId, menuIds });
     getCompanyMenus();
@@ -71,7 +69,6 @@ export default function Menu() {
   const deleteSelectedMenus = async () => {
     setLoading(true);
     const selectedMenus = selectedMenuIds;
-    setSelectModeActive(false);
     setSelectedMenuIds([]);
 
     await MENU_SERVICE.deleteMenu({ menuIds: selectedMenus });
@@ -116,18 +113,11 @@ export default function Menu() {
     setLoading(false);
   };
 
-  const activeMenuChangeHandler = async (menuId) => {
+  const changeActiveMenu = async (menuId) => {
     const response = await COMPANY_SERVICE.update({ activeMenu: menuId });
+    message.success("Aktif menü değiştirildi");
     setActiveMenuId(menuId);
     return response.data;
-  };
-
-  const menuSelectHandler = (checked, menuId) => {
-    if (checked) {
-      setSelectedMenuIds([...selectedMenuIds, menuId]);
-      return;
-    }
-    setSelectedMenuIds(selectedMenuIds.filter((ids) => ids !== menuId));
   };
 
   useEffect(() => {
@@ -137,33 +127,39 @@ export default function Menu() {
   return (
     <div className="menus-page">
       <h2 className="menus-page-title">Menüler</h2>
-      <Button onClick={() => setSelectModeActive(!selectModeActive)}>Seç</Button>
-      {selectModeActive && <Button onClick={deleteSelectedMenus}>Seçili Menüleri Sil</Button>}
+      <div className="menus-page-actions">
+        <Button onClick={deleteSelectedMenus} disabled={selectedMenuIds.length === 0}>Seçili Menüleri Sil</Button>
+      </div>
       <div>
         <Table
+          rowSelection={{
+            type: "checkbox",
+            onChange: (selectedRowKeys) => {
+              setSelectedMenuIds(selectedRowKeys);
+            },
+          }}
           loading={loading}
           rowKey="_id"
           dataSource={menus}
         >
-          {selectModeActive && (
+
           <Table.Column
-            width={20}
+            width={120}
             align="center"
-            render={(_, record) => (
-              <Space>
-                <Checkbox onChange={(e) => menuSelectHandler(e.target.checked, record._id)} value={selectedMenuIds.includes(record._id)} />
-              </Space>
-            )}
-          />
-          )}
-          <Table.Column
-            width={20}
-            align="center"
-            render={(_, record) => (
-              <Space>
-                <Checkbox type="radio" onChange={() => activeMenuChangeHandler(record._id)} value={record._id === activeMenuId} />
-              </Space>
-            )}
+            render={(_, record) => {
+              if (record._id === activeMenuId) {
+                return "✅";
+              }
+              return (
+                <Button confirmOptions={{
+                  confirmText: "Sitenizde gözüken menünüz artık bu menü olacak onaylıyor musunuz?",
+                  onOkClick: () => changeActiveMenu(record._id),
+                }}
+                >
+                  Aktif Et
+                </Button>
+              );
+            }}
           />
           <Table.Column
             title="Menü Adı"
@@ -183,7 +179,6 @@ export default function Menu() {
               </Space>
             )}
           />
-
           <Table.Column
             title=""
             key="action"
@@ -198,7 +193,16 @@ export default function Menu() {
                   Düzenle
                   <Icon name="edit-outlined" />
                 </Button>
-                <Button variant="red" onClick={() => deleteMenu({ menuId: record._id })}>Sil</Button>
+                <Button
+                  variant="red"
+                  confirmOptions={{
+                    confirmText: "Sitenizde gözüken menünüz artık bu menü olacak onaylıyor musunuz?",
+                    onOkClick: () => deleteMenu({ menuId: record._id }),
+                    okText: "Sil",
+                  }}
+                >
+                  Sil
+                </Button>
               </div>
             )}
           />

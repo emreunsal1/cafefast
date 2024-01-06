@@ -19,7 +19,7 @@ export default function Popup({
     show,
   });
 
-  useClickOutSide(popupRef, onClose);
+  useClickOutSide(popupRef.current, onClose);
 
   const lockWebKitBodyScrolling = () => {
     const _scrollPosition = window.pageYOffset;

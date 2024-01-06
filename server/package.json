@@ -8,7 +8,7 @@
     "start:watch": "nodemon dist/index.js",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "dev": "concurrently 'yarn build:watch' 'yarn start:watch'",
+    "dev": "concurrently -c \"auto\" --names \"[build],[server]\" --prefix \"{name}\" 'yarn build:watch' 'yarn start:watch'",
     "lint": "eslint"
   },
   "dependencies": {

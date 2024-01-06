@@ -27,7 +27,7 @@ export default function Dropdown({
   const itemClassName = classNames("library-dropdown-body-item", {});
 
   const closeBody = () => setIsOpen(false);
-  useClickOutSide(bodyRef, closeBody);
+  useClickOutSide(bodyRef.current, closeBody);
 
   return (
     <div ref={bodyRef} className={wrapperClassname}>
