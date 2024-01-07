@@ -46,11 +46,11 @@ export const getShopperBasketItems = async (shopperId) => {
   }
 };
 
-export const addProductToShopper = async (shopperId, productId) => {
+export const addProductToShopper = async (shopperId, { productId, selectedAttributes }) => {
   try {
     const newShopper = await shopperModel.findOneAndUpdate(
       { _id: shopperId },
-      { $push: { "basket.products": { product: productId, count: 1 } } },
+      { $push: { "basket.products": { product: productId, count: 1, selectedAttributes } } },
       { new: true },
     );
     return { data: newShopper };
@@ -210,6 +210,20 @@ export const deleteProductFromShopper = async ({ shopperId, productId }) => {
     return { error: (error as any).message || error };
   }
 };
+
+export const deleteProductsFromShopper = async ({ shopperId, productIds }) => shopperModel.findOneAndUpdate(
+  { _id: shopperId },
+  {
+    $pull: {
+      "basket.products": {
+        product: {
+          $in: productIds,
+        },
+      },
+    },
+  },
+  { new: true },
+);
 
 export const deleteCampaignFromShopper = async ({ shopperId, campaignId }) => {
   try {

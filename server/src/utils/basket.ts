@@ -37,7 +37,13 @@ export const mapBasket = (shopperData) => {
 
   products.forEach((product) => {
     totalPrice += (product.product.price * product.count);
-    allProducts.push({ ...mapProduct(product.product), count: product.count });
+    product.selectedAttributes.forEach((selectedAttributes) => {
+      selectedAttributes.options.forEach((selectedOption) => { totalPrice += (selectedOption.price * product.count); });
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { attributes, ...mappedProduct } = mapProduct(product.product);
+
+    allProducts.push({ product: mappedProduct, count: product.count, selectedAttributes: product.selectedAttributes });
   });
 
   campaigns.forEach((campaign) => {
@@ -52,4 +58,34 @@ export const mapBasket = (shopperData) => {
     totalPriceText: `${totalPrice} TL`,
     totalPriceSymbolText: `₺${totalPrice}`,
   };
+};
+
+export const findChangedProductsInBasket = (basketProducts) => {
+  const _changedProductIds = basketProducts.reduce((changedProductIds, product: any) => {
+    const productId = product.product._id.toString();
+
+    product.selectedAttributes.forEach((selectedAttribute) => {
+      const foundProductAttribute = product.product.attributes.find(
+        (_productAttr) => _productAttr.title === selectedAttribute.title
+         && _productAttr.type === selectedAttribute.type
+         && _productAttr.required === selectedAttribute.required,
+      );
+
+      if (!foundProductAttribute) {
+        changedProductIds.add(productId);
+      }
+
+      const productAttributeOptionsAsString = foundProductAttribute.options.map((_option) => JSON.stringify(_option));
+
+      const isOptionsExists = selectedAttribute.options.every((_option) => productAttributeOptionsAsString.includes(JSON.stringify(_option)));
+
+      if (!isOptionsExists) {
+        changedProductIds.add(productId);
+      }
+    });
+
+    return changedProductIds;
+  }, new Set<any>());
+
+  return [..._changedProductIds];
 };

@@ -7,6 +7,7 @@ import {
   clearShopperBasket,
   deleteCampaignFromShopper,
   deleteProductFromShopper,
+  deleteProductsFromShopper,
   getShopper,
   setLastOtpDateToShopper,
   setPhoneNumberToShopper,
@@ -22,38 +23,80 @@ import { mapSavedCards } from "../utils/mappers";
 import {
   SAVED_CARD_NOT_FOUND_IN_USER,
 } from "../constants";
-import { mapBasket } from "../utils/basket";
+import { findChangedProductsInBasket, mapBasket } from "../utils/basket";
 import { createOrder } from "../services/order";
 import { getIO } from "../utils/socket";
 import { checkOtpIsValid, checkUserNeedOtp, setOTPToPhone } from "../utils/otp";
+import { ProductAttributeType } from "../models/product";
 
 export const addProductToBasketController = async (req: Request, res: Response) => {
   const { shopper } = req;
-  const { productId } = req.params;
-  const { shopperData, companyActiveMenu } = res.locals;
+  const { productId, attributes } = req.body;
+  const { companyActiveMenu } = res.locals;
 
-  const isProductExistsOnMenu = checkMenuHasProduct(companyActiveMenu, productId);
-  if (!isProductExistsOnMenu) {
+  const foundProductInMenu = checkMenuHasProduct(companyActiveMenu, productId);
+  if (!foundProductInMenu) {
     return res.status(400).json({
       error: "Product not found in company active menu",
     });
   }
 
-  const shopperHasProductAlready = shopperData.basket.products.some((_product) => String(_product.product) === productId);
-  if (shopperHasProductAlready) {
+  const attributeErrors: any = [];
+  const productAttributes = foundProductInMenu.attributes;
+  const selectedAttributes = (attributes as any[]).reduce((prev, curr) => {
+    const attributeIndex = curr.index;
+    const attributeSelectedOptions = curr.options;
+
+    const foundAttr = productAttributes.find((_, index) => index === attributeIndex);
+
+    if (!foundAttr) {
+      attributeErrors.push({
+        index: attributeIndex,
+        error: "Sent attribute index not found",
+      });
+    }
+    if (foundAttr) {
+      const selectedAttributeOptions = attributeSelectedOptions.map((index) => foundAttr.options[index]);
+
+      const requiredButNotSelected = foundAttr.required && selectedAttributeOptions.length === 0;
+      const singleButMultiSelected = foundAttr.type === ProductAttributeType.SINGLE && selectedAttributeOptions.length > 1;
+
+      if (requiredButNotSelected) {
+        attributeErrors.push({
+          title: foundAttr.title,
+          error: "At least one option required",
+        });
+      }
+      if (singleButMultiSelected) {
+        attributeErrors.push({
+          title: foundAttr.title,
+          error: "Option is single but multi option selected",
+        });
+      }
+
+      prev.push({
+        ...foundAttr,
+        options: selectedAttributeOptions,
+      });
+    }
+    return prev;
+  }, []);
+
+  if (attributeErrors.length > 0) {
     return res.status(400).send({
-      message: "You can not add same product again",
+      message: "Attributes has vaildation errors",
+      attributeErrors,
     });
   }
 
-  const newShopper = await addProductToShopper(shopper._id, productId);
+  const newShopper = await addProductToShopper(shopper._id, { productId, selectedAttributes });
   if (newShopper.error || !newShopper.data) {
     return res.status(400).send({
       error: newShopper.error,
     });
   }
 
-  res.status(201).send(newShopper.data);
+  res.status(201).send(newShopper);
 };
 
 export const addCampaignToBasketController = async (req: Request, res: Response) => {
@@ -93,6 +136,16 @@ export const getBasketController = async (req: Request, res: Response) => {
     return res.status(401).send({
       message: "Please add item to basket, unauthorized user or deleted user detected.",
       stack: error,
+    });
+  }
+
+  const changedProductIds = findChangedProductsInBasket(data?.basket?.products);
+  if (changedProductIds.length > 0) {
+    await deleteProductsFromShopper({ shopperId: shopper._id, productIds: changedProductIds });
+    return res.status(400).send({
+      code: "BASKET_CHANGED",
+      message: "Products are changed after you added to basket. Please add it again",
+      changedProductIds,
     });
   }
 

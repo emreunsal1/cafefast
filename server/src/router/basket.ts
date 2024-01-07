@@ -34,7 +34,7 @@ route.get(
 );
 
 route.post(
-  "/:companyId/product/:productId",
+  "/:companyId/product",
   COMPANY_ACTIVE_MENU_MIDDLEWARE,
   SHOPPER_RESOLVE_OR_CREATE_MIDDLEWARE,
   SHOPPER_DATA_MIDDLEWARE,

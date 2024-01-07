@@ -32,6 +32,7 @@ const shopperSchema = new Schema({
       type: [{
         product: { type: String, ref: "product" },
         count: { type: Number, default: 1 },
+        selectedAttributes: { type: [] },
         _id: false,
       }],
       default: [],
