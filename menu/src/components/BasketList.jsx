@@ -9,9 +9,6 @@ export default function BasketList() {
     <div>
       <div className="list-wrapper">
         <h1>Ürünler</h1>
-        {basketItems.products.map((product) => (
-          <ProductCard data={product} />
-        ))}
         <h1>Kampanyalar</h1>
         {basketItems.campaigns.map((campaign) => (
           <ProductCard data={campaign} />

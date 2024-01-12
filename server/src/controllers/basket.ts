@@ -26,8 +26,10 @@ import {
 import { findChangedProductsInBasket, mapBasket } from "../utils/basket";
 import { createOrder } from "../services/order";
 import { getIO } from "../utils/socket";
-import { checkOtpIsValid, checkUserNeedOtp, setOTPToPhone } from "../utils/otp";
 import { ProductAttributeType } from "../models/product";
+import { checkOtpIsValid, checkUserNeedOtp, sendOtp } from "../services/otp";
+import { OTPType } from "../models/otp";
+import logger from "../utils/logger";
 
 export const addProductToBasketController = async (req: Request, res: Response) => {
   const { shopper } = req;
@@ -271,10 +273,26 @@ export const sendOtpController = async (req: Request, res: Response, next) => {
   const { shopperData } = res.locals;
 
   try {
-    const { phone } = await updateShopperVerifier.parseAsync({ phone: phoneNumber });
+    const isUserNeedOtp = checkUserNeedOtp(shopperData.lastOtpDate);
+    let currentPhone = shopperData.phone;
 
-    await setOTPToPhone(shopperData._id, phone);
-    res.send({ success: true });
+    if (!currentPhone) {
+      const { phone } = await updateShopperVerifier.parseAsync({ phone: phoneNumber });
+      currentPhone = phone;
+    }
+
+    if (isUserNeedOtp) {
+      await sendOtp({ target: currentPhone, type: OTPType.PHONE });
+      res.send({ success: true });
+      return;
+    }
+
+    logger.error({
+      action: "NO_NEED_TO_OTP",
+      shopperData,
+      message: "shopper do not need a otp",
+    });
+    res.status(400).send({ message: "User not need otp" });
   } catch (error) {
     next(error);
   }

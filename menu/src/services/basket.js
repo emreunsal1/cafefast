@@ -23,9 +23,12 @@ const addToBasket = async ({ companyId, productId, campaignId }) => {
   }
 };
 
-const addProductToBasket = async ({ companyId, productId }) => {
+const addProductToBasket = async ({ companyId, productId, attributes = [] }) => {
   try {
-    return instance.post(`${ROUTES.BASKET}/${companyId}/product/${productId}`);
+    return instance.post(`${ROUTES.BASKET}/${companyId}/product`, {
+      productId,
+      attributes,
+    });
   } catch (error) {
     return false;
   }

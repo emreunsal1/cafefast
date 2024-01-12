@@ -9,7 +9,6 @@ import router from "./router";
 import connectDB from "./database/connect";
 import logger from "./utils/logger";
 import { createSocketServer } from "./utils/socket";
-import { connectToRedis } from "./services/redis";
 import { errorHandlerMiddleware } from "./middleware/errorHandlerMiddleware";
 
 const app = express();
@@ -19,7 +18,6 @@ const init = async () => {
 
   try {
     await connectDB();
-    await connectToRedis();
     await checkS3Connection();
   } catch (err) {
     logger.error({ action: "INIT_CONNECTIONS", message: "application killed", stack: err });
